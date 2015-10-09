@@ -9,36 +9,29 @@ int myAtoi(string str) {
 
 	int result = 0;
 	int i = 0;
-	bool op = true;
+	int op = 1;
+    int n = str.size();
 
 	while (str[i] == ' ') { ++i; }
 
 	if (str[i] == '-') {
-		op = false;
+		op = -1;
 		++i;
 	}
 	else if (str[i] == '+') {
-		op = true;
 		++i;
 	}
 
-	if (i == str.size() || str[i] < '0' || str[i] > '9')
-		return 0;
-
-	while (i < str.size() && (str[i] >= '0' && str[i] <= '9')) {
-		if (result > INT_MAX / 10) {
-			return (op ? INT_MAX : INT_MIN);
-		}
-		else if (result == INT_MAX / 10) {
-			if (op == true && str[i] > '7')
-				return INT_MAX;
-			else if (op == false && str[i] > '8')
-				return INT_MIN;
-		}
-		result = result * 10 + (str[i] - '0');
-		++i;
-	}
-	return (op ? result : 0 - result);
+    for (; i < n; ++i) {
+        if (str[i] < '0' || str[i] > '9')
+            break;
+        if (result > INT_MAX / 10 ||
+            (result == INT_MAX / 10 && (str[i] - '0') > INT_MAX % 10)) {
+			return op == 1 ? INT_MAX : INT_MIN;
+        }
+        result = result * 10 + (str[i] - '0');
+    }
+    return result * op; 
 }
 
 int main() {
