@@ -46,20 +46,48 @@ vector<vector<int>> fourSum(vector<int>& nums, int target) {
 }
 
 /*
-	Time: O(n^2)
+	Time: average O(n^2)   worst O(n^4)
 	Memory: O(n^2)
 	first step use map to store sum of any two num, then two loops in nums
 */
+vector<vector<int>> fourSum_map(vector<int>& nums, int target) {
+    vector<vector<int>> result;
+    if (nums.size() < 4)
+        return result;
+    sort(nums.begin(), nums.end());
+    unordered_map<int, vector<pair<int, int>>> m;
+    for (int i = 0; i < nums.size() - 1; ++i) {
+        for (int j = i + 1; j < nums.size(); ++j) {
+            m[nums[i] + nums[j]].push_back(make_pair(i, j));
+        }
+    }
+    for (int i = 0; i < nums.size() - 1; ++i) {
+        for (int j = i + 1; j < nums.size(); ++j) {
+            int rest = target - nums[i] - nums[j];
+            if (m.find(rest) == m.end())
+                continue;
+            auto &vec = m[rest];
+            for (int k = 0; k < vec.size(); ++k) {
+                if (j >= vec[k].first)
+                    continue;
+                result.push_back({nums[i], nums[j], nums[vec[k].first], nums[vec[k].second]});
+            }
+        }
+    }
+    sort(result.begin(), result.end());
+    result.erase(unique(result.begin(), result.end()), result.end());
+    return result;
+}
 
 /*
-	Time: average O(n^2)   worst O(n^4)
+	Time: O(n^2)
 	Memory: O(n^2)
 	first step use multi-map to store sum of any two nums, then two loops in cache
 */
 
 int main() {
 	vector<int> num({ 1 ,0 ,-1 ,0 ,-2 ,2 });
-	vector<vector<int>> r = fourSum(num, 0);
+	vector<vector<int>> r = fourSum_map(num, 0);
 	for (int i = 0; i < r.size(); ++i) {
 		for (int j = 0; j < 4; ++j)
 			cout << r[i][j] << " ";
