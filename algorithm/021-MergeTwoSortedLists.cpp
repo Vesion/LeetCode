@@ -10,7 +10,16 @@ typedef struct ListNode {
     int val;
     ListNode *next;
     ListNode(int x) : val(x), next(NULL) {}
-};
+} ListNode;
+
+void printList(ListNode *head) {
+    ListNode *p = head;
+    while (p) {
+        cout << p->val << " ";
+        p = p->next;
+    }
+    cout << endl;
+}
 
 ListNode* appendNode(ListNode *head, int x) {
     ListNode *p = head;
@@ -31,29 +40,41 @@ ListNode* deleteList(ListNode *head) {
     return p;
 }
 
-ListNode* mergeTwoLists(ListNode *l1, ListNode *l2) {
-    ListNode *p1 = l1, *p2 = l2;
-    ListNode *p
-}
-
-void printList(ListNode *head) {
-    ListNode *p = head;
-    while (p) {
-        cout << p->val << " ";
+ListNode* mergeTwoLists(ListNode *p1, ListNode *p2) {
+    if (!p1) return p2;
+    if (!p2) return p1;
+    ListNode ph(-1);
+    ListNode *p = &ph;
+    while (p1 && p2) {
+        if (p1->val < p2->val) {
+            p->next = p1;
+            p1 = p1->next;
+        } else {
+            p->next = p2;
+            p2 = p2->next;
+        }
         p = p->next;
     }
-    cout << endl;
+    if (p1) p->next = p1;
+    if (p2) p->next = p2;
+    return ph.next;
 }
 
 int main() {
-    ListNode *head = new ListNode(1);
-    appendNode(head, 2);
-    appendNode(head, 3);
-    appendNode(head, 4);
-    appendNode(head, 5);
-    printList(head);
-    head = deleteList(head);
-    printList(head);
+    ListNode *h1 = new ListNode(1);
+    appendNode(h1, 3);
+    appendNode(h1, 5);
+    appendNode(h1, 7);
+    printList(h1);
+
+    ListNode *h2 = new ListNode(2);
+    appendNode(h2, 4);
+    appendNode(h2, 6);
+    appendNode(h2, 8);
+    printList(h2);
+
+    ListNode *h3 = mergeTwoLists(h1, h2);
+    printList(h3);
     system("pause");
     return 0;
 }
