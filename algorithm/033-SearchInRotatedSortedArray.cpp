@@ -18,7 +18,7 @@ int binarySearch(vector<int>::iterator begin, vector<int>::iterator end, int val
 }
 
 // firstly find the pivot, then search each part respectively
-int search(vector<int>& nums, int target) {
+int search_verbose(vector<int>& nums, int target) {
     auto first = nums.begin(), last = nums.end();
     if (first == last)
         return -1;
@@ -40,6 +40,32 @@ int search(vector<int>& nums, int target) {
             result = distance(nums.begin(), pivot) + result + 1;
     }
     return result;
+}
+
+// search in one pass
+int search(vector<int>&nums, int target) {
+    int len = nums.size();
+    if (len == 0)
+        return -1;
+    int first = 0, last = len;
+    while (first < last) {
+        int mid = first + (last - first) / 2;
+        if (nums[mid] == target)
+            return mid;
+        if (nums[first] <= nums[mid]) {
+            if (nums[first] <= target && target < nums[mid])
+                last = mid;
+            else
+                first = mid + 1;
+        }
+        else {
+            if (nums[mid] < target && target <= nums[last-1])
+                first = mid + 1;
+            else
+                last = mid;
+        }
+    }
+    return -1;
 }
 
 // in just one funtion
