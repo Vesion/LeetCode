@@ -40,7 +40,7 @@ vector<vector<int>> permute(vector<int>& nums) {
 }
 
 int main() {
-    vector<int> a = {1, -1, 2};
+    vector<int> a = {1, 1, 2};
     auto result = permute(a);
     for (auto i : result) {
         for (auto j : i) {
