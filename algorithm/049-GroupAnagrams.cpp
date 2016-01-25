@@ -11,13 +11,7 @@ vector<vector<string>> groupAnagrams(vector<string>& strs) {
     for (string str : strs) {
         string copy(str);
         sort(copy.begin(), copy.end());
-        if (maps.find(copy) == maps.end()) {
-            vector<string> r;
-            r.push_back(str);
-            maps[copy] = r;
-        } else {
-            maps[copy].push_back(str);
-        }
+        maps[copy].push_back(str);
     }
     for (auto it  = maps.begin(); it != maps.end(); ++it) {
         sort(it->second.begin(), it->second.end());
