@@ -52,6 +52,7 @@ int jump_greedy1(vector<int>& nums) {
 
 // solution3 : greedy2
 // cur stores the potantial farthest position, last stores the last farthest position, if i > last, jump
+// the greedy strategy is "step to the farthest position each time"
 // O(n), O(1)
 int jump(vector<int>& nums) {
     int steps = 0;
