@@ -24,7 +24,7 @@ int trap_stack(vector<int>& height) {
             //  __    __
             // |  |  |  |
             // |  |__|  |
-            // |________| hegith
+            // |________| height
             //  ^      ^
             // left   right
             cout << "i " << i << " water " << water << endl;
