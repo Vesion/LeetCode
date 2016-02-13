@@ -39,6 +39,7 @@ vector<vector<int>> subsets_it(vector<int>& nums) {
     vector<vector<int>> result;
     if (nums.empty())
         return result; 
+    sort(nums.begin(), nums.end());
     int n = nums.size();
     for (int i = 0; i < (1 << n); ++i) {
         vector<int> r;
