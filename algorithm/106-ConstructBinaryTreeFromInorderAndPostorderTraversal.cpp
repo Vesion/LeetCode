@@ -33,34 +33,43 @@ void printInorder(TreeNode* root) {
     }
 }
 
-TreeNode* build(vector<int>::iterator pre_start, vector<int>::iterator pre_end, 
+void printPostorder(TreeNode* root) {
+    if (root) {
+        printPostorder(root->left);
+        printPostorder(root->right);
+        cout << root->val << " ";
+    }
+}
+
+TreeNode* build(vector<int>::iterator post_start, vector<int>::iterator post_end, 
         vector<int>::iterator in_start, vector<int>::iterator in_end) {
-    if (pre_start == pre_end) return NULL;
+    if (post_start == post_end) return NULL;
     if (in_start == in_end) return NULL;
 
-    TreeNode* root = new TreeNode(*pre_start);
-    auto in_partition = find(in_start, in_end, *pre_start);
+    const int val = *prev(post_end);
+    TreeNode* root = new TreeNode(val);
+    auto in_partition = find(in_start, in_end, val);
     auto left_size = distance(in_start, in_partition);
 
-    root->left = build(next(pre_start), next(pre_start, left_size+1), in_start, in_partition);
-    root->right = build(next(pre_start, left_size+1), pre_end, next(in_partition), in_end);
+    root->left = build(post_start, next(post_start, left_size), in_start, in_partition);
+    root->right = build(next(post_start, left_size), prev(post_end), next(in_partition), in_end);
     return root;
 }
 
-TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-    return build(preorder.begin(), preorder.end(), inorder.begin(), inorder.end());
+TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+    return build(postorder.begin(), postorder.end(), inorder.begin(), inorder.end());
 }
 
 int main() {
     vector<int> preorder({1, 2, 4, 3, 5, 6, 7});
     vector<int> inorder({4, 2, 1, 3, 6, 5, 7});
-    //vector<int> preorder({1, 2, 3, 4});
-    //vector<int> inorder({2, 1, 3, 4});
-    auto root = buildTree(preorder, inorder);
-    printPreorder(root);
-    cout << endl;
+    vector<int> postorder({4, 2, 6, 7, 5, 3, 1});
+    auto root = buildTree(inorder, postorder);
     printInorder(root);
+    cout << endl;
+    printPostorder(root);
     cout << endl;
     deleteTree(root);
     return 0;
 }
+
