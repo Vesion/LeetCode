@@ -63,6 +63,23 @@ vector<int> preorderTraversal_it(TreeNode* root) {
     return result;
 }
 
+// Solution 2 v2
+vector<int> preorderTraversal_it2(TreeNode* root) {
+    vector<int> prevs;
+    if (!root) return prevs;
+    stack<TreeNode*> s;
+    s.push(root);
+    while (!s.empty()) {
+        auto it = s.top();
+        prevs.push_back(it->val);
+        s.pop();
+        if (it->right) s.push(it->right);
+        if (it->left) s.push(it->left);
+    }
+    return prevs;
+}
+
+
 int main() {
     TreeNode* root = NULL;
     root = insertNode(root, 4);
