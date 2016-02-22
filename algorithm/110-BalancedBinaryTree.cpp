@@ -9,7 +9,7 @@ struct TreeNode {
     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-void deleteTree(TreeNode* root) {
+void deleteTree(TreeNode* &root) {
     if (!root) return;
     deleteTree(root->left);
     deleteTree(root->right);
