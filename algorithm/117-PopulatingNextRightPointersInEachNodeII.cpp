@@ -36,32 +36,25 @@ void connect_levelorder(TreeLinkNode *root) {
 }
 
 // Solution 1 : iterative, use constant space, top-down
+// 相比于116，新增一个prev指针，来记录该层之前的结点
 void connect_it(TreeLinkNode* root) {
     while (root) {
-        TreeLinkNode* left = root->left;
-        while (root) {
-            if (root->left && root->right)
-                root->left->next = root->right;
-            if (root->right && root->next)
-                root->right->next = root->next->left;
+        TreeLinkNode* next = NULL;
+        TreeLinkNode* prev = NULL;
+        while (root) { // fill this level
+            if (!next) next = root->left ? root->left : root->right; // find the first node in next level
+            if (root->left) {
+                if (prev) prev->next = root->left;
+                prev = root->left;
+            }
+            if (root->right) {
+                if (prev) prev->next = root->right;
+                prev = root->right;
+            }
             root = root->next;
         }
-        root = left;
+        root = next; // go to next level
     }
-}
-
-// Solution 2 : recursive, dfs, skillful
-void connect_re(TreeLinkNode* node, TreeLinkNode* sibling) {
-    if (!node) return;
-    node->next = sibling;
-    connect_re(node->left, node->right);
-    if (sibling)
-        connect_re(node->right, sibling->left);
-    else
-        connect_re(node->right, NULL);
-}
-void connect_re(TreeLinkNode* root) {
-   connect_re(root, NULL);
 }
 
 int main() {
@@ -72,7 +65,7 @@ int main() {
     root->left->right = new TreeLinkNode(5);
     root->right->left = new TreeLinkNode(6);
     root->right->right = new TreeLinkNode(7);
-    connect_re(root);
+    connect_it(root);
 
     deleteTree(root);
     return 0;
