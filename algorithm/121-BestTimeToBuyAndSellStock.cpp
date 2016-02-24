@@ -8,10 +8,11 @@ using namespace std;
 // greedy (or dp)
 // 一边遍历一边得到当前最小的入价和最高的利润
 int maxProfit(vector<int>& prices) {
-    int result = 0, minprice = INT_MAX;
-    for (int i = 0; i < prices.size(); ++i) {
-        result = max(result, prices[i] - minprice);
-        minprice = min(minprice, prices[i]);
+    int result = 0;
+    int minprice = INT_MAX; // the price I buy in
+    for (int i = 0; i < prices.size(); ++i) { // when I sell stock in day i
+        result = max(result, prices[i] - minprice); // compare today's profit with last day's, choose the bigger one, dp
+        minprice = min(minprice, prices[i]); // maintain the minimum price I bought in (do not care the day, because when it must be before the selling day, greedy)
     }
     return result;
 }
