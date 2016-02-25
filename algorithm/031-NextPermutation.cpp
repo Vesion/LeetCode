@@ -19,14 +19,14 @@ void next_permutation(vector<int>::iterator first, vector<int>::iterator last) {
     while (true) {
         vector<int>::iterator i1, i2;
         i1 = i;
-        while (*--i < *i1) {
+        if (*--i < *i1) { // from right to left, find the first element i, smaller than its right adjacent one i1
             i2 = last;
-            while (*i >= *--i2) ;
-            iter_swap(i, i2);
-            reverse(i1, last);
+            while (*i >= *--i2) ; // from right to i, find the first element i2, greater than i
+            iter_swap(i, i2); // swap i and i2
+            reverse(i1, last); // reverse from i1 to right
             return;
         }
-        if (i == first) {
+        if (i == first) { // if i is the left first, means that this permutation turn is over
             reverse(first, last);
             return;
         }
