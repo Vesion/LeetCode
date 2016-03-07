@@ -36,30 +36,25 @@ void deleteTree(TreeNode* &root) {
     root = NULL;
 }
 
-// similiar to 094-BinaryTreeInorderTraversal stack solution
+// similiar to 094-BinaryTreeInorderTraversal solution 2 v2
 class BSTIterator {
 private:
     stack<TreeNode*> _s;
-    TreeNode* _it;
+    inline void pushAll(TreeNode* root) { for (; root; root = root->left) _s.push(root); }
+    
 public:
     BSTIterator(TreeNode *root) {
-        _it = root;
+        pushAll(root); 
     }
 
     bool hasNext() {
-        return (_it || !_s.empty());
+        return (!_s.empty());
     }
 
     int next() {
-        while (true) {
-            if (_it) { _s.push(_it); _it = _it->left; }
-            else {
-                _it = _s.top(); _s.pop();
-                auto t = _it;
-                _it = _it->right;
-                return t->val;
-            }
-        }
+        auto it = _s.top(); _s.pop();
+        pushAll(it->right);
+        return it->val;
     }
 };
 
