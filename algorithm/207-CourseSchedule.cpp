@@ -30,7 +30,7 @@ bool canFinish_BFS(int numCourses, vector<pair<int, int>>& prerequisites) {
     vector<int> indgree(numCourses, 0); getIndegree(indgree, graph);
     for (int i = 0; i < numCourses; ++i) {
         int start = 0;
-        while (start < numCourses) { if (!indgree[start]) break; ++start; } // try to find a node whose indgrees in 0
+        while (start < numCourses) { if (!indgree[start]) break; ++start; } // try to find a node whose indgrees is 0
         if (start == numCourses) return false; // if cannot find one, there must be a cycle
         indgree[start] = -1; // prevent from visiting it again
         for (auto & nbr : graph[start]) --indgree[nbr];
