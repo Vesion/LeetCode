@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <cstring>
+#include <algorithm>
 using namespace std;
 
 // This problem is an application of the Trie data structure (208-ImplementTrie)
@@ -13,7 +13,7 @@ public :
     bool isEnd;
     TrieNode* children[26];
     TrieNode() : isEnd(false) {
-        for (auto &c : children) c = NULL;
+        fill_n(children, 26, nullptr);
     }
 };
 
