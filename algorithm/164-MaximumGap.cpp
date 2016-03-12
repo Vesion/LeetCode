@@ -16,7 +16,7 @@ int maximumGap_stl(vector<int>& nums) {
 
 
 // Solution 1 : pigeon hole principle and bucket sort, O(n) time
-// According to pigeon hole priciple, the lower bound of the gap is (max_num - min_num)/(n-1), the bucket size. So the max gap must appear in between ajacent bucket.
+// According to pigeon hole principle, the lower bound of the gap is (max_num - min_num)/(n-1), the bucket size. So the max gap must appear in between ajacent bucket.
 int maximumGap(vector<int>& nums) {
     int n = nums.size();
     if (n < 2) return 0;
