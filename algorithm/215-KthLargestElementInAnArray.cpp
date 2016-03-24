@@ -46,7 +46,7 @@ int findKthLargest_partition(vector<int>& nums, int k) {
 }
 
 
-// Solution 3 : use max-heap, partial heap sort, O(n*lgk)
+// Solution 3 : use max-heap, partial heap sort, heap-building O(n), get first k elements O(klgn), so totally O(n) if k is not very large
 // here we use std::priority_queue directly
 int findKthLargest_heap(vector<int>& nums, int k) {
     priority_queue<int> q;
