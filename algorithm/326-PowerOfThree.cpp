@@ -28,7 +28,7 @@ bool isPowerOfThree_max(int n) {
     return n > 0 && maxPowOf3%n == 0;
 }
 
-// Solution 4 : log10(n) / log(3) return an int
+// Solution 4 : log10(n) / log10(3) return an int
 // NOTE : we cannot use log (natural log), but log10 (common log), because n=243, just a coincidence.
 bool isPowerOfThree_log10(int n) {
     return fmod(log10(n) / log10(3), 1) == 0;
