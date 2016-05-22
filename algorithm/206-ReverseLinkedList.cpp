@@ -63,7 +63,7 @@ ListNode* reverseList_bottomup(ListNode* head) {
     if (!head || !head->next) return head;
 
     //Assume we get a reverse list in rem nodes other than head.    
-    ListNode* rem=reverseList(head->next);
+    ListNode* rem=reverseList_bottomup(head->next);
 
     //now head should be added to the end of rem's list. 
     // the last node of rem's list is same as head's next.

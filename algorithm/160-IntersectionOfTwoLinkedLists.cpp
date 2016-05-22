@@ -41,7 +41,7 @@ ListNode *getIntersectionNode_verbose(ListNode *headA, ListNode *headB) {
     ListNode *pa = NULL, *pb = NULL;
     for (pa = headA, pb = headB; pa && pb; pa = pa->next, pb = pb->next);
 
-    // figure out which one reach NULL first, if pa, it means that headA is longer than headB.
+    // figure out which one reach NULL first, if pb, it means that headA is longer than headB.
     // pa go on, get the difference(steps count) of headA's length and headB's
     bool Alonger = false;
     ListNode* p;
