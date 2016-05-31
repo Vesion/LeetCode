@@ -17,7 +17,7 @@ private:
     TrieNode* root;
 public:
     Trie(vector<string>& words) {
-        root = new TrieNode;
+        root = new TrieNode();
         for (auto & word : words)
             addWord(word);
     }

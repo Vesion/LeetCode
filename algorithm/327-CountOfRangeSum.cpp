@@ -42,7 +42,7 @@ int countWithMergeSort(vector<ll>& sum, int first, int last, int lower, int uppe
         while (t < last && sum[t] < sum[i]) cache[r++] = sum[t++];
         cache[r++] = sum[i];
     }
-    copy(cache.begin(), cache.begin()+r, sum.begin()+first);
+    move(cache.begin(), cache.begin()+r, sum.begin()+first);
     return count;
 }
 
