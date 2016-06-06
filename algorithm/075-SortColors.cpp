@@ -22,17 +22,12 @@ void sortColors_count(vector<int>& nums) {
 void sortColors(vector<int>& nums) {
     int ri = 0, bi = nums.size()-1;
     for (int i = 0; i <= bi; ) {
-        if (nums[i] == 0) {
-            swap(nums[ri], nums[i]);
-            i = ri + 1;
-            ++ri;
-        }
-        else if (nums[i] == 2) {
+        if (nums[i] == 0) 
+            swap(nums[ri++], nums[i++]);
+        else if (nums[i] == 2) 
             swap(nums[bi--], nums[i]);
-        }
-        else {
+        else 
             ++i;
-        }
     }
 }
 
