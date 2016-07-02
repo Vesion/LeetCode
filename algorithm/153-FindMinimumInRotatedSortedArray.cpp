@@ -9,9 +9,9 @@ int findMin(vector<int>& nums) {
         if (nums[left] < nums[right]) // no ratation in the array, return the first element directly
             return nums[left];
         int mid = left + (right-left)/2;
-        if (nums[mid] >= nums[left]) // rotation is in the second half
+        if (nums[mid] >= nums[left]) // rotation is in the first half
             left = mid + 1;
-        else // rotation is in the first half
+        else // rotation is in the second half
             right = mid;
     }
     return nums[left];

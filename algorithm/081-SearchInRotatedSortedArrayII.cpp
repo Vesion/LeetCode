@@ -4,7 +4,7 @@ using namespace std;
 
 // similiar to No.033
 bool search(vector<int>& nums, int target) {
-    if (nums.empty()) return -1;
+    if (nums.empty()) return false;
     int first = 0, last = nums.size();
 
     while (first < last) {
