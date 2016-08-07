@@ -4,25 +4,32 @@ using namespace std;
 
 class Queue {
 private:
-    stack<int> s;
+    stack<int> olds, news;
+    void MoveNewToOld() {
+        if (!olds.empty()) return;
+        while (!news.empty()) {
+            olds.push(news.top());
+            news.pop();
+        }
+    }
+
 public:
     void push(int x) {
-        stack<int> t;
-        while (!s.empty()) t.push(s.top()), s.pop();
-        s.push(x);
-        while (!t.empty()) s.push(t.top()), t.pop();
+        news.push(x);
     }
 
     void pop(void) {
-        s.pop();
+        MoveNewToOld();
+        olds.pop();
     }
 
     int peek(void) {
-        return s.top();
+        MoveNewToOld();
+        return olds.top();
     }
 
     bool empty(void) {
-        return s.empty();
+        return olds.empty() && news.empty();
     }
 };
 
