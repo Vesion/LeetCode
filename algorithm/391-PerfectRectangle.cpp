@@ -42,7 +42,9 @@ public:
 
         for (auto &e : events) {
             if (e.second > 0) {
-                if (verticals.count(e.second-1)) return false;
+                // use 'cmp' above to compare two verticals, 
+                // if current vertical cannot be inserted (means it equals to some one vertical in the set), there must be overlapping
+                if (verticals.count(e.second-1)) return false; 
                 verticals.insert(e.second-1);
             } else
                 verticals.erase(-e.second-1);
