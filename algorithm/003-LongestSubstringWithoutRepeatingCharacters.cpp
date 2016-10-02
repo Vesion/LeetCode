@@ -4,30 +4,28 @@
 #include <string>
 using namespace std;
 
-/*
- * greedy algorithms
- * Using a map store each char's index.
- * So, we can be easy to know the when duplication and the previous duplicated char's index.
- * Then we can take out the previous duplicated char, and keep tracking the maxiumn length. 
- */
 
-int lengthOfLongestSubstring(string s) {
-    int n = s.size();
-    if (n <= 1) return n;
-    int result = 0;
-    int start = 0; // store the last repeated character's position
-    vector<int> table(256, -1); // use vector rather than unordered_map, much faster
-    for (int i = 0; i < n; ++i) {
-        if (table[s[i]] >= start) // if this char has occurred and its last occurred position is after start
-            start = table[s[i]] + 1; // refresh start
-        result = max(result, i-start+1); // maitain result with greedy
-        table[s[i]] = i; // store every char's newest position
+// hash table
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int m[256] = {0};
+        fill(m, m+256, -1);
+        int start = 0;
+        int result = 0;
+        for (int i = 0; i < (int)s.size(); ++i) {
+            int x = s[i] - '\0';
+            if (m[x] >= start) start = m[x]+1;
+            result = max(result, i-start+1);
+            m[x] = i;
+        }
+        return result;
     }
-    return result;
-}
+};
 
 int main() {
+    Solution s;
     string s1 = "abba";
-    cout<<lengthOfLongestSubstring(s1)<<endl;
+    cout<<s.lengthOfLongestSubstring(s1)<<endl;
     return 0;
 }
