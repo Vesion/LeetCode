@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <numeric> 
+#include <bitset> 
 using namespace std;
 
 
@@ -13,7 +14,7 @@ public:
         if (sum == 0) return true;
         if (sum < 0) return false;
         for (int i = cur; i < (int)nums.size(); ++i)
-            if (dfs(nums, cur+1, sum-nums[i])) return true;
+            if (dfs(nums, i+1, sum-nums[i])) return true;
         return false;
     }
     bool canPartition(vector<int>& nums) {
@@ -40,9 +41,23 @@ public:
     }
 };
 
+
+// Solution 3 : bitset, tricky
+class Solution_bit {
+public:
+    bool canPartition(vector<int>& nums) {
+        bitset<5001> bits(1);
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        for (auto& num : nums)
+            bits |= bits << num;
+        return !(sum&1) && bits[sum>>1];
+    }
+};
+
+
 int main() {
     Solution s;
-    vector<int> nums = {1, 5, 11, 5};
+    vector<int> nums = {1,2,5};
     cout << s.canPartition(nums);
     return 0;
 }
