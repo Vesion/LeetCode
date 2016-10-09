@@ -75,7 +75,7 @@ private:
     }
 
     void unionSet(Node* node1, Node* node2, double value, map<string, Node*>& m) {
-       Node* parent1 = findParent(node1), *parent2 = findParent(node2);
+        Node* parent1 = findParent(node1), *parent2 = findParent(node2);
         double ratio = node2 -> value * value / node1 -> value;
         for (auto it = m.begin(); it != m.end(); it ++)
             if (findParent(it -> second) == parent1)

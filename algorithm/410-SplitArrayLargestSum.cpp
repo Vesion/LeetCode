@@ -27,11 +27,10 @@ public:
             left = max(left, (ll)num);
             right += num;
         }
-        while (left < right) {
-            if (left == right) return left;
+        while (left <= right) {
             ll mid = left + (right-left)/2;
             if (canSplit(nums, m, mid))
-                right = mid;
+                right = mid-1;
             else
                 left = mid+1;
         }
@@ -41,7 +40,7 @@ public:
 
 int main() {
     Solution s;
-    vector<int> nums = {1, 2, 3, 4, 5};
+    vector<int> nums = {7,2,5,10,8};
     cout << s.splitArray(nums, 2);
     return 0;
 }

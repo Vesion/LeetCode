@@ -23,13 +23,11 @@ int minDepth_w(TreeNode* root) {
 }
 
 // 最小深度是指从根结点到某一叶结点的距离，所以上面的方法计算的是根结点到某一不满结点的距离，是错的
-int depth(TreeNode* root, bool hasbrother) {
-    if (!root) return hasbrother ? INT_MAX : 0;
-    return min(depth(root->left, root->right != NULL), depth(root->right, root->left != NULL)) + 1;
-}
-
 int minDepth(TreeNode* root) {
-    return depth(root, false);
+    if (!root) return 0;
+    if (!root->left) return 1 + minDepth(root->right);
+    if (!root->right) return 1 + minDepth(root->left);
+    return min(minDepth(root->left), minDepth(root->right)) + 1;
 }
 
 
