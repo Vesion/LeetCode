@@ -5,9 +5,9 @@ using namespace std;
 // a very good dp problem
 
 // dp[i][j] represents the the maximal size of the square that can be achieved at point (i,j). (not area, but size, area = size*size)
-//      dp[0][j] = matrix[0][j
+//      dp[0][j] = matrix[0][j]
 //      dp[i][0] = matrix[i][0]
-//      dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+//      dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
 
 
 // Soltuion 1 : O(n^2) space
