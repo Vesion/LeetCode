@@ -51,14 +51,15 @@ class Solution {
 public:
     int findMaximumXOR(vector<int>& nums) {
         int result = 0, mask = 0;        
+        unordered_set<int> s;
         for (int i = 31; i >= 0; --i) {
             mask |= (1 << i);
-            unordered_set<int> s;
+            s.clear();
             for (int num : nums) s.insert(num & mask);
-            int tmp = result | (1 << i);
+            int candidate = result | (1 << i);
             for (int prefix : s) {
-                if (s.count(tmp ^ prefix)) {
-                    result = tmp;
+                if (s.count(candidate ^ prefix)) {
+                    result = candidate;
                     break;
                 }
             }
