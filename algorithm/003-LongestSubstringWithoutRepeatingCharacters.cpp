@@ -5,21 +5,20 @@
 using namespace std;
 
 
-// hash table
+// Sliding Window (hash table + two pointers)
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        int m[256] = {0};
-        fill(m, m+256, -1);
-        int start = 0;
-        int result = 0;
-        for (int i = 0; i < (int)s.size(); ++i) {
-            int x = s[i] - '\0';
-            if (m[x] >= start) start = m[x]+1;
-            result = max(result, i-start+1);
-            m[x] = i;
+        vector<int> table(128, 0);
+        int start = 0, end = 0, counter = 0, len = 0;
+        while (end < (int)s.size()) {
+            if (table[s[end++]]++ >= 1) counter++;
+            while (counter > 0) {
+                if (table[s[start++]]-- > 1) counter--;
+            }
+            len = max(len, end-start);
         }
-        return result;
+        return len;
     }
 };
 

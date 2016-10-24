@@ -13,13 +13,15 @@ using namespace std;
 class Solution {
 public:
     int characterReplacement(string s, int k) {
-        int i = 0, j = 0, m[26] = {};
-        while (j < (int)s.size()) {
-            m[s[j++]-'A']++; // extend
-            if (j-i - *max_element(m, m+26) > k)
-                m[s[i++]-'A']--; // shrink
+        vector<int> table(128, 0);
+        int start = 0, end = 0, len = 0;
+        while (end < (int)s.size()) {
+            table[s[end++]]++;
+            if (end-start-*max_element(table.begin(), table.end()) > k)
+                table[s[start++]]--;
+            len = max(len, end-start);
         }
-        return j - i;
+        return len;
     }
 };
 
