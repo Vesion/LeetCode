@@ -69,7 +69,7 @@ void printPreorder(TreeNode* root) {
 // O(n) time, O(n) space, don't implement here
 
 
-// Solution 3 : firstly bottom-up then top-down, O(n) time
+// Solution 3 : inorder traversal, O(n)
 // refer to others, very skillful
 TreeNode* build(ListNode* &list, int start, int end) {
     if (start >= end) return NULL;
