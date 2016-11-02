@@ -17,7 +17,7 @@ vector<string> split(string& s, char f) {
     return r;
 }
 
-// Solution 1 : stack
+// Solution 1.1 : stack
 class Solution_st {
 public:
     int lengthLongestPath(string input) {
@@ -38,7 +38,7 @@ public:
 };
 
 
-// Solution 2 : hash table, faster
+// Solution 1.2 : use vector as stack
 class Solution {
 public:
     int lengthLongestPath(string input) {
