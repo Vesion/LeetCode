@@ -22,7 +22,7 @@ using namespace std;
 class Solution {
 public:
     int findKthNumber(int n, int k) {
-        int result = 1;    
+        int result = 1; // count number prefix with result
         --k;
         while (k > 0) {
             int count = 0;
