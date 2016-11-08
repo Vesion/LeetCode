@@ -24,7 +24,7 @@ public:
         if (s.size() <= 1)
             return s;
         string longest, str;
-        for (int i = 0; i < s.size() - 1; i++) {
+        for (int i = 0; i < (int)s.size() - 1; i++) {
             str = findPalindrome(s, i, i);
             if (str.size() > longest.size())
                 longest = str;
@@ -45,26 +45,28 @@ public:
     string longestPalindrome(string s) {
         if (s.empty()) return "";
         int n = s.size();
-        vector<vector<bool>> dp(n, vector<bool>(n, false));
-        int len = 1, start = 0;
+        vector<vector<bool>> dp(n, vector<bool>(n, 0));
+        int start = 0, len = 1;
         for (int i = 0; i < n; ++i) {
             dp[i][i] = true;
-            if (i < n-1 && s[i] == s[i+1]) {
-                dp[i][i+1] = true;
-                start = i;
+            if (i > 0 && s[i] == s[i-1]) {
+                dp[i-1][i] = true;
+                start = i-1;
                 len = 2;
             }
         }
+
         for (int l = 3; l <= n; ++l) {
             for (int i = 0; i+l <= n; ++i) {
                 int j = i+l-1;
                 if (dp[i+1][j-1] && s[i] == s[j]) {
                     dp[i][j] = true;
+                    len = l;
                     start = i;
-                    len = max(len, l);
                 }
             }
         }
+
         return s.substr(start, len);
     }
 };
@@ -76,7 +78,7 @@ class Solution {
 public:
     string preProcess(string& s) {
         string t = "$#";
-        for (int i = 0; i < s.size(); ++i) t += s.substr(i, 1) + "#";
+        for (int i = 0; i < (int)s.size(); ++i) t += s.substr(i, 1) + "#";
         return t;
     }
     string longestPalindrome_n(string s) {

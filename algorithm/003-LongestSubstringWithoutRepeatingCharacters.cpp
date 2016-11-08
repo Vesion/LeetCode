@@ -9,16 +9,14 @@ using namespace std;
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        vector<int> table(128, 0);
-        int start = 0, end = 0, counter = 0, len = 0;
-        while (end < (int)s.size()) {
-            if (table[s[end++]]++ >= 1) counter++;
-            while (counter > 0) {
-                if (table[s[start++]]-- > 1) counter--;
-            }
-            len = max(len, end-start);
+        vector<int> m(128, 0);
+        int res = 0;
+        for (int i = 0, j = 0; j < (int)s.size(); ) {
+            if (m[s[j++]]++) 
+                while (m[s[i++]]-- == 1); // find the repeating one
+            res = max(res, j-i);
         }
-        return len;
+        return res;
     }
 };
 
