@@ -1,21 +1,27 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
 using namespace std;
 
-string intToRoman(int num) {
-    const int radix[]     = {1000, 900, 500, 400,  100, 90,   50,  40,   10,   9,    5,   4,    1};
-    const string symbol[] = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
-    string result;
-    for (int i = 0; num > 0; ++i) {
-        int n = num / radix[i];
-        num %= radix[i];
-        for (; n > 0; --n)
-            result += symbol[i];
+class Solution {
+public:
+    string intToRoman(int num) {
+        vector<int> digit   =  {1000, 900, 500, 400,  100, 90,   50,  40,   10,   9,    5,   4,    1};
+        vector<string> roman = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        string res;
+        for (int i = 0; i < (int)digit.size(); ++i) {
+            while (num >= digit[i]) {
+                num -= digit[i];
+                res += roman[i];
+            }
+        }
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    cout << intToRoman(3999);
+    Solution s;
     return 0;
 }
+

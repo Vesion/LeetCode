@@ -1,46 +1,31 @@
 #include <iostream>
-#include <vector>
-#include <stack>
-#include <string>
 #include <algorithm>
-#include <unordered_map>
+#include <vector>
+#include <string>
+#include <stack> 
 using namespace std;
 
-bool isValid(string s) {
-    if (s.size() == 0)
-        return true;
-    stack<char> ops;
-    for (size_t i = 0; i < s.size(); ++i) {
-        if (s[i] == '(' || s[i] == '[' || s[i] == '{') {
-            ops.push(s[i]);
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        for (int i = 0; i < (int)s.size(); ++i) {
+            if (s[i] == '(' || s[i] == '{' || s[i] == '[')
+                st.push(s[i]);
+            else {
+                if (st.empty()) return false;
+                if (s[i] == ')' && st.top() != '(') return false;
+                if (s[i] == '}' && st.top() != '{') return false;
+                if (s[i] == ']' && st.top() != '[') return false;
+                st.pop();
+            }
         }
-        else if (s[i] == ')') {
-            if (!ops.empty() && ops.top() == '(')
-                ops.pop();
-            else
-                return false;
-        }
-        else if (s[i] == ']') {
-            if (!ops.empty() && ops.top() == '[')
-                ops.pop();
-            else
-                return false;
-        }
-        else if (s[i] == '}') {
-            if (!ops.empty() && ops.top() == '{')
-                ops.pop();
-            else
-                return false;
-        }
+        return st.empty();
     }
-    if (!ops.empty())
-        return false;
-    return true;
-}
+};
 
 int main() {
-    string s = "{{{{}}";
-    cout << isValid(s) << endl;
-    system("pause");
+    Solution s;
     return 0;
 }
+

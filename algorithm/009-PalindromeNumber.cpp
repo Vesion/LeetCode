@@ -1,34 +1,29 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-bool isPalindrome(int x) {
-	if (x < 0)
-		return false;
-	if (x < 10)
-		return true;
-
-	int len = 0;
-	for (int xx = x; xx != 0; xx /= 10)
-		++len;
-
-	int part = 0;
-	for (int i = 0; i < len / 2; ++i) {
-		part = part * 10 + x % 10;
-		x /= 10;
-	}
-	if (len & 1)
-		x /= 10;
-	if (part == x)
-		return true;
-
-	return false;
-}
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) return false;
+        int n = 0;
+        for (int cx = x; cx; cx /= 10) ++n;
+        int m = n/2;
+        int half = 0;
+        while (m--) {
+            half = half*10 + x%10;
+            x /= 10;
+        }
+        if (n&1) x /= 10;
+        return half == x;
+    }
+};
 
 int main() {
-	cout << isPalindrome(11) << endl;
-	int a;
-	cin >> a;
-	return 0;
+    Solution s;
+    cout << s.isPalindrome(101);
+    return 0;
 }
+

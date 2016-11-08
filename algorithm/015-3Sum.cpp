@@ -1,53 +1,37 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
-#include <algorithm>
 using namespace std;
 
-vector<vector<int>> threeSum(vector<int>& nums) {
-	vector<vector<int>> result;
-	if (nums.size() < 3)
-		return result;
-	sort(nums.begin(), nums.end());
-	const int target = 0;
-	vector<int>::iterator last = nums.end();
-
-	for (vector<int>::iterator i = nums.begin(); i < last - 2; ++i) {
-		if (i > nums.begin() && *i == *(i - 1))
-			continue;
-
-		vector<int>::iterator j = i + 1;
-		vector<int>::iterator k = last - 1;
-		while (j < k) {
-			if (*i + *j + *k < target) {
-				++j;
-				while (j < k && *j == *(j - 1)) ++j;
-			}
-			else if (*i + *j + *k > target) {
-				--k;
-				while (j < k && *k == *(k + 1)) --k;
-			}
-			else {
-				result.push_back({ *i, *j, *k });
-				++j;
-				--k;
-				while (j < k && *j == *(j - 1)) ++j;
-				while (j < k && *k == *(k + 1)) --k;
-			}
-		}
-	}
-
-	return result;
-}
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int n = nums.size();
+        if (n < 3) return {};
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < n-2; ++i) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            int target = -nums[i];
+            int j = i+1, k = n-1;
+            while (j < k) {
+                int sum = nums[j] + nums[k];
+                if (sum == target) {
+                    res.push_back({nums[i], nums[j++], nums[k--]});
+                    while (j < k && nums[j] == nums[j-1]) ++j;
+                    while (j < k && nums[k] == nums[k+1]) --k;
+                }
+                else if (sum < target) ++j;
+                else --k;
+            }
+        }
+        return res;
+    }
+};
 
 int main() {
-	vector<int> num({ 3, -3, -1, -6, 6, -1, -10, -2, -8, -4, 6, 2, 0, 9, -3, -7, 9, -10, -4, 5, 2, -10, -2, -9});
-	vector<vector<int>> r = threeSum(num);
-	for (int i = 0; i < r.size(); ++i) {
-		for (int j = 0; j < 3; ++j)
-			cout << r[i][j] << " ";
-		cout << endl;
-	}
-	system("pause");
-	return 0;
+    Solution s;
+    return 0;
 }
+

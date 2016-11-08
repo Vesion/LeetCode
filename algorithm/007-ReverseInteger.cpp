@@ -1,24 +1,25 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-int reverse(int x) {
-    //Checking the over/underflow.
-    //Actually, it should be y>(intmax-n)/10, but n/10 is 0, so omit it.
-    //if (y > (INT_MAX-n) / 10 || y < (INT_MIN-n) / 10){
-    int y = 0;
-    for (; x; x /= 10) {
-		if (y > INT_MAX / 10 || y < INT_MIN / 10)
-			return 0;
-		y = y * 10 + x % 10;
+class Solution {
+public:
+    int reverse(int x) {
+        int res = 0;
+        for (; x; x /= 10) {
+            if (res < INT_MIN/10 || res > INT_MAX/10) // Checking the over/underflow.
+                return 0;
+            res = res*10 + x%10;
+        }
+        return res;
     }
-	return y;
-}
+};
 
 int main() {
-	cout << reverse(222222) << endl;
-	int a;
-	cin >> a;
-	return 0;
+    Solution s;
+    cout << s.reverse(1000000);
+    return 0;
 }
+
