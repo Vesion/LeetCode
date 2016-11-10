@@ -1,55 +1,52 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map>
+#include <unordered_set> 
+#include <unordered_map> 
 using namespace std;
 
-// use hashtable
-vector<int> findSubstring(string s, vector<string>& words) {
-    int wlen = words.begin()->size();
-    int catlen = wlen * words.size();
-    int slen = s.length();
-    vector<int> result;
+// Sliding Window
+// Similar to 003-LongestSubstringWithoutRepeatingCharacters and 076-MinimumWindowSubstring
+// but here we need to consider one word as a unit
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        if (s.empty() || words.empty()) return {};
+        unordered_map<string, int> m;
+        for (string& w : words) m[w]++;
 
-    if (slen < catlen)
-        return result;
-
-    // store times every word appears
-    unordered_map<string, int> wordCount;
-    for (auto w : words) ++wordCount[w];
-
-    // traverse from begin to end-catlen
-    for (auto i = begin(s); i <= prev(end(s), catlen); ++i) {
-
-        // copy count table for unused words
-        unordered_map<string, int> unused(wordCount);
-
-        // traverse from i to i+catlen, search each wlen string in unused table
-        for (auto j = i; j != next(i, catlen); j += wlen) {
-            auto pos = unused.find(string(j, next(j, wlen)));
-
-            // if not found, loop over
-            if (pos  == unused.end() || pos->second == 0)
-                break;
-
-            // if found, decrease this word's count by 1, and if count to 0, remove this word
-            if (--pos->second == 0)
-                unused.erase(pos);
+        vector<int> res;
+        int wlen = words[0].size();
+        for (int i = 0; i < wlen; ++i) { // trick
+            // below is same with common sliding window algorithm
+            unordered_map<string, int> f;
+            int start = i, count = 0;
+            for (int j = i; j <= (int)s.size()-wlen; j += wlen) {
+                string w = s.substr(j, wlen);
+                if (m.count(w)) {
+                    f[w]++;
+                    count++;
+                    while (f[w] > m[w]) {
+                        f[s.substr(start, wlen)]--;
+                        --count;
+                        start += wlen;
+                    }
+                    if (count == (int)words.size())
+                        res.push_back(start);
+                } else {
+                    f.clear();
+                    count = 0;
+                    start = j+wlen;
+                }
+            }
         }
-
-        // if all words found, it is a result
-        if (unused.size() == 0)
-            result.push_back(distance(begin(s), i));
+        return res;
     }
-
-    return result;
-}
+};
 
 int main() {
-    string s("barfoothefoobarman");
-    vector<string> v{"foo", "bar"};
-    for (auto i : findSubstring(s, v)) {
-        cout << i << endl;
-    }
+    Solution s;
     return 0;
 }
+

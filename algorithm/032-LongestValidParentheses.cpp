@@ -1,90 +1,63 @@
 #include <iostream>
-#include <string>
-#include <stack>
+#include <algorithm>
 #include <vector>
-#include <iterator>
+#include <string>
+#include <stack> 
 using namespace std;
 
-// brute-force, TLE
-bool isValid(string s) {
-    int len = s.length();
-    if (len == 0 || (len & 1))
-        return false;
-    stack<char> st;
-    for (int i = 0; i < len; ++i) {
-        if (s[i] == ')') {
-            if (st.empty()) 
-                return false;
-            st.pop();
-        } else 
-            st.push('(');
-    }
-    return st.empty();
-}
 
-int longestValidParentheses_slow(string s) {
-    if (s.length() < 2) return 0;
-    int result = -1;
-    for (auto i = begin(s); i != prev(end(s)); ++i) {
-        auto j = prev(end(s));
-        int t;
-        for (; j > i; --j) {
-            if (isValid(string(i, next(j)))) {
-                t = distance(i, j) + 1;
-                break;
-            }
-        }
-        result = max(result, t);
-    }
-    return result;
-}
-
-// stack, common solution, O(n), O(n)
-int longestValidParentheses_stack(string s) {
-    int len = s.length();
-    if (len < 2) return 0;
-    stack<int> lefts; // push non-matching '('
-    int last = -1; // the position of the last ')'
-    int result = 0;
-    for (int i = 0; i < len; ++i) {
-        if (s[i] == ')') {
-            if (lefts.empty())
-                last = i;
+// Solution 1 : stack
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        if (s.empty()) return 0;
+        stack<int> st; // record '(' index
+        int start = -1; // the last dismathced ')'
+        int res = 0;
+        for (int i = 0; i < (int)s.size(); ++i) {
+            if (s[i] == '(') st.push(i);
             else {
-                lefts.pop();
-                if (lefts.empty())
-                    result = max(result, i - last);
-                else
-                    result = max(result, i - lefts.top());
+                if (st.empty()) start = i;
+                else {
+                    st.pop();
+                    if (st.empty()) res = max(res, i-start); // )(...)
+                    else res = max(res, i-st.top()); // ((...)
+                }
             }
-        } else
-            lefts.push(i);
-    }
-    return result;
-}
-
-// DP, not very easy to get, O(N), O(N)
-int longestValidParentheses_dp(string s) {
-    int len = s.length();
-    if (len < 2) return 0;
-    vector<int> f(len, 0); // status array
-    int result = 0;
-    for (int i = len-2; i >= 0; --i) {
-        // status transition function, ( ............... )
-        //                             i <---f[i+1]---> match
-        int match = i + f[i+1] + 1;
-        if (s[i] == '(' && match < len && s[match] == ')') {
-            f[i] = f[i+1] + 2;
-            if (match + 1 < len) // a point difficult to see, ( ...... )()...
-                f[i] += f[match+1];
         }
-        result = max(result, f[i]);
+        return res;
     }
-    return result;
-}
+};
+
+
+// Solution 2 : dp
+class Solution_2 {
+public:
+    int longestValidParentheses(string s) {
+        if (s.empty()) return 0;
+        int n = s.size();
+        vector<int> dp(n, 0); // dp[i] means the longest length when ending with s[i]
+        int lefts = 0; // unmatching '('s
+        int res = 0;
+        for (int i = 0; i < n; ++i) {
+            if (s[i] == '(') ++lefts;
+            else {
+                if (lefts > 0) {
+                    dp[i] = dp[i-1] + 2; // match a pair
+                    if (i-dp[i] > 0)
+                        dp[i] += dp[i-dp[i]]; // add previous pairs
+                    --lefts;
+                }
+            }
+            res = max(res, dp[i]);
+        }
+        return res;
+    }
+};
 
 int main() {
-    string s("(((())))()()()()");
-    cout << longestValidParentheses_dp(s) << endl;
+    Solution s;
+    cout << s.longestValidParentheses("((()))");
     return 0;
 }
+

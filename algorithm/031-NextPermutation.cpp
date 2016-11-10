@@ -1,43 +1,29 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-// use STL next_permutation
-void nextPermutation(vector<int>& nums) {
-    next_permutation(nums.begin(), nums.end());
-}
-
-// implement next_permutation
-// dictionary order
-void next_permutation(vector<int>::iterator first, vector<int>::iterator last) {
-    if (first == last || first == last - 1)
-        return;
-
-    auto i = last - 1;
-
-    while (true) {
-        vector<int>::iterator i1, i2;
-        i1 = i;
-        if (*--i < *i1) { // from right to left, find the first element i, smaller than its right adjacent one i1
-            i2 = last;
-            while (*i >= *--i2) ; // from right to i, find the first element i2, greater than i
-            iter_swap(i, i2); // swap i and i2
-            reverse(i1, last); // reverse from i1 to right
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int n = nums.size();
+        if (n <= 1) return;
+        int i = n-2;
+        while (i >= 0 && nums[i] >= nums[i+1]) --i; // from right to left, find the first one smaller than its right neighbour
+        if (i == -1) { // if not found, it's the last permutation, reverse and return
+            reverse(nums.begin(), nums.end());
             return;
         }
-        if (i == first) { // if i is the left first, means that this permutation turn is over
-            reverse(first, last);
-            return;
-        }
+        int j = nums.size()-1;
+        while (j > i && nums[j] <= nums[i]) --j; // from right to left, find the first one larger than i
+        swap(nums[i], nums[j]);
+        reverse(nums.begin()+i+1, nums.end());
     }
-}
+};
 
 int main() {
-    vector<int> nums{3, 2, 1};
-    nextPermutation(nums);
-    for (auto i : nums) {
-        cout << i << endl;
-    }
+    Solution s;
     return 0;
 }
+
