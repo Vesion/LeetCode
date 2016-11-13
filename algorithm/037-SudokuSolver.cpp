@@ -1,48 +1,50 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-//
-// classical back tracking solution
-//
-
-bool isValid(vector<vector<char>>& board, int x, int y) {
-    for (int i = 0; i < 9; ++i) // check line
-        if (i != y && board[x][y] == board[x][i])
-            return false;
-    for (int j = 0; j < 9; ++j) // check column
-        if (j != x && board[x][y] == board[j][y])
-            return false;
-    for (int i = 3*(x/3); i < 3*(x/3+1); ++i) { // check sub-box
-        for (int j = 3*(y/3); j < 3*(y/3+1); ++j) {
-            if ((i != x || j != y) && board[i][j] == board[x][y])
-                return false;
-        }
+// common backtracking solution
+class Solution {
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        dfs(board);
     }
-    return true;
-}
 
-bool solved(vector<vector<char>>& board) {
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            if (board[i][j] == '.') {
-                for (int k = 0; k < 9; ++k) { // choose a number from 1...9
-                    board[i][j] = '1' + k; // attempt to fill k
-                    if (isValid(board, i, j) && solved(board)) // if valid, start to recurse filling
-                        return true; // if all cells filled and valid, solved
-                    board[i][j] = '.'; // if k is invalid, erase cell
+    bool dfs(vector<vector<char>>& board) {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if (board[i][j] == '.') {
+                    for (int k = 0; k < 9; ++k) { // choose a number from 1...9
+                        board[i][j] = '1' + k;
+                        if (valid(board, i, j) && dfs(board)) return true;
+                        board[i][j] = '.';
+                    }
+                    return false;
                 }
-                return false; // if all 1...9 are invalid, start to back track
             }
         }
+        return true;
     }
-    return true; // never reach here
-}
 
-void solveSudoku(vector<vector<char>>& board) {
-    solved(board);
-}
+    bool valid(vector<vector<char>>& board, int row, int col) {
+        for (int i = 0; i < 9; ++i) {
+            if (i != row && board[i][col] == board[row][col]) return false; // check row
+            if (i != col && board[row][i] == board[row][col]) return false; // check col
+            int si = 3*(row/3) + i/3, sj = 3*(col/3) + i%3;
+            if (si != row && sj != col && board[si][sj] == board[row][col]) return false; // check square
+        }
+        return true;
+    }
+};
+
+
+
+// Here is a much faster solution
+// https://discuss.leetcode.com/topic/7195/sharing-my-2ms-c-solution-with-comments-and-explanations
 
 int main() {
+    Solution s;
     return 0;
 }
+

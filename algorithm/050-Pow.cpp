@@ -4,45 +4,45 @@ using namespace std;
 // binary multiply
 
 // recursive, top-down
-double myPow_topdown(double x, int n) {
-    if (n == 0)
-        return 1;
-    if (n < 0) {
-        if (n == INT_MIN)
-            return myPow_topdown(x, n / 2) * myPow_topdown(x, n / 2);
-        return 1 / myPow_topdown(x, -n);
+class Solution_1 {
+public:
+    double myPow_topdown(double x, int n) {
+        if (n == 0)
+            return 1;
+        if (n < 0) {
+            if (n == INT_MIN)
+                return myPow_topdown(x, n / 2) * myPow_topdown(x, n / 2);
+            return 1 / myPow_topdown(x, -n);
+        }
+        if (n == 1)
+            return x;
+        if (n & 1)
+            return myPow_topdown(x, n - 1) * x;
+        else
+            return myPow_topdown(x * x, n / 2);
     }
-    if (n == 1)
-        return x;
-    if (n & 1)
-        return myPow_topdown(x, n - 1) * x;
-    else
-        return myPow_topdown(x * x, n / 2);
-}
+};
 
 // bottom up
-double myPow_bottomup(double x, int n) {
-    if (n == 0)
-        return 1;
-    if (n < 0) {
-        if (n == INT_MIN)
-            return myPow_bottomup(x, n / 2) * myPow_bottomup(x, n / 2);
-        return 1 / myPow_bottomup(x, -n);
+class Solution {
+public:
+    double myPow(double x, int n) {
+        if (x == 0) return 0;
+        if (n < 0) {
+            if (n == INT_MIN) return myPow(x, n/2) * myPow(x, n/2);
+            else return 1.0 / myPow(x, -n);
+        }
+        double res = 1.0;
+        while (n) {
+            if (n&1) res *= x;
+            x *= x;
+            n /= 2;
+        }
+        return res;
     }
-    double tmp = x;
-    double result = 1;
-    while (n) {
-        if (n & 1)
-            result *= tmp; 
-        tmp *= tmp;
-        n >>= 1;
-    }
-    return result;
-}
-
-
+};
 int main() {
-    cout << myPow_topdown(1, INT_MIN) << endl;
-    cout << myPow_bottomup(2, 7) << endl;
+    Solution s;
+    cout << s.myPow(-1, INT_MIN);
     return 0;
 }

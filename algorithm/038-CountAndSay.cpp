@@ -1,25 +1,33 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-string countAndSay(int n) {
-    string s("1");
-    while (--n > 0) {
-        int count = 1;
-        string result("");
-        for (int i = 1; i < s.size(); ++i) {
-            if (s[i] == s[i-1]) ++count;
-            else {
-                result += (string(1, '0'+count) + s[i-1]);
-                count = 1;
+class Solution {
+public:
+    string countAndSay(int n) {
+        if (n == 0) return "";
+        string res = "1";
+        while (--n) {
+            string tmp;
+            int i = 0;
+            while (i < (int)res.size()) {
+                int j = i+1;
+                while (j < (int)res.size() && res[j] == res[i]) ++j;
+                tmp += to_string(j-i) + res[i];
+                i = j;
             }
+            res = tmp;
         }
-        result += (string(1, '0'+count) + s[s.size()-1]);
-        s = result;
+        return res;
+        
     }
-    return s;
-}
+};
 
 int main() {
-    cout << countAndSay(4) << endl;
+    Solution s;
+    cout << s.countAndSay(3);
     return 0;
 }
+

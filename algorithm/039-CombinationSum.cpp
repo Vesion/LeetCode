@@ -1,43 +1,42 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-//
-// classical backtracking problem
-// dfs + prune 
-//
-
-void dfs(int start, int rest, vector<int>& candidates, vector<int>&r, vector<vector<int>>& results) {
-    if (rest == 0) { // one solution found
-        results.push_back(r);
-        return;
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<vector<int>> res;
+        vector<int> path;
+        dfs(candidates, 0, target, path, res);
+        return res;
     }
-    for (int i = start; i < candidates.size(); ++i) {
-        if (candidates[i] > rest) // prune
+
+    void dfs(vector<int>& candidates, int cur, int remain, vector<int>& path, vector<vector<int>>& res) {
+        if (remain == 0) {
+            res.push_back(path);
             return;
-        r.push_back(candidates[i]);
-        dfs(i, rest - candidates[i], candidates, r, results);
-        r.pop_back();
+        }
+        for (int i = cur; i < (int)candidates.size(); ++i) {
+            if (candidates[i] > remain) return;
+            path.push_back(candidates[i]);
+            dfs(candidates, i, remain-candidates[i], path, res);
+            path.pop_back();
+        }
     }
-    return;
-}
-
-vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-    vector<vector<int>> results;
-    if (candidates.empty())
-        return results;
-    vector<int> r;
-    sort(candidates.begin(), candidates.end());
-    dfs(0, target, candidates, r, results);
-    return results;
-}
+};
 
 int main() {
-    vector<int> c{1, 2, 3, 6, 7};
-    for (auto i : combinationSum(c, 7)) {
+    Solution s;
+    vector<int> a = {2,3,6,7};
+    auto r = s.combinationSum(a, 7);;
+    for (auto i : r) {
         for (auto j : i)
             cout << j << " ";
         cout << endl;
     }
     return 0;
 }
+

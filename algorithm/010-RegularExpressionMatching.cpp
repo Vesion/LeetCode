@@ -8,7 +8,7 @@ using namespace std;
 class Solution {
 public:
     bool isMatch(string s, string p) {
-        if (p.empty()) return s.empty();
+        if (p.empty()) return s.empty(); // terminate condition
         if (p[1] == '*') 
             return (isMatch(s, p.substr(2)) // x* can match empty string
                 || (!s.empty() && (s[0] == p[0] || p[0] == '.') && isMatch(s.substr(1), p))); // or match at least one character x* -> xx*

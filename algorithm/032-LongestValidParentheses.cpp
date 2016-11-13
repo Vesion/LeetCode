@@ -44,8 +44,7 @@ public:
             else {
                 if (lefts > 0) {
                     dp[i] = dp[i-1] + 2; // match a pair
-                    if (i-dp[i] > 0)
-                        dp[i] += dp[i-dp[i]]; // add previous pairs
+                    if (i-dp[i] > 0) dp[i] += dp[i-dp[i]]; // add previous pairs
                     --lefts;
                 }
             }

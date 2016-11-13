@@ -1,38 +1,55 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
 using namespace std;
 
-// Solution 1 : two pointers
-// The most skillful, most concise, most fast solution!
-// https://leetcode.com/discuss/10133/linear-runtime-and-constant-space-solution
-bool isMatchC(const char* s, const char* p) {
-    const char* star = NULL;
-    const char* ss = s;
-    while (*s) {
-        // advancing both pointers when (both characters match) or ('?' found in pattern)
-        // note that *p will not advance beyond its length 
-        if ((*p == '?') || (*p == *s)) { ++s; ++p; continue; }
+// Similar to 010-RegularExpressionMatching, recursive and dp solution
 
-        // * found in pattern, track index of *, only advancing pattern pointer
-        if (*p == '*') { star = p++; ss = s; continue; }
+// Solution 1 : recursive, TLE
+class Solution_1 {
+public:
+    bool isMatch(string s, string p) {
+        if (p.empty()) return s.empty();
+        if (p[0] == '*')
+            return isMatch(s, p.substr(1)) || (!s.empty() && isMatch(s.substr(1), p));
+        else
+            return !s.empty() && (s[0] == p[0] || p[0] == '?') && isMatch(s.substr(1), p.substr(1));
 
-        // current characters didn't match, last pattern pointer was *, current pattern pointer is not *
-        // only advancing pattern pointer
-        if (star) { p = star + 1; s = ++ss; continue; }
-
-        // current pattern pointer is not star, last patter pointer was not *
-        // characters do not match
-        return false;
     }
-    while (*p == '*') ++p; // check for remaining '*'s in pattern
-    return !*p; // pattern must be iterated over
-}
+};
 
-bool isMatch(string s, string p) {
-    return isMatchC(s.c_str(), p.c_str());
-}
+
+// Solution 2 : dp
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.size(), n = p.size();
+        vector<vector<bool>> dp(m+1, vector<bool>(n+1, false));
+
+        dp[0][0] = true;
+        for (int i = 1; i <= m; ++i) 
+            dp[i][0] = false;
+        for (int j = 1; j <= n; ++j) {
+            if (p[j-1] == '*') dp[0][j] = true;
+            else break;
+        }
+
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                if (p[j-1] == '*')
+                    dp[i][j] = dp[i][j-1] || dp[i-1][j]; // empty or * -> x*
+                else
+                    dp[i][j] = dp[i-1][j-1] && (s[i-1] == p[j-1] || p[j-1] == '?');
+            }
+        }
+        return dp[m][n];
+    }
+};
 
 int main() {
-    cout << isMatch("aabcd", "a*c?") << endl;
+    Solution s;
+    cout << s.isMatch("abbabaabaaababbabbbaaaaba","a*******b");
     return 0;
 }
+

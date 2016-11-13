@@ -1,45 +1,31 @@
 #include <iostream>
-#include <memory.h>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-bool isValidSudoku(vector<vector<char>>& board) {
-    bool nums[10];
-    for (int i = 0; i < 9; ++i) {
-        memset(nums, false, 10);
-        for (int j = 0; j < 9; ++j) { // check each line
-            char c = board[i][j];
-            if (c != '.') {
-                if (nums[c - '0']) return false;
-                nums[c - '0'] = true;
-            }
-        }
-        memset(nums, false, 10);
-        for (int j = 0; j < 9; ++j) { // check each column
-            char c = board[j][i];
-            if (c != '.') {
-                if (nums[c - '0']) return false;
-                nums[c - '0'] = true;
-            }
-        }
-    }
-    for (int i = 0; i < 9; i += 3) { // check each sub-box
-        for (int j = 0; j < 9; j += 3) {
-            memset(nums, false, 10);
-            for (int p = i; p < i + 3; ++p) {
-                for (int q = j; q < j +3; ++q) {
-                    char c = board[p][q];
-                    if (c != '.') {
-                        if (nums[c - '0']) return false;
-                        nums[c - '0'] = true;
-                    }
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        bool row[9][9] = {{false}};
+        bool col[9][9] = {{false}};
+        bool box[3][3][9] = {{false}};
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                char c = board[i][j];
+                if (c != '.') {
+                    int n = c - '1';
+                    if (row[i][n] || col[j][n] || box[i/3][j/3][n]) return false;
+                    row[i][n] = col[j][n] = box[i/3][j/3][n] = true;
                 }
             }
         }
+        return true;
     }
-    return true;
-}
+};
 
 int main() {
+    Solution s;
     return 0;
 }
+
