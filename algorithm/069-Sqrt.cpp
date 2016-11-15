@@ -1,24 +1,46 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-int mySqrt(int x) {
-    if (x < 2)
-        return x;
-    int left = 1, right = x / 2;
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (x / mid > mid) { // do not use mid * mid < x, in case of overflow
-            left = mid + 1;
-        } else if (x / mid < mid) {
-            right = mid - 1;
-        } else {
-            return mid;
+// Solution 1 : binary search
+class Solution {
+public:
+    int mySqrt(int x) {
+        if (x <= 1) return x;
+        int left = 1, right = x/2;
+        while (left <= right) {
+            int mid = left + (right-left)/2;
+            if (mid == x / mid) return mid;
+            if (mid > x / mid) right = mid-1;
+            else left = mid+1;
         }
+        return right;
     }
-    return right;
-}
+};
+
+
+// Solution 2 : bit manipulation
+class Solution_2 {
+public:
+    int mySqrt(int x) {
+        int bit = 1 << 16;
+        int res = 0;
+        while (bit) {
+            res |= bit;
+            if (res > x/res)
+                res ^= bit;
+            bit >>= 1;
+        }
+        return res;
+    }
+};
+
 
 int main() {
-    cout << mySqrt(6) << endl;
+    Solution_2 s;
+    cout << s.mySqrt(0);
     return 0;
 }
+

@@ -1,61 +1,50 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-string format(vector<string>& words, int left, int right, int len, int maxWidth) {
-    string line = "";
-    int wordNum = right - left + 1;
-    int whites = maxWidth - len; 
-    if (wordNum == 1) { // this line has only one word, should be left-justified
-        line += words[left];
-        while(whites--) line += " ";
-    } else { // whitespaces should be distributed evenly, at least left-evenly
-        int slots = wordNum - 1;
-        int mod = whites % slots;
-        int slotwhites = whites / slots;
-        for (int i = left; i < right; ++i) {
-            line += words[i];
-            for (int j = 0; j < slotwhites; ++j) line += " ";
-            if (mod-- > 0) line += " ";
-        }
-        line += words[right];
-    }
-    return line;
-}
-
-vector<string> fullJustify(vector<string>& words, int maxWidth) {
-    vector<string> result;
-    if (words.empty())
-        return result;
-    int len = 0;
-    int left = 0, right = 0;
-    for (; right < words.size(); ++right) {
-        if (len + words[right].size() + (right - left) > maxWidth) {
-            result.push_back(format(words, left, right-1, len, maxWidth));
-            left = right;
-            len = 0;
-        }
-        len += words[right].size();
-
-        if (right == words.size()-1) { // the last line
-            string lastline = "";
-            for (int i  = left; i <= right; ++i) {
-                lastline += (words[i] + " ");
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        if (words.empty()) return {};
+        int n = words.size();
+        vector<string> res;
+        int i = 0;
+        while (i < n) {
+            vector<string> row;
+            int len = words[i].size();;
+            row.push_back(words[i++]);
+            while (i < n && len+(int)words[i].size()+1 <= maxWidth) {
+                row.push_back(words[i]);
+                len += words[i].size()+1;
+                ++i;
             }
-            lastline.erase(lastline.end()-1);
-            while (lastline.size() < maxWidth) lastline += " ";
-            result.push_back(lastline);
+
+            int extras = maxWidth - len;
+            int slots = row.size()-1;
+            string r = row[0];
+            if (slots == 0 || i == n) {
+                for (int j = 1; j < (int)row.size(); ++j)
+                    r += string(1, ' ') + row[j];
+                if ((int)r.size() < maxWidth) r += string(maxWidth-r.size(), ' ');
+            } else {
+                int spaces = 1 + extras / slots;
+                extras %= slots;
+                for (int j = 1; j < (int)row.size(); ++j)
+                    r += string(spaces + (extras-- > 0 ? 1 : 0), ' ') + row[j];
+            }
+            res.push_back(r);
         }
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    vector<string> words = {"This", "is", "an", "example", "of", "text", "justification."};
-    //vector<string> words = {""};
-    for (auto s : fullJustify(words, 16)) {
-        cout << s << endl;
-    }
+    Solution s;
+    vector<string> w = {"This", "is", "an", "exaasdfaaaample", "of", "text", "justific.", "a"};
+    auto r = s.fullJustify(w, 16);
+    for (auto& e : r) cout << e << endl; cout << endl; 
     return 0;
 }
+

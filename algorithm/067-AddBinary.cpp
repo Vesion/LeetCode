@@ -1,35 +1,24 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
 using namespace std;
 
-string addBinary(string a, string b) {
-    int la = a.size(), lb = b.size();
-    if (la < lb)
-        return addBinary(b, a);
-    string result(la+1, '0');
-    int carry = 0;
-    int i = la-1, j = lb-1;
-    for (; j >= 0; --i, --j) {
-        int na = a[i] - '0', nb = b[j] - '0';
-        int sum = na + nb + carry;
-        result[i+1] = (sum % 2) + '0';
-        carry = sum / 2;
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        string res;
+        for (int i = a.size()-1, j = b.size()-1, carry = 0; i >= 0 || j >= 0 || carry; carry >>= 1) {
+            if (i >= 0) carry += a[i--]-'0';
+            if (j >= 0) carry += b[j--]-'0';
+            res.push_back((carry&1) + '0');
+        }
+        reverse(res.begin(), res.end());
+        return res;
     }
-    while (i >= 0) {
-        int na = a[i] - '0';
-        int sum = na + carry;
-        result[i+1] = (sum % 2) + '0';
-        carry = sum / 2;
-        i--;
-    }
-    if (carry)
-        result[0] = '1';
-    if (result[0] == '0')
-        result.erase(result.begin());
-    return result;
-}
+};
 
 int main() {
-    cout << addBinary(string("10"), string("10")) << endl;
+    Solution s;
     return 0;
 }

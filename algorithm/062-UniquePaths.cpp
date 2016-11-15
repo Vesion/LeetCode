@@ -1,23 +1,36 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-// Solution 1 : formula C(m-1+n-1, n-1)
-int uniquePaths(int m, int n) {
-    if (n < m) return uniquePaths(n, m);
-    long long numerator = 1, denominator = 1;
-    for (int i = n; i <= n+m-2; ++i)
-        numerator *= i;
-    for (int i = 1; i <= m-1; ++i)
-        denominator *= i;
-    return numerator / denominator;
-}
+// Solution 1 : dp
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<vector<int>> dp(m, vector<int>(n, 1));
+        for (int i = 1; i < m; ++i) {
+            for (int j = 1; j < n; ++j)
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+        }
+        return dp[m-1][n-1];
+    }
+};
 
-// Solution 2 : DFS
 
-
-// Solution 3 : DP, f[i][j] = f[i-1][j] + f[i][j-1]
+// Solution 2 : math, C(m+n-2, m-1)
+class Solution_2 {
+public:
+    int uniquePaths(int m, int n) {
+        if (m > n) return uniquePaths(n, m);
+        long long dividend = 1, divisor = 1;
+        for (int i = 1; i <= m-1; ++i) divisor *= i; // (m-1)!
+        for (int i = n; i <= m+n-2; ++i) dividend *= i; // (n)*(n+1)*...*(m+n-2)
+        return dividend / divisor;
+    }
+};
 
 int main() {
-    cout << uniquePaths(12, 12);
     return 0;
 }
+
