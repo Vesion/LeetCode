@@ -1,41 +1,33 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-typedef struct Interval {
+struct Interval {
     int start;
     int end;
     Interval() : start(0), end(0) {}
     Interval(int s, int e) : start(s), end(e) {}
-} Interval;
+};
 
-bool compare(Interval a, Interval b) {
-    return a.start < b.start;
-}
-
-vector<Interval> merge(vector<Interval>& intervals) {
-    vector<Interval> result;
-    if (intervals.empty())
-        return result;
-    sort(intervals.begin(), intervals.end(), compare);
-    int start = intervals[0].start, end = intervals[0].end;
-    for (int i = 0; i < intervals.size(); ++i) {
-        if (intervals[i].start > end) {
-            result.push_back(Interval(start, end));
-            start = intervals[i].start;
-        } 
-        end = max(intervals[i].end, end);
+class Solution {
+public:
+    vector<Interval> merge(vector<Interval>& intervals) {
+        sort(intervals.begin(), intervals.end(), [](const Interval& i1, const Interval& i2) { return i1.start < i2.start; });
+        vector<Interval> res;
+        for (auto& i : intervals) {
+            if (res.empty() || i.start > res.back().end)
+                res.push_back(i);
+            else 
+                res.back().end = max(res.back().end, i.end);
+        }
+        return res;
     }
-    result.push_back(Interval(start, end));
-    return result;
-}
+};
 
 int main() {
-    //vector<Interval> intervals{Interval(1, 3),Interval(2, 6),Interval(6, 10),Interval(10, 18)};
-    vector<Interval> intervals{Interval(1, 4), Interval(2, 3)};
-    for (auto i : merge(intervals)) {
-        cout << i.start << " " << i.end << endl;
-    }
+    Solution s;
     return 0;
 }
+

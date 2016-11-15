@@ -1,93 +1,76 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-// Solution 1 : standard (naive) dfs
+// Solution 1 : common dfs
 class Solution_1 {
 public:
     vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> result;
+        vector<vector<string>> res;
         vector<string> board(n, string(n, '.'));
-        dfs(result, board, 0, n);   
-        return result;
+        dfs(n, 0, board, res);
+        return res;
     }
 
-private:
-    void dfs(vector<vector<string>> &result, vector<string> &board, int row, int n) {
+    void dfs(int n, int row, vector<string>& board, vector<vector<string>>& res) {
         if (row == n) {
-            result.push_back(board); 
+            res.push_back(board);
             return;
         }
         for (int i = 0; i < n; ++i) {
-            if (check(board, row, i, n)) {
+            if (valid(row, i, board)) {
                 board[row][i] = 'Q';
-                dfs(result, board, row + 1, n);
+                dfs(n, row+1, board, res);
                 board[row][i] = '.';
             }
         }
     }
 
-    bool check(vector<string> &board, int row, int column, int n) {
-        for (int i = 0; i < row; ++i) { // check column
-            if (board[i][column] == 'Q')
-                return false;
-        }
-        for (int i = row - 1, j = column - 1; i >= 0 && j >= 0; --i, --j) { // check 45' diagonal
-            if (board[i][j] == 'Q')
-                return false;
-        }
-        for (int i = row - 1, j = column + 1; i >= 0 && j < n; --i, ++j) { // check 135' diagonal
-            if (board[i][j] == 'Q')
-                return false;
-        }
+    bool valid(int row, int col, vector<string>& board) {
+        for (int i = 0; i < row; ++i)
+            if (board[i][col] == 'Q') return false;
+        for (int i = row-1, j = col-1; i >= 0 && j >= 0; --i, --j)
+            if (board[i][j] == 'Q') return false;
+        for (int i = row-1, j = col+1; i >= 0 && j < (int)board.size(); --i, ++j)
+            if (board[i][j] == 'Q') return false;
         return true;
     }
 };
 
 
 // Solution 2 : dfs + bitmask
-// The number of columns is n, the number of 45° diagonals is 2*n-1, the number of 135° diagonals is also 2*n-1. 
-// When reach [row, col], the column is col, the 45° diagonal is row+col and the 135° diagonal is n-1+col-row. 
-class Solution_2 {
+class Solution {
 public:
     vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> result;
-        vector<string> path(n, string(n, '.'));
-        /*
-		flag[0] to flag[n - 1] to indicate if the column had a queen before.
-		flag[n] to flag[3 * n - 2] to indicate if the 45° diagonal had a queen before.
-		flag[3 * n - 1] to flag[5 * n - 3] to indicate if the 135° diagonal had a queen before.
-		*/
-        vector<int> flag(5*n-2, 1);
-        dfs(result, path, flag, 0, n);
-        return result;
+        vector<vector<string>> res;
+        vector<string> board(n, string(n, '.'));
+        vector<bool> flag(n + (2*n-1) + (2*n-1), 1);
+        dfs(0, n, flag, board, res);
+        return res;
     }
-private:
-    void dfs(vector<vector<string>>& result, vector<string>& path, vector<int>& flag, int row, int n) {
+
+    void dfs(int row, int n, vector<bool>& flag, vector<string>& board, vector<vector<string>>& res) {
         if (row == n) {
-            result.push_back(path);
+            res.push_back(board);
             return;
         }
         for (int col = 0; col < n; ++col) {
-            if (flag[col] && flag[n+row+col] && flag[4*n-2+row-col]) {
-                flag[col] = flag[n+row+col] = flag[4*n-2+row-col] = 0;
-                path[row][col] = 'Q';
-                dfs(result, path, flag, row+1, n);
-                path[row][col] = '.';
-                flag[col] = flag[n+row+col] = flag[4*n-2+row-col] = 1;
+            if (flag[col] && flag[n+row+col] && flag[4*n-2+col-row]) {
+                flag[col] = flag[n+row+col] = flag[4*n-2+col-row] = false;
+                board[row][col] = 'Q';
+                dfs(row+1, n, flag, board, res);
+                board[row][col] = '.';
+                flag[col] = flag[n+row+col] = flag[4*n-2+col-row] = true;
             }
         }
     }
 };
 
+
 int main() {
-    Solution_1 s;
-    auto result = s.solveNQueens(4);
-    for (auto v : result) {
-        for (auto s : v) {
-            cout << s << endl;
-        }
-        cout << endl;
-    }
+    Solution s;
+    return 0;
 }
+

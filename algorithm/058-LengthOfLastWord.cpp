@@ -1,25 +1,22 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
 using namespace std;
 
-int lengthOfLastWord(string s) {
-    bool find = false;
-    int len = 0;
-    for (int i = s.size()-1; i >= 0; --i) {
-        if (s[i] != ' ') {
-            find = true;
-            ++len;
-
-        } else if (find == true) {
-            return len;
-        }
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        int i = s.size()-1;
+        while (i >= 0 && s[i] == ' ') --i;
+        int j = i;
+        while (j >= 0 && isalpha(s[j])) --j;
+        return i-j;
     }
-    if (find == false)
-        return 0;
-    return len;
-}
+};
 
 int main() {
-    cout << lengthOfLastWord("a aa ");
+    Solution s;
     return 0;
 }
+

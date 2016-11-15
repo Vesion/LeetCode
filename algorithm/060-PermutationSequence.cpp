@@ -1,43 +1,40 @@
 #include <iostream>
-#include <vector>
-#include <string>
 #include <algorithm>
+#include <vector>
+#include <numeric> 
+#include <string>
 using namespace std;
 
-// brute-force, TLE!!
-string getPermutation_tle(int n, int k) {
-    string s(n, '1');
-    for (int i = 0; i < n; ++i)
-        s[i] += i;
-    while (k-- != 1)
-        next_permutation(s.begin(), s.end());
-    return s;
-}
+// Math : Canton Expression
+// k = an*(n-1)! + an-1*(n-2)! + ... + ai*(i-1)! + ... + a2*1! + a1*0!
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        // initialize a dictionary that stores 1, 2, ..., n
+        string dict(n, '0');
+        iota(dict.begin(), dict.end(), '1');
 
-// 康拓展开，中介数
-string getPermutation(int n, int k) {
-    vector<int> pow(n, 1);
-    for (int i = 1; i < n; ++i)
-        pow[i] = pow[i-1] * i;
+        // build up a look-up factorial table, which stores (n-1)!, (n-2)!, ..., 1!, 0!
+        vector<int> fact(n, 1);
+        for (int i = n-3; i >= 0; --i)
+            fact[i] = fact[i+1] * (n-i-1);
 
-    vector<int> nums(n, 0);
-    for (int i = 0; i < n; ++i)
-        nums[i] = i + 1;
-    string result;
+        // let k be zero based
+        --k;
 
-    k--;
-    for (int i = 0; i < n; ++i) {
-        int num = k / pow[n-i-1];
-        k %= pow[n-i-1];
-        result += (*(nums.begin() + num) + '0');
-        nums.erase(nums.begin() + num);
+        string res(n, '0');
+        for (int i = 0; i < n; ++i) {
+            int select = k / fact[i];
+            k %= fact[i];
+            res[i] = dict[select];
+            dict.erase(dict.begin()+select);
+        }
+        return res;
     }
-    return result;
-}
-
+};
 
 int main() {
-    cout << getPermutation(8, 8590);
-    cout << getPermutation_tle(8, 8590);
+    Solution s;
     return 0;
 }
+

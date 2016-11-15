@@ -1,82 +1,36 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-// O(n^2), O(n^2), not in-place
-vector<int> spiralOrder(vector<vector<int>>& matrix) {
-    vector<int> result;
-    int rows = matrix.size();
-    if (rows == 0)
-        return result;
-    int columns = matrix[0].size();
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        if (matrix.empty()) return {};
+        vector<int> res;
+        int br = 0, er = matrix.size()-1; // begin row and end row
+        int bc = 0, ec = matrix[0].size()-1; // begin col and end col
 
-    vector<vector<bool>> flag(rows, vector<bool>(columns, false));
+        while (true) {
+            for (int j = bc; j <= ec; ++j) res.push_back(matrix[br][j]); // right
+            if (++br > er) break;
 
-    int r = 0, c = 0;
-    while (r >= 0 && r < rows && c >= 0 && c < columns && flag[r][c] == false) {
-        while (c < columns && !flag[r][c]) {
-            result.push_back(matrix[r][c]);
-            flag[r][c] = true;
-            ++c;
+            for (int i = br; i <= er; ++i) res.push_back(matrix[i][ec]); // down
+            if (bc > --ec) break;
+
+            for (int j = ec; j >= bc; --j) res.push_back(matrix[er][j]); // left
+            if (br > --er) break;
+
+            for (int i = er; i >= br; --i) res.push_back(matrix[i][bc]); // up
+            if (++bc > ec) break;
         }
-        --c, ++r;
-        while (r < rows && !flag[r][c]) {
-            result.push_back(matrix[r][c]);
-            flag[r][c] = true;
-            ++r;
-        }
-        --r, --c; 
-        while (c >= 0 && !flag[r][c]) {
-            result.push_back(matrix[r][c]);
-            flag[r][c] = true;
-            --c;
-        }
-        ++c, --r;
-        while (r >= 0 && !flag[r][c]) {
-            result.push_back(matrix[r][c]);
-            flag[r][c] = true;
-            --r;
-        }
-        ++r, ++c;
+        return res;
     }
-    return result;
-}
-
-// O(n^2), O(1), in-place
-vector<int> spiralOrder_inplace(vector<vector<int>>& matrix) {
-    vector<int> result;
-    if (matrix.empty())
-        return result;
-    // sentinels
-    int bx = 0, ex = matrix[0].size() - 1;
-    int by = 0, ey = matrix.size() - 1;
-    for (;;) {
-        for (int j = bx; j <= ex; ++j)
-            result.push_back(matrix[by][j]);
-        if (++by > ey) break;
-
-        for (int i = by; i <= ey; ++i)
-            result.push_back(matrix[i][ex]);
-        if (bx > --ex) break;
-
-        for (int j = ex; j >= bx; --j)
-            result.push_back(matrix[ey][j]);
-        if (by > --ey) break;
-
-        for (int i = ey; i >= by; --i)
-            result.push_back(matrix[i][bx]);
-        if (++bx > ex) break;
-    }
-    return result;
-}
+};
 
 int main() {
-    vector<vector<int>> matrix = {
-        {7, 1, 1, 2, 3},
-        {7, 1, 1, 2, 3},
-    };
-    for (auto i : spiralOrder_inplace(matrix)) {
-        cout << i << " ";
-    }
+    Solution s;
     return 0;
 }
+

@@ -1,41 +1,34 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-vector<vector<int>> generateMatrix(int n) {
-    vector<vector<int>> matrix(n, vector<int>(n));
-    if (n == 0)
-        return matrix;
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        int br = 0, er = n-1, bc = 0, ec = n-1;
+        vector<vector<int>> res(n, vector<int>(n));
+        int num = 0;
+        while (true) {
+            for (int j = bc; j <= ec; ++j) res[br][j] = ++num;
+            if (++br > er) break;
 
-    int num = 1;
-    int bx = 0, ex = n - 1;
-    int by = 0, ey = n - 1;
-    for (;;) {
-        for (int j = bx; j <= ex; ++j)
-            matrix[by][j] = num++;
-        if (++by > ey) break;
+            for (int i = br; i <= er; ++i) res[i][ec] = ++num;
+            if (bc > --ec) break;
 
-        for (int i = by; i <= ey; ++i)
-            matrix[i][ex] = num++;
-        if (--ex < bx) break;
+            for (int j = ec; j >= bc; --j) res[er][j] = ++num;
+            if (br > --er) break;
 
-        for (int j = ex; j >= bx; --j)
-            matrix[ey][j] = num++;
-        if (--ey < by) break;
-
-        for (int i = ey; i >= by; --i)
-            matrix[i][bx] = num++;
-        if (++bx > ex) break;
+            for (int i = er; i >= br; --i) res[i][bc] = ++num;
+            if (++bc > ec) break;
+        }
+        return res;
     }
-    return matrix;
-}
+};
 
 int main() {
-    for (auto i : generateMatrix(1)) {
-        for (auto j : i) {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
+    Solution s;
     return 0;
 }
+
