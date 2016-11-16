@@ -1,57 +1,33 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
-#include <map>
 using namespace std;
 
-// cannot solve by myself, refer to others
-
-// greedy, O(n)
-// use two maps for 'has' and 'need', two pointers for 'start' and 'end'
-string minWindow(string s, string t) {
-    if (s.empty() || s.size() < t.size())
-        return "";
-
-    map<char, int> has, need;
-    for (auto c : t) {
-        need[c]++;
-        has[c] = 0;
-    }
-    int count = 0; // count the characters we neeed
-    int windowStart = 0, windowEnd = 0; // index window
-    int minStart = 0, minLen = INT_MAX; // for return
-
-    for (; windowEnd < s.size(); ++windowEnd) {
-        if (need.find(s[windowEnd]) == need.end()) // do not care characters we do not need
-            continue;
-        if (has[s[windowEnd]] < need[s[windowEnd]]) // count we need
-            ++count;
-        ++has[s[windowEnd]]; // count we has
-
-        if (count == t.size()) { // find a window
-            while (windowStart < windowEnd) { // let windowStart go forward to get away redundant 'has'
-                if (need.find(s[windowStart]) == need.end())
-                    ++windowStart;
-                else if (has[s[windowStart]] > need[s[windowStart]]) {
-                    --has[s[windowStart]];
-                    ++windowStart;
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        vector<int> m(128, 0);
+        for (char& c : t) m[c]++;
+        int i = 0, j = 0; // window bound
+        int start = -1, len = INT_MAX; // result's start and length
+        int count = 0; // count characters in t
+        while (j < (int)s.size()) {
+            if (m[s[j++]]-- > 0) ++count; // extend window
+            while (count == (int)t.size()) { // if find a valid window, shrink until it turns to invalid
+                if (j-i < len) { // find the shortest window in all valid windows
+                    len = j-i;
+                    start = i;
                 }
-                else
-                    break;
-            }
-            int len = windowEnd - windowStart + 1; // greedy, get minimum window
-            if (len < minLen) {
-                minLen = len;
-                minStart = windowStart;
+                if (m[s[i++]]++ == 0) --count; // shrink window
             }
         }
-
+        return start == -1 ? "" : s.substr(start, len);
     }
-
-    if (minLen == INT_MAX) return "";
-    return s.substr(minStart, minLen);
-}
+};
 
 int main() {
-    cout << minWindow("ADOBECODEBANC", "ABC") << endl;
+    Solution s;
     return 0;
 }
+

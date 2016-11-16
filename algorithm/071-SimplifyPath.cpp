@@ -1,39 +1,33 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
-#include <stack>
+#include <sstream> 
 using namespace std;
 
-string simplifyPath(string path) {
-    if (path == "/")
-        return path;
-    path += "/"; // unify format, append a / to the end
-    stack<string> ds;
-    size_t cpos = 1;
-    size_t spos = path.find("/", cpos);
-    while (spos != string::npos) {
-        string d = path.substr(cpos, spos-cpos);
-        if (d.empty() || d == ".") {} // step over // and .
-        else if (d == "..") { // pop
-            if (!ds.empty()) ds.pop();
+class Solution {
+public:
+    string simplifyPath(string path) {
+        istringstream ss(path);
+        string file;
+        vector<string> st;
+        while (getline(ss, file, '/')) {
+            if (file.empty() || file == ".") continue;
+            if (file == "..") {
+                if (!st.empty()) st.pop_back();
+            }
+            else st.push_back(file);
         }
-        else { // push
-            ds.push(d);
-        }
-        cpos = spos + 1;
-        spos = path.find("/", cpos);
+        if (st.empty()) return "/";
+        string res;
+        for (string& f : st) res += "/" + f;
+        return res;
     }
-    if (ds.empty()) return "/";
-    string result;
-    while (!ds.empty()) {
-        result = ("/" + ds.top() + result);
-        ds.pop();
-    }
-    return result;
-}
+};
 
 int main() {
-    cout << simplifyPath("/a/b") << endl;
-    cout << simplifyPath("/b/////../.././././c/d/e") << endl;
-    cout << simplifyPath("/...") << endl;
+    Solution s;
+    cout << s.simplifyPath("");
     return 0;
 }
+
