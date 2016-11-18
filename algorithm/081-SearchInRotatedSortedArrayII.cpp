@@ -1,37 +1,41 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-// similiar to No.033
-bool search(vector<int>& nums, int target) {
-    if (nums.empty()) return false;
-    int first = 0, last = nums.size();
-
-    while (first < last) {
-        int mid = first + (last - first) / 2;
-        if (nums[mid] == target)
-            return true;
-        if (nums[first] < nums[mid]) { // cannot be <= any more
-            if (nums[first] <= target && target < nums[mid])
-                last = mid;
-            else
-                first = mid + 1;
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        if (nums.empty()) return false;
+        int left = 0, right = nums.size()-1;
+        while (left <= right) {
+            int mid = left + (right-left)/2;
+            if (nums[mid] == target) 
+                return true;
+            if (nums[left] < nums[mid]) {
+                if (nums[left] <= target && target < nums[mid])
+                    right = mid-1;
+                else
+                    left = mid+1;
+            }
+            else if (nums[left] > nums[mid]) {
+                if (nums[mid] < target && target <= nums[right])
+                    left = mid+1;
+                else
+                    right = mid-1;
+            }
+            else ++left; // or --right
         }
-        else if (nums[first] > nums[mid]) {
-            if (nums[mid] < target && target <= nums[last-1])
-                first = mid + 1;
-            else
-                last = mid;
-        }
-        else { // if nums[first] == nums[mid], try to ++first for more decision
-            ++first;
-        }
+        return false;
     }
-    return false;
-}
+};
 
 int main() {
-    vector<int> nums = {1, 3, 1, 1};
-    cout << search(nums, 3);
+    Solution s;
+    vector<int> n = {1};
+    cout << s.search(n, 0);
     return 0;
 }
+
+

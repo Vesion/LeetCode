@@ -5,8 +5,7 @@
 #include <stack> 
 using namespace std;
 
-// stack
-// Similar to 042-TrappingRainWater
+// stack, similar to 042-TrappingRainWater
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
@@ -15,12 +14,13 @@ public:
         stack<int> st;
         int res = 0;
         for (int i = 0; i < (int)heights.size(); ) {
-            if (st.empty() || heights[i] > heights[st.top()]) st.push(i++);
+            if (st.empty() || heights[i] > heights[st.top()])
+                st.push(i++);
             else {
-                int h = heights[st.top()]; 
+                int h = heights[st.top()];
                 st.pop();
-                int w = st.empty() ? i : i-st.top()-1;
-                res = max(res, h * w);
+                int w = st.empty() ? i :  i-st.top()-1;
+                res = max(res, h*w);
             }
         }
         return res;
@@ -31,3 +31,4 @@ int main() {
     Solution s;
     return 0;
 }
+

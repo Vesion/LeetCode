@@ -1,78 +1,47 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-typedef struct ListNode {
+struct ListNode {
     int val;
     ListNode* next;
-    ListNode(int x) : val(x), next(NULL) {}
-} ListNode;
+    ListNode(int val) : val(val), next(NULL) {}
+};
 
-
-void printList(ListNode* &head) {
-    if (!head) {
-        cout << "empty list" << endl;
-    } else {
-        for (ListNode* p = head; p; p = p->next)
-            cout << p->val << " ";
-        cout << endl;
-    }
-}
-
-ListNode* appendNode(ListNode* head, int x) {
-    if (!head) {
-        cout << "new" << endl;
-        head = new ListNode(x);
-    } else {
-        ListNode* p = head;
-        while (p->next) p = p->next;
-        p->next = new ListNode(x);
-    }
-    return head;
-}
-
-void deleteList(ListNode* &head) { // use reference& to guarantee return NULL head
-    if (!head) return;
-    while(head) {
-        ListNode *p = head->next;
-        delete head;
-        head = p;
-    }
-    return; // here head MUST be NULL
-}
-
-// similiar to No.026 and 080
-ListNode* deleteDuplicates(ListNode* head) {
-    if (!head) return head;
-    ListNode *cur = head->next, *prev = head;
-    while (cur) {
-        if (cur->val != prev->val) {
-            prev = prev->next;
-            prev->val = cur->val;
+// Solution 1 : iterative
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head || !head->next) return head;
+        ListNode *r = head, *p = head->next;
+        while (p) {
+            if (p->val != r->val) {
+                r->next = p;
+                r = r->next;
+            }
+            p = p->next;
         }
-        cur = cur->next;
-    } 
-    deleteList(prev->next);
-    return head;
-}
+        r->next = NULL; // should free memory to delete nodes here
+        return head;
+    }
+};
+
+
+// Solution 2 :recursive
+class Solution_2 {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head || !head->next) return head;
+        head->next = deleteDuplicates(head->next);
+        return head->val == head->next->val ? head->next : head;
+    }
+};
+
 
 int main() {
-    ListNode* head = NULL;
-
-    head = appendNode(head, 1);
-    head = appendNode(head, 1);
-    head = appendNode(head, 2);
-    head = appendNode(head, 2);
-    head = appendNode(head, 3);
-    head = appendNode(head, 3);
-    head = appendNode(head, 4);
-    head = appendNode(head, 4);
-    printList(head);
-
-    head = deleteDuplicates(head);
-    printList(head);
-
-    deleteList(head);
-    printList(head);
-
+    Solution s;
     return 0;
 }
+

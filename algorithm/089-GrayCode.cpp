@@ -1,54 +1,49 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <cmath>
+#include <string>
 using namespace std;
 
-// Gray Code (格雷码), refer to wiki 'gray code', very classical problem
-//
-// binary code --> gray code
-//      g[0] = b[0], g[i] = b[i] ^ b[i-1] (^ is XOR operator)
-//      e.g. b(1001) --> g(1101)
-//
-// gray code --> binary code
-//      b[0] = g[0], b[i] = g[i] ^ b[i-1]
-//      e.g. g(1000) --> b(1111)
-//
-// decimal --> gray code
-//      n = g(n ^ (n / 2))
-
-
-// Solution 1 : use formula, a decimal number n --> g(n^(n/2))
-vector<int> grayCode_formula(int n) {
-    vector<int> result;
-    const size_t len = 1 << n;
-    result.reserve(len);
-    for (size_t i = 0; i < len; ++i) {
-        int r = i ^ (i >> 1); // formula
-        result.push_back(r);
+// Solution 1 : use n codes to generate next n codes
+//      00
+//      01
+//      -- symmetric other than the most significant bit
+//      11
+//      10
+class Solution {
+public:
+    vector<int> grayCode(int n) {
+        vector<int> res;
+        res.push_back(0);
+        if (n == 0) return res;
+        for (int i = 0; i < n; ++i) {
+            for (int j = (int)res.size()-1; j >= 0; --j)
+                res.push_back(res[j] | (1 << i));
+        }
+        return res;
     }
-    return result;
-}
+};
 
 
-// Solution 2 : use n codes to generate next n codes, increase by (double) times
-vector<int> grayCode_r(int n) {
-    vector<int> result;
-    result.reserve(1<<n);
-    result.push_back(0); // the first one
-    for (int i = 0; i < n; ++i) {
-        int highest_bit = 1 << i;
-        for (int j = result.size()-1; j >= 0; --j) // here iterate from right to left to ensure symmetry
-            result.push_back(highest_bit | result[j]);
+// Solution 2 : formula, the gray code of a decimal number n is n ^ (n>>1)
+class Solution_2 {
+public:
+    vector<int> grayCode(int n) {
+        vector<int> res;
+        for (int i = 0; i < 1<<n; ++i)
+            res.push_back(i ^ (i>>1));
+        return res;
     }
-    return result;
-}
+};
+
 
 int main() {
-    //auto r = grayCode_formula(3);
-    auto r = grayCode_r(3);
-    cout << endl <<"main : " << endl;
-    for (auto i : r)
-        cout << i << " ";
-    cout << endl;
+    Solution s;
+    auto r = s.grayCode(4);
+    for (auto& e : r) cout << e << " "; cout << endl; 
+    Solution_2 s2;
+    auto r2 = s2.grayCode(4);
+    for (auto& e : r2) cout << e << " "; cout << endl; 
     return 0;
 }
+
