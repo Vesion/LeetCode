@@ -1,95 +1,59 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <stack>
+#include <string>
+#include <stack> 
 using namespace std;
 
-typedef struct TreeNode {
+struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-} TreeNode;
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
+};
 
-TreeNode* insertNode(TreeNode* root, int x) {
-    if (!root)
-        root = new TreeNode(x);
-    else {
-        if (x < root->val)
-            root->left = insertNode(root->left, x);
-        else
-            root->right = insertNode(root->right, x);
-    } 
-    return root;
-}
-
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL; // do not forget set root to NULL, in case of invalid usage
-}
-
-// Solution 1 : recursive, trivial
-void inorder(TreeNode* &root, vector<int>& result) {
-    if (root) {
-        inorder(root->left, result);
-        result.push_back(root->val);
-        inorder(root->right, result);
+// Solution 1 : recursive
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        dfs(root, res);
+        return res;
     }
-}
-vector<int> inorderTraversal_re(TreeNode* root) {
-    vector<int> result;
-    inorder(root, result);
-    return result;
-}
 
-// Solution 2 : iterative, use stack
-vector<int> inorderTraversal_it(TreeNode* root) {
-    vector<int> result;
-    stack<TreeNode*> s;
-    TreeNode* it = root;
-    while (it || !s.empty()) {
-        if (it) {
-            s.push(it);
-            it = it->left;
-        } else {
-            it = s.top();
-            s.pop();
-            result.push_back(it->val);
-            it = it->right;
+    void dfs(TreeNode* root, vector<int>& res) {
+        if (root) {
+            dfs(root->left, res);
+            res.push_back(root->val);
+            dfs(root->right, res);
         }
     }
-    return result;
-}
+};
 
-// Solution 2 v2 : iterative with stack
-inline void pushAll(TreeNode* root, stack<TreeNode*>& s) {
-    for (; root; root = root->left) s.push(root);
-}
 
-vector<int> inorderTraversal_itv2(TreeNode* root) {
-    vector<int> result;
-    stack<TreeNode*> s;
-    pushAll(root, s);
-    while (!s.empty()) {
-        auto it = s.top(); s.pop();
-        pushAll(it->right, s);
-        result.push_back(it->val);
+// Solution 2 : stack
+class Solution_2 {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        if (!root) return {};
+        vector<int> res;
+        stack<TreeNode*> st;
+        TreeNode* node = root;
+        while (!st.empty() || node) {
+            while (node) {
+                st.push(node);
+                node = node->left;
+            }
+            node = st.top(); st.pop();
+            res.push_back(node->val);
+            node = node->right;
+        }
+        return res;
     }
-    return result;
-}
+};
 
 
 int main() {
-    TreeNode* root = NULL;
-    root = insertNode(root, 1);
-    root = insertNode(root, 8);
-    root = insertNode(root, 9);
-    for (auto i : inorderTraversal_itv2(root))
-        cout << i << " ";
-    cout << endl;
-
-    deleteTree(root);
+    Solution s;
     return 0;
 }
+

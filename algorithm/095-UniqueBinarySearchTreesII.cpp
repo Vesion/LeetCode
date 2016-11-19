@@ -1,82 +1,76 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <queue>
+#include <string>
 using namespace std;
 
-typedef struct TreeNode {
+struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-} TreeNode;
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
+};
 
-TreeNode* insertNode(TreeNode* root, int x) {
-    if (!root)
-        root = new TreeNode(x);
-    else {
-        if (x < root->val)
-            root->left = insertNode(root->left, x);
-        else
-            root->right = insertNode(root->right, x);
-    }
-    return root;
-}
-
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
-
-void printLevelOrder(TreeNode* &root) {
-    if (!root)
-        cout << "empty tree";
-    else {
-        queue<TreeNode*> q;
-        q.push(root);
-        while (!q.empty()) {
-            TreeNode* it = q.front();
-            q.pop();
-            cout << it->val << " ";
-            if (it->left) q.push(it->left);
-            if (it->right) q.push(it->right);
-        }
-    }
-    cout << endl;
-}
-
-// generate recursively
-vector<TreeNode*> generateSubtrees(int start, int end) {
-    vector<TreeNode*> subtrees;
-    if (start > end) {
-        subtrees.push_back(NULL);
-        return subtrees;
-    }
-    for (int k = start; k <= end; ++k) {
-        auto leftsubs = generateSubtrees(start, k-1);
-        auto rightsubs = generateSubtrees(k+1, end);
-        for (auto i : leftsubs) {
-            for (auto j : rightsubs) {
-                TreeNode* t = new TreeNode(k);
-                t->left = i;
-                t->right = j;
-                subtrees.push_back(t);
+// Solution 1 : dp
+class Solution {
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        if (n == 0) return {};
+        vector<vector<TreeNode*>> dp(n+1);
+        dp[0] = {NULL};
+        dp[1] = {new TreeNode(1)};
+        for (int i = 2; i <= n; ++i) {
+            for (int j = 0; j < i; ++j) {
+                for (TreeNode* left : dp[j]) {
+                    for (TreeNode* right : dp[i-j-1]) {
+                        TreeNode* root = new TreeNode(j+1);
+                        root->left = left;
+                        root->right = cloneWithOffset(right, j+1); // add j+1 offset to nodes in right subtree
+                        dp[i].push_back(root);
+                    }
+                }
             }
         }
+        return dp[n];
     }
-    return subtrees;
-}
-vector<TreeNode*> generateTrees(int n) {
-    vector<TreeNode*> result;
-    if (n == 0) return result;
-    return generateSubtrees(1, n);
-}
+
+    TreeNode* cloneWithOffset(TreeNode* root, int offset) {
+        if (!root) return root;
+        TreeNode* node = new TreeNode(root->val + offset);
+        node->left = cloneWithOffset(root->left, offset);
+        node->right = cloneWithOffset(root->right, offset);
+        return node;
+    }
+};
+
+
+// Solution 2 : recursive
+class Solution_2 {
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        if (n == 0) return {};
+        return dfs(1, n);
+    }
+
+    vector<TreeNode*> dfs(int start, int end) {
+        if (start > end) return {NULL};
+        vector<TreeNode*> res;
+        for (int i = start; i <= end; ++i) {
+            for (TreeNode* left : dfs(start, i-1)) {
+                for (TreeNode* right : dfs(i+1, end)) {
+                    TreeNode* root = new TreeNode(i);
+                    root->left = left;
+                    root->right = right;
+                    res.push_back(root);
+                }
+            }
+        }
+        return res;
+    }
+};
+
 
 int main() {
-    auto trees = generateTrees(3);
-    for (auto t : trees)
-        printLevelOrder(t);
+    Solution s;
     return 0;
 }
+

@@ -1,43 +1,38 @@
 #include <iostream>
-#include <string>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-void dfs(vector<string>& result, vector<string>& path, string& s, int cur, int steps) {
-    if (steps > 4) return;
-    if (steps == 4 && cur == s.size()) {
-        string r;
-        for (auto i : path) r += (i + '.');
-        r.pop_back();
-        result.push_back(r);
-        return;
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        if (s.size() < 4 || s.size() > 12) return {};
+        vector<string> res;
+        vector<string> path;
+        dfs(s, 0, "", 0, res);
+        return res;
     }
 
-    int num = 0;
-    int start = cur;
-    for (int i = cur; i < s.size(); ++i) {
-        num = num * 10 + (s[i] - '0');
-        if (num <= 255) {
-            path.push_back(s.substr(start, i-start+1));
-            dfs(result, path, s, i+1, steps+1);
-            path.pop_back();
-        } else
-            break;
-        if (num == 0) break; // 0 must not be prefix
+    void dfs(string& s, int cur, string path, int points, vector<string>& res) {
+        if (points > 4 || cur > (int)s.size()) return;
+        if (points == 4 && cur == (int)s.size()) {
+            res.push_back(path);
+            return;
+        }
+        for (int l = 1; l <= 3; ++l) {
+            if (cur+l > (int)s.size()) break;
+            string sub = s.substr(cur, l);
+            if ((sub.size() > 1 && sub[0] == '0') || (stoi(sub) > 255)) continue;
+            dfs(s, cur+l, path + sub + (points == 3 ? "" : "."), points+1, res);
+        }
     }
-}
-
-vector<string> restoreIpAddresses(string s) {
-    vector<string> result;
-    if (s.size() < 4 || s.size() > 12) return result;
-    vector<string> path;
-    dfs(result, path, s, 0, 0);
-    return result;
-}
+};
 
 int main() {
-    for (auto i : restoreIpAddresses("010010"))
-        cout << i << "     ";
-    cout << endl;
+    Solution s;
+    auto r = s.restoreIpAddresses("1111");
+    for (auto& e : r) cout << e << endl; cout << endl; 
     return 0;
 }
+
