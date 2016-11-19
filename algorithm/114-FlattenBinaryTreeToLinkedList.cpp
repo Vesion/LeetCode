@@ -1,108 +1,75 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <stack>
+#include <string>
+#include <stack> 
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
-
-void printPreorder(TreeNode* root) {
-    if (root) {
-        cout << root->val << " ";
-        printPreorder(root->left);
-        printPreorder(root->right);
+// Solution 1 : common iterative
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        if (!root) return;
+        TreeNode* cur = root;
+        while (cur) {
+            if (cur->left) {
+                TreeNode* next = cur->left;
+                while (next->right) next = next->right;
+                next->right = cur->right;
+                cur->right = cur->left;
+                cur->left = NULL;
+            }
+            cur = cur->right;
+        }
     }
-}
+};
 
-void printPostorder(TreeNode* root) {
-    if (root) {
-        printPostorder(root->left);
-        printPostorder(root->right);
-        cout << root->val << " ";
+
+// Solution 2.1 : bottom-up preorder, recursive
+class Solution_21 {
+public:
+    void flatten(TreeNode* root) {
+        TreeNode* pre = NULL; // the pre is the 'next node in preorder traversal'
+        postorder(root, pre);
     }
-}
 
-// Solution 0 : trivial iterative, not in-place
-// 先完成前序遍历，存下结点顺序，再重新生成树，朴素算法
-void flatten_trivial(TreeNode* root) {
-    if (!root) return;
-    vector<TreeNode*> prevs;
-    stack<TreeNode*> s;
-    s.push(root);
-    while (!s.empty()) {
-        auto it = s.top();
-        prevs.push_back(it);
-        s.pop();
-        if (it->right) s.push(it->right);
-        if (it->left) s.push(it->left);
+    void postorder(TreeNode* cur, TreeNode*& pre) {
+        if (!cur) return;
+        postorder(cur->right, pre);
+        postorder(cur->left, pre);
+        cur->right = pre;
+        cur->left = NULL;
+        pre = cur;
     }
-    for (int i = 0; i < prevs.size()-1; ++i) {
-        prevs[i]->left = NULL;
-        prevs[i]->right = prevs[i+1];
-    }
-}
+};
 
-// Solution 1 : recursive, O(n) time, O(lgn) space
-void flatten(TreeNode* root) {
-    if (!root) return;
 
-    flatten(root->left);
-    flatten(root->right);
-    if (!root->left) return;
-
-    // 三方合并,将左子树所形成的链表插入到root和root->right之间
-    TreeNode* p = root->left;
-    while (p->right) p = p->right;
-    p->right = root->right;
-    root->right = root->left;
-    root->left = NULL;
-}
-
-// Solution 2 : iterative with stack, O(n) time, O(lgn) space
-// solution0的改进版，一边遍历一边生成树
-void flatten_it(TreeNode* root) {
-    if (!root) return;
-    stack<TreeNode*> s;
-    s.push(root);
-    while (!s.empty()) {
-        auto it = s.top();
-        s.pop();
-
-        if (it->right) s.push(it->right);
-        if (it->left) s.push(it->left);
-
-        it->left = NULL;
-        if (!s.empty()) it->right = s.top();
-        else it->right = NULL;
-    }
-}
+// Solution 2.2 : preorder, stack
+class Solution_22 {
+public:
+    void flatten(TreeNode* root) {
+        if (!root) return;
+        stack<TreeNode*> st;
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* t = st.top(); st.pop();
+            if (t->right) st.push(t->right);
+            if (t->left) st.push(t->left);
+            t->left = NULL;
+            if (!st.empty()) t->right = st.top();
+            else t->right = NULL;
+        }
+    }   
+};
 
 int main() {
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->left->left = new TreeNode(3);
-    root->left->right = new TreeNode(4);
-    root->right = new TreeNode(5);
-    root->right->right = new TreeNode(6);
-    printPostorder(root);
-    cout << endl;
-
-    flatten_trivial(root);
-    printPostorder(root);
-    cout << endl;
-
-    deleteTree(root);
+    Solution s;
     return 0;
 }
+

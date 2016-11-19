@@ -1,44 +1,27 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
-
-// wrong!
-int minDepth_w(TreeNode* root) {
-    if (!root) return 0;
-    return min(minDepth_w(root->left), minDepth_w(root->right)) + 1;
-}
-
-// 最小深度是指从根结点到某一叶结点的距离，所以上面的方法计算的是根结点到某一不满结点的距离，是错的
-int minDepth(TreeNode* root) {
-    if (!root) return 0;
-    if (!root->left) return 1 + minDepth(root->right);
-    if (!root->right) return 1 + minDepth(root->left);
-    return min(minDepth(root->left), minDepth(root->right)) + 1;
-}
-
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        if (!root) return 0;
+        if (!root->left) return minDepth(root->right) + 1;
+        if (!root->right) return minDepth(root->left) + 1;
+        return min(minDepth(root->left), minDepth(root->right)) + 1;
+    }
+};
 
 int main() {
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(2);
-    root->left->left = new TreeNode(3);
-    root->right->left = new TreeNode(3);
-    cout << minDepth(root) << endl;
-    cout << minDepth_w(root) << endl;
-    deleteTree(root);
+    Solution s;
     return 0;
 }
+

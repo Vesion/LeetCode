@@ -1,52 +1,49 @@
 #include <iostream>
-#include <queue>
+#include <algorithm>
 #include <vector>
+#include <string>
+#include <deque> 
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-    vector<vector<int>> result;
-    if (!root) return result;
-    bool left_to_right = true;
-    queue<TreeNode*> q;
-    q.push(root);
-    while (!q.empty()) {
-        int len = q.size();
-        vector<int> r;
-        while (len--) {
-            auto it = q.front();
-            q.pop();
-            r.push_back(it->val);
-            if (it->left) q.push(it->left);
-            if (it->right) q.push(it->right);
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        if (!root) return {};
+        vector<vector<int>> res;
+        deque<TreeNode*> q;
+        q.push_back(root);
+        bool left = true; // order of current level
+        while (!q.empty()) {
+            int n = q.size();
+            vector<int> level;
+            while (n--) {
+                TreeNode* t;
+                if (left) {
+                    t = q.front(); q.pop_front();
+                    if (t->left) q.push_back(t->left);
+                    if (t->right) q.push_back(t->right);
+                } else {
+                    t = q.back(); q.pop_back();
+                    if (t->right) q.push_front(t->right);
+                    if (t->left) q.push_front(t->left);
+                }
+                level.push_back(t->val);
+            }
+            left = !left;
+            res.push_back(level);
         }
-        if (!left_to_right) reverse(r.begin(), r.end());
-        result.push_back(r);
-        left_to_right = !left_to_right;
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    TreeNode* root = new TreeNode(3);
-    root->left = new TreeNode(9);
-    root->right = new TreeNode(20);
-    root->left->left = new TreeNode(1);
-    root->left->right = new TreeNode(8);
-    root->right->left = new TreeNode(15);
-    root->right->right = new TreeNode(7);
-    root->right->right->left = new TreeNode(4);
-    root->right->right->right = new TreeNode(0);
-    for (auto i : zigzagLevelOrder(root)) {
-        for (auto j : i)
-            cout << j << " ";
-        cout << endl;
-    }
+    Solution s;
     return 0;
 }
+
