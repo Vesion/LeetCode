@@ -1,28 +1,29 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-vector<vector<int>> generate(int numRows) {
-    vector<vector<int>> result;
-    if (numRows <= 0) return result;
-    result.push_back(vector<int>({1}));
-    numRows--;
-    while (numRows--) {
-        auto lastline = result.back();
-        vector<int> thisline({1});
-        for (int i = 0; i < lastline.size()-1; ++i)
-            thisline.push_back(lastline[i] + lastline[i+1]);
-        thisline.push_back(1);
-        result.push_back(thisline);
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        if (numRows == 0) return {};
+        vector<vector<int>> res;
+        res.push_back({1});
+        for (int i = 2; i <= numRows; ++i) {
+            vector<int> row(i, 0);
+            for (int j = 0; j < i; ++j) {
+                if (j-1 < 0 || j >= (int)res[i-2].size()) row[j] = 1;
+                else row[j] = res[i-2][j-1] + res[i-2][j];
+            }
+            res.push_back(row);
+        }
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    for (auto i : generate(5)) {
-        for (auto j : i)
-            cout << j << " ";
-        cout << endl;
-    }
+    Solution s;
     return 0;
 }
+
