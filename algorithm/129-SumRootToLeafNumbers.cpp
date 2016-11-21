@@ -1,39 +1,31 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        return dfs(root, 0);
+    }
 
-int dfs(TreeNode* root, int sum) {
-    if (!root) return 0;
-    if (!root->left && !root->right)
-        return sum * 10 + root->val;
-    return dfs(root->left, sum * 10 + root->val) + dfs(root->right, sum * 10 + root->val);
-}
-
-int sumNumbers(TreeNode* root) {
-    return dfs(root, 0);
-}
+    int dfs(TreeNode* root, int cur) {
+        if (!root) return 0;
+        if (!root->left && !root->right)
+            return cur*10 + root->val;
+        return dfs(root->left, cur*10+root->val) + dfs(root->right, cur*10+root->val);
+    }
+};
 
 int main() {
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->left = new TreeNode(2);
-    cout << sumNumbers(root);
-
-    deleteTree(root);
+    Solution s;
     return 0;
 }
+

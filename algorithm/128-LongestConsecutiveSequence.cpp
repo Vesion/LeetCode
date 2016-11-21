@@ -1,51 +1,29 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <unordered_map>
-#include <unordered_set>
+#include <string>
+#include <unordered_set> 
 using namespace std;
 
-// use unordered_map
-int longestConsecutive_map(vector<int>& nums) {
-    int result = 0;
-    unordered_map <int, bool> used;
-    for (auto & i : nums) used[i] = false;
-
-    for (auto & num : nums) {
-        if (used[num]) continue;
-        used[num] = true;
-        int length = 1;
-        for (int left = num-1; used.find(left) != used.end(); --left) {
-            used[left] = true;
-            ++length;
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> s(nums.begin(), nums.end());
+        int res = 0;
+        for (int num : nums) {
+            int left = num-1, right = num+1;
+            while (s.count(left)) s.erase(left--);
+            while (s.count(right)) s.erase(right++);
+            res = max(res, right-left-1);
         }
-        for (int right = num+1; used.find(right) != used.end(); ++right) {
-            used[right] = true;
-            ++length;
-        }
-        result = max(result, length);
+        return res;
     }
-    return result;
-}
-
-// use unordered_set, same with above
-int longestConsecutive_set(vector<int>& nums) {
-    int result = 0;
-    unordered_set<int> unused {nums.begin(), nums.end()};
-    
-    for (auto & num : nums) {
-        if (unused.find(num) == unused.end()) continue;
-        unused.erase(num);
-        int left, right;
-        for (left = num-1; unused.find(left) != unused.end(); --left) unused.erase(left);
-        for (right = num+1; unused.find(right) != unused.end(); ++right) unused.erase(right);
-        result = max(result, right-left-1);
-    }
-    return result;
-}
+};
 
 int main() {
-    vector<int> nums {100, 9, 1, 4, 0, 3, 2, 10};
-    cout << longestConsecutive_map(nums);
-    cout << longestConsecutive_set(nums);
+    Solution s;
+    vector<int> nums = {100, 200, 1, 10, 2, 4, 3};
+    cout << s.longestConsecutive(nums) << endl;
     return 0;
 }
+

@@ -1,24 +1,25 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
-#include <cstdio>
-#include <cstdlib>
-#include <cctype>
 using namespace std;
 
-bool isPalindrome(string s) {
-    if (s.empty()) return true;
-    for (int i = 0, j = s.size()-1; i <= j; ++i, --j) {
-        while (!isalnum(s[i]) && i < s.size()) ++i;
-        while (!isalnum(s[j]) && j >= 0) --j;
-        if (i > j) break;
-        if (tolower(s[i]) != tolower(s[j])) return false;
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int left = 0, right = s.size()-1;
+        while (left <= right) {
+            while (left <= right && !isalnum(s[left])) ++left;
+            while (left <= right && !isalnum(s[right])) --right;
+            if (left <= right && tolower(s[left++]) != tolower(s[right--])) return false;
+        }
+        return true;
     }
-    return true;
-}
+};
 
 int main() {
-    cout << isPalindrome(" ") << endl;
-    cout << isPalindrome("A man, a plan, a canal: Panama") << endl;
-    cout << isPalindrome("race a car") << endl;
+    Solution s;
+    cout << s.isPalindrome("  ") <<endl;
     return 0;
 }
+
