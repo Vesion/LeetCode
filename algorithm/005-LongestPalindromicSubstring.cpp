@@ -4,9 +4,6 @@
 using namespace std;
 
 
-// Solution 0 : brute-force, check every substring, O(n^3)
-
-
 // Solution 1: extend from each position, O(n^2)
 // traverse the whole string, start finding the palindrome from each char (extend to left and right), get the longest substr
 class Solution_1 {
@@ -45,28 +42,20 @@ public:
     string longestPalindrome(string s) {
         if (s.empty()) return "";
         int n = s.size();
-        vector<vector<bool>> dp(n, vector<bool>(n, 0));
+        vector<vector<bool>> dp(n, vector<bool>(n, false));
         int start = 0, len = 1;
-        for (int i = 0; i < n; ++i) {
-            dp[i][i] = true;
-            if (i > 0 && s[i] == s[i-1]) {
-                dp[i-1][i] = true;
-                start = i-1;
-                len = 2;
-            }
-        }
-
-        for (int l = 3; l <= n; ++l) {
-            for (int i = 0; i+l <= n; ++i) {
-                int j = i+l-1;
-                if (dp[i+1][j-1] && s[i] == s[j]) {
+        for (int i = 0; i < n; ++i) dp[i][i] = true; // every single character is a palindrome
+        for (int i = n-1; i >= 0; --i) {
+            for (int j = i; j < n; ++j) {
+                if (s[i] == s[j] && (i+1 > j-1 || dp[i+1][j-1])) {
                     dp[i][j] = true;
-                    len = l;
-                    start = i;
+                    if (j-i+1 > len) {
+                        len = j-i+1;
+                        start = i;
+                    }
                 }
             }
         }
-
         return s.substr(start, len);
     }
 };

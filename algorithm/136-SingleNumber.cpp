@@ -1,16 +1,20 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-int singleNumber(vector<int>& nums) {
-    int result = 0;
-    for (auto & num : nums)
-        result ^= num;
-    return result;
-}
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for (int num : nums) res ^= num;
+        return res;
+    }
+};
 
 int main() {
-    vector<int> nums = {4, 3, 2, 1, 2, 3, 4};
-    cout << singleNumber(nums) << endl;
+    Solution s;
     return 0;
 }
+

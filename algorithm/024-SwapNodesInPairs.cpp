@@ -10,22 +10,21 @@ struct ListNode {
     ListNode(int val) : val(val), next(NULL) {}
 };
 
-void print(ListNode* head) {
-    if (head) {
-        cout << head->val << " ";
-        print(head->next);
-    }
-}
-
-ListNode* append(ListNode* head, int val) {
-    if (!head) head = new ListNode(val);
-    else head->next = append(head->next, val);
-    return head;
-}
-
-
-// Solution 1 : first split into two lists, then chain them
+// Solution 1 : recursively
 class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if (!head || !head->next) return head;
+        ListNode* p = head->next;
+        head->next = swapPairs(p->next);
+        p->next = head;
+        return p;
+    }
+};
+
+
+// Solution 2 : iterative, first split into two lists, then chain them
+class Solution_2 {
 public:
     ListNode* swapPairs(ListNode* head) {
         if (!head || !head->next) return head;
@@ -54,8 +53,8 @@ public:
 };
 
 
-// Solution 2 : use two-level-pointer
-class Solution_2 {
+// Solution 3 : use two-level-pointer
+class Solution_3 {
 public:
     ListNode* swapPairs(ListNode* head) {
         if (!head || !head->next) return head;
@@ -73,31 +72,7 @@ public:
 };
 
 
-// Solution 3 : recursively
-class Solution_3 {
-public:
-    ListNode* swapPairs(ListNode* head) {
-        if (!head || !head->next) return head;
-        ListNode* p = head->next;
-        head->next = swapPairs(head->next->next);
-        p->next = head;
-        return p;
-    }
-};
-
-
-
 int main() {
-    Solution_2 s;
-    ListNode* h = NULL;
-    h = append(h, 1);
-    h = append(h, 2);
-    h = append(h, 3);
-    h = append(h, 4);
-    h = append(h, 5);
-    print(h); cout << endl;
-    h = s.swapPairs(h);
-    print(h); cout << endl;
     return 0;
 }
 
