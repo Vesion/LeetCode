@@ -1,96 +1,56 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <stack>
+#include <string>
+#include <stack> 
 using namespace std;
 
-typedef struct TreeNode {
+struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-} TreeNode;
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
+};
 
-TreeNode* insertNode(TreeNode* root, int x) {
-    if (!root)
-        root = new TreeNode(x);
-    else {
-        if (x < root->val)
-            root->left = insertNode(root->left, x);
-        else
-            root->right = insertNode(root->right, x);
+// Solution 1 : recursive
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        preorder(root, res);
+        return res;
     }
-    return root;
-}
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
-
-// Solution 1 : recursively, trivial
-void preorder(TreeNode* root, vector<int>& result) {
-    if (root) {
-        result.push_back(root->val);
-        preorder(root->left, result);
-        preorder(root->right, result);
-    }
-}
-vector<int> preorderTraversal_re(TreeNode* root) {
-    vector<int> result;
-    preorder(root, result);
-    return result;
-}
-
-// Solution 2 : iteratively
-vector<int> preorderTraversal_it(TreeNode* root) {
-    vector<int> result;
-    stack<TreeNode*> s;
-    TreeNode* it = root;
-    while (it || !s.empty()) {
-        if (it) {
-            result.push_back(it->val);
-            s.push(it);
-            it = it->left;
-        } else {
-            it = s.top();
-            s.pop();
-            it = it->right;
+    void preorder(TreeNode* root, vector<int>& res) {
+        if (root) {
+            res.push_back(root->val);
+            preorder(root->left, res);
+            preorder(root->right, res);
         }
     }
-    return result;
-}
+};
 
-// Solution 2 v2
-vector<int> preorderTraversal_it2(TreeNode* root) {
-    vector<int> prevs;
-    if (!root) return prevs;
-    stack<TreeNode*> s;
-    s.push(root);
-    while (!s.empty()) {
-        auto it = s.top();
-        prevs.push_back(it->val);
-        s.pop();
-        if (it->right) s.push(it->right);
-        if (it->left) s.push(it->left);
+
+// Solution 2 : iterative, stack
+class Solution_2 {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        if (!root) return {};
+        vector<int> res;
+        stack<TreeNode*> st;
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* t = st.top();
+            st.pop();
+            res.push_back(t->val);
+            if (t->right) st.push(t->right);
+            if (t->left) st.push(t->left);
+        }
+        return res;
     }
-    return prevs;
-}
-
+};
 
 int main() {
-    TreeNode* root = NULL;
-    root = insertNode(root, 4);
-    root = insertNode(root, 8);
-    root = insertNode(root, 9);
-    root = insertNode(root, 2);
-    root = insertNode(root, 1);
-    root = insertNode(root, 3);
-    root = insertNode(root, 7);
-    for (auto i : preorderTraversal_it(root))
-        cout << i << " ";
-    cout << endl;
+    Solution s;
     return 0;
 }
+

@@ -1,110 +1,64 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <stack>
+#include <string>
+#include <stack> 
 using namespace std;
 
-typedef struct TreeNode {
+struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-} TreeNode;
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
+};
 
-TreeNode* insertNode(TreeNode* root, int x) {
-    if (!root)
-        root = new TreeNode(x);
-    else {
-        if (x < root->val)
-            root->left = insertNode(root->left, x);
-        else 
-            root->right = insertNode(root->right, x);
+// Solution 1 : recursive
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        postorder(root, res);
+        return res;
     }
-    return root;
-}
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
-
-// Solution 1 : recursively, trivial
-void postorder(TreeNode* root, vector<int> &result) {
-    if (root) {
-        postorder(root->left, result);
-        postorder(root->right, result);
-        result.push_back(root->val);
-    }
-}
-vector<int> postorderTraversal_re(TreeNode* root) {
-    vector<int> result;
-    postorder(root, result);
-    return result;
-}
-
-// Solution 2 : iteratively
-vector<int> postorderTraversal_it(TreeNode* root) {
-    vector<int> result;
-    stack<pair<TreeNode*, bool>> s; // store not only iterator, but a flag representing where has been visited
-    TreeNode* it = root;
-    while (it || !s.empty()) {
-        if (it) {
-            s.push(make_pair(it, false));
-            it = it->left;
-        } else {
-            auto &p = s.top();
-            if (p.second) { // if its right child has been visited, pop it
-                s.pop();
-                result.push_back(p.first->val);
-            } else { // else, visit its right child first
-                p.second = true;
-                it = p.first->right;
-            }
+    void postorder(TreeNode* root, vector<int>& res) {
+        if (root) {
+            postorder(root->left, res);
+            postorder(root->right, res);
+            res.push_back(root->val);
         }
     }
-    return result;
-}
+};
 
-// solution 2 another version
-vector<int> postorderTraversal_it2(TreeNode* root) {
-    vector<int> result;
-    stack<TreeNode*> s;
-    TreeNode* cur = root, *prev;
-    do {
-        while (cur) {
-            s.push(cur);
-            cur = cur->left;
-        }
-        prev = NULL;
-        while (!s.empty()) {
-            cur = s.top();
-            s.pop();
-            if (cur->right == prev) {
-                result.push_back(cur->val);
-                prev = cur;
+
+// Solution 2 : iterative, stack
+class Solution_2 {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        TreeNode* pre = NULL; // the last poped node
+        TreeNode* cur = root;
+        stack<TreeNode*> st;
+        while (cur || !st.empty()) {
+            if (cur) {
+                st.push(cur);
+                cur = cur->left;
             } else {
-                s.push(cur);
-                cur = cur->right;
-                break;
+                TreeNode* t = st.top();
+                if (t->right && t->right != pre)
+                    cur = t->right;
+                else {
+                    st.pop();
+                    res.push_back(t->val);
+                    pre = t;
+                }
             }
         }
-    } while (!s.empty());
-    return result;
-}
+        return res;
+    }
+};
 
 int main() {
-    TreeNode* root = NULL;
-    root = insertNode(root, 4);
-    root = insertNode(root, 2);
-    root = insertNode(root, 8);
-    root = insertNode(root, 1);
-    root = insertNode(root, 3);
-    root = insertNode(root, 7);
-    root = insertNode(root, 9);
-    for (auto i : postorderTraversal_it(root))
-        cout << i << " ";
-    cout << endl;
+    Solution s;
     return 0;
 }
+

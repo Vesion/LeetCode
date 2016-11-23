@@ -39,13 +39,14 @@ public:
         stack<TreeNode*> st;
         TreeNode* node = root;
         while (!st.empty() || node) {
-            while (node) {
+            if (node) {
                 st.push(node);
                 node = node->left;
+            } else  {
+                node = st.top(); st.pop();
+                res.push_back(node->val);
+                node = node->right;
             }
-            node = st.top(); st.pop();
-            res.push_back(node->val);
-            node = node->right;
         }
         return res;
     }

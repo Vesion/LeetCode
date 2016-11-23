@@ -1,86 +1,56 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
 struct ListNode {
     int val;
     ListNode* next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode(int val) : val(val), next(NULL) {}
 };
 
-ListNode* appendNode(ListNode* head, int x) {
-    if (!head) {
-        head = new ListNode(x);
-        return head;
+class Solution {
+public:
+    void reorderList(ListNode* head) {
+        if (!head || !head->next) return;
+
+        // split into two halves
+        ListNode *slow = head, *fast = head;
+        while (fast->next && fast->next->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        ListNode* mid = slow->next;
+        slow->next = NULL;
+
+        // reverse the second half
+        mid = reverseList(mid);
+
+        // chain them cross
+        while (head && mid) {
+            ListNode* next = mid->next;
+            mid->next = head->next;
+            head->next = mid;
+            head = mid->next;
+            mid = next;
+        } 
     }
-    head->next = appendNode(head->next, x);
-    return head;
-}
 
-void printList(ListNode* head) {
-    if (head)
-        cout << head->val << " ";
-    else {
-        cout << "NULL" << endl;
-        return;
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre = NULL;
+        while (head) {
+            ListNode* next = head->next;
+            head->next = pre;
+            pre = head;
+            head = next;
+        }
+        return pre;
     }
-    printList(head->next);
-}
-
-void deleteList(ListNode* &head) {
-    if (!head) return;
-    deleteList(head->next);
-    delete head;
-    head = NULL;
-}
-
-ListNode* reverseList(ListNode* head) {
-    if (!head || !head->next) return head;
-    ListNode *prev = NULL; // the end after reversing
-    while (head) {
-        ListNode* temp = head->next;
-        head->next = prev;
-        prev = head;
-        head = temp;
-    }
-    return prev;
-}
-
-// firstly reverse the second half part, then link it with first half part
-void reorderList(ListNode* head) {
-    if (!head || !head->next) return;
-
-    ListNode* first = head;
-    ListNode* fast = head;
-    while (fast && fast->next) {
-        fast = fast->next->next; 
-        head = head->next;
-    }
-    ListNode* second = head->next;
-    head->next = NULL;
-    second = reverseList(second);
-
-    while (second) {
-        ListNode* temp = second->next;
-        second->next = first->next;
-        first->next = second;
-        first = first->next->next;
-        second = temp;
-    }
-}
+};
 
 int main() {
-    ListNode* head = NULL;
-    head = appendNode(head, 1);
-    head = appendNode(head, 2);
-    head = appendNode(head, 3);
-    head = appendNode(head, 4);
-    printList(head);
-
-    reorderList(head);
-    printList(head);
-
-    deleteList(head);
-    printList(head);
-
+    Solution s;
     return 0;
 }
+

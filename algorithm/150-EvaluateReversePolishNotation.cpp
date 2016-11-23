@@ -1,38 +1,34 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
-#include <stack>
-#include <cctype>
+#include <stack> 
 using namespace std;
 
-bool isOperator(string &t) {
-    return (t == "+" || t == "-" || t == "*" || t == "/");
-}
-
-int op(int left, int right, string& op) {
-    if (op == "+") return left + right;
-    if (op == "-") return left - right;
-    if (op == "*") return left * right;
-    if (op == "/") return left / right;
-    return 0;
-}
-
-int evalRPN(vector<string>& tokens) {
-    stack<int> s;
-    for (auto & token : tokens) {
-        if (!isOperator(token)) {
-            s.push(stoi(token));
-            continue;
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        if (tokens.empty()) return 0;
+        stack<int> st;
+        for (string& t : tokens) {
+            if (isalnum(t.back())) st.push(stoi(t));
+            else {
+                int right = st.top(); st.pop();
+                int left = st.top(); st.pop();
+                int result;
+                if (t == "+") result = left + right;
+                else if (t == "-") result = left - right;
+                else if (t == "*") result = left * right;
+                else if (t == "/") result = left / right;
+                st.push(result);
+            }
         }
-        int right = s.top(); s.pop();
-        int left = s.top(); s.pop();
-        s.push(op(left, right, token));
+        return st.top();
     }
-    return s.top();
-}
+};
 
 int main() {
-    vector<string> tokens = {"4", "13", "5", "/", "+"};
-    cout << evalRPN(tokens) << endl;
+    Solution s;
     return 0;
 }
+

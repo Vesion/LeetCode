@@ -1,73 +1,43 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
 struct ListNode {
     int val;
     ListNode* next;
-    ListNode(int x) : val(x), next(NULL) {}
+    ListNode(int val) : val(val), next(NULL) {}
 };
 
-ListNode* appendNode(ListNode* head, int x) {
-    if (!head) {
-        head = new ListNode(x);
-        return head;
-    }
-    head->next = appendNode(head->next, x);
-    return head;
-}
-
-void printList(ListNode* head) {
-    if (head)
-        cout << head->val << " ";
-    else {
-        cout << "NULL" << endl;
-        return;
-    }
-    printList(head->next);
-}
-
-void deleteList(ListNode* &head) {
-    if (!head) return;
-    deleteList(head->next);
-    delete head;
-    head = NULL;
-}
-
-ListNode* insertionSortList(ListNode* head) {
-    if (!head) return NULL;
-    ListNode dummy(-1);
-    dummy.next = head;
-    for (ListNode* i = head; i && i->next; ) {
-        ListNode* cur = i->next;
-        if (cur->val >= i->val) { // do not need to insert
-            i = i->next; // process next one
-            continue; 
-        }
-        // cur must be smaller than some node before
-        for (ListNode* ins = &dummy; ins->next; ins = ins->next) {
-            if (cur->val < ins->next->val) { // find that ins->next bigger than cur
-                i->next = cur->next; // before insertion, put i to cur->next
-                cur->next = ins->next; // break cur
-                ins->next = cur; // break ins
-                break;
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        if (!head || !head->next) return head;
+        ListNode dummy(0); dummy.next = head;
+        ListNode *pre = head, *cur = head->next;
+        while (cur) {
+            if (cur->val >= pre->val) {
+                pre = cur;
+                cur = cur->next;
+            } else {
+                pre->next = cur->next; // break cur node
+                for (ListNode* p1 = &dummy, *p2 = dummy.next; p1 != pre; p1 = p2, p2 = p2->next) { // find the insertion position
+                    if (p2->val > cur->val) {
+                        p1->next = cur;
+                        cur->next = p2;
+                        break;
+                    }
+                }
+                cur = pre->next;
             }
         }
+        return dummy.next;
     }
-    return dummy.next;
-}
+};
 
 int main() {
-    ListNode* head = NULL;
-    head = appendNode(head, 3);
-    head = appendNode(head, 4);
-    head = appendNode(head, 1);
-    head = appendNode(head, 2);
-    printList(head);
-
-    head = insertionSortList(head);
-    printList(head);
-
-    deleteList(head);
-    printList(head);
+    Solution s;
     return 0;
 }
+

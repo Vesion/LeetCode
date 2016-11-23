@@ -23,7 +23,7 @@ private:
 
     list<CacheNode> cacheList;
     unordered_map<int, list<CacheNode>::iterator> cacheMap;
-    int capacity;
+    size_t capacity;
 
 public:
     LRUCache(int capacity) {
@@ -47,9 +47,8 @@ public:
             cacheMap[key] = cacheList.begin();
         }
         else {
-            cacheMap[key]->value = value;
-            cacheList.splice(cacheList.begin(), cacheList, cacheMap[key]);
-            cacheMap[key] = cacheList.begin();
+            get(key);
+            cacheList.front().value = value;
         }
     }
 };
