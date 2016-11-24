@@ -1,50 +1,42 @@
 #include <iostream>
-#include <string>
+#include <algorithm>
 #include <vector>
-#include <unordered_map>
+#include <string>
+#include <unordered_map> 
 using namespace std;
 
-typedef long long ll;
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        if (numerator == 0) return "0";
+        long long a = labs(numerator), b = labs(denominator);
 
-inline ll _abs(ll i) {
-    return (i < 0 ? -i : i);
-}
-
-string fractionToDecimal(int numerator, int denominator) {
-    if (numerator == 0) return "0";
-    if (numerator == denominator) return "1";
-
-    string result;
-    if ((numerator < 0) ^ (denominator < 0)) result += "-";
-    ll a = _abs(numerator);
-    ll b = _abs(denominator);
-
-
-    // interger
-    result += to_string(a/b);
-    a %= b;
-    if (a == 0) return result; // no decimal part, return
-
-    // decimal
-    result += '.';
-    unordered_map<int, int> m; // key is a, value is result.size(), for recurring
-    while (a) {
-        a *= 10;
-        if (m.find(a) != m.end()) { // recurring occurs
-            result.insert(m[a], "(");
-            result += ")";
-            break;
-        }
-        result += to_string(a/b);
-        m[a] = result.size()-1;
+        string res = (numerator > 0) ^ (denominator > 0) ? "-" : "";
+        res += to_string(a/b);
         a %= b;
+        if (a == 0) return res;
+
+        res += ".";
+        unordered_map<int, int> m;
+        while (a) {
+            a *= 10;
+            if (m.count(a)) { // find repeating
+                res.insert(m[a], "(");
+                res += ")";
+                break;
+            }
+            res += to_string(a/b);
+            m[a] = res.size()-1;
+            a %= b;
+        }
+        return res;
     }
-    return result;
-}
+};
+
 
 int main() {
-    int a = 7;
-    int b = 12;
-    cout << fractionToDecimal(a, b) << endl;
+    Solution s;
+    cout << s.fractionToDecimal(1000, 20) << endl;
     return 0;
 }
+

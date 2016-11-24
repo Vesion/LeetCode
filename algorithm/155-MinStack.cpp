@@ -1,50 +1,75 @@
 #include <iostream>
-#include <stack>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <stack> 
 using namespace std;
 
-// Solution 1: uses two stack, one in push order, one in sorted order for retrieve min value
-class MinStack {
+// Solution 1 : two stacks
+class MinStack_2 {
 private:
-    stack<int> _ps;
-    stack<int> _ss;
+    stack<int> num_st;
+    stack<int> min_st;
 
 public:
+    MinStack_2() { }
+    
     void push(int x) {
-        _ps.push(x); 
-        if (_ss.empty() || x <= getMin()) _ss.push(x);
-
+        num_st.push(x);
+        if (min_st.empty() || x <= min_st.top()) min_st.push(x);
     }
-
+    
     void pop() {
-        if (_ps.top() == getMin()) _ss.pop();
-        _ps.pop(); 
+        if (num_st.top() == min_st.top()) min_st.pop();
+        num_st.pop();
     }
-
+    
     int top() {
-        return _ps.top(); 
+        return num_st.top();
     }
-
+    
     int getMin() {
-        return _ss.top();
+        return min_st.top();
     }
 };
 
 
-// Soltuon 2 : uses only one stack, store the gap between the min value and the current value
-// we do not implement here
+// Solution 2 : one stack, billiant
+class MinStack {
+private:
+    stack<int> st;
+    int min = INT_MAX;
+
+public:
+    MinStack() { }
+    
+    void push(int x) {
+        if (x <= min) {
+            st.push(min); // push old min
+            min = x;
+        }
+        st.push(x);
+    }
+    
+    void pop() {
+        int x = st.top(); st.pop();
+        if (x == min) {
+            min = st.top();
+            st.pop();
+        }
+    }
+    
+    int top() {
+        return st.top(); 
+    }
+    
+    int getMin() {
+        return min;
+    }
+};
+
 
 int main() {
-    MinStack s;
-    s.push(4);
-    cout << s.getMin() << endl;
-    s.push(1);
-    cout << s.getMin() << endl;
-    s.push(6);
-    cout << s.getMin() << endl;
-    cout << s.top() << endl;
-    s.pop();
-    s.pop();
-    cout << s.top() << endl;
-    cout << s.getMin() << endl;
     return 0;
 }
+

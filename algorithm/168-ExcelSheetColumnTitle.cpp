@@ -1,18 +1,31 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <string>
 using namespace std;
 
-// corner case : 26's times, so use (n-1)%26+'A', rather than n%26-1+'A'
-string convertToTitle(int n) {
-    string result;
-    while (n) {
-        result = char((n-1)%26 + 'A') + result;
-        n = (n-1) / 26;
+
+// Convert decimal to base-26
+class Solution {
+public:
+    string convertToTitle(int n) {
+        string res;
+        while (n) {
+            // why --n? 
+            // because 'A' = 1, not = 0
+            // e.g. n = [1,26], if n%26 directly, we get [1,2,..,0], then we get [B,C,...,Z]
+            //      so, after --n, we get [0,1,...,25], then we can get [A,B,...Z]
+            --n;
+            res = string(1, n%26 + 'A') + res;
+            n /= 26;
+        }
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    cout << convertToTitle(26) << endl;
+    Solution s;
+    cout << s.convertToTitle(26) << endl;
     return 0;
 }
+

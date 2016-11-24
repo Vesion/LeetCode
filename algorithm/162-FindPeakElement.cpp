@@ -1,31 +1,28 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-// Solution 1 : brute-force, O(n) time
-int findPeakElement_bf(vector<int>& nums) {
-    int n = nums.size();
-    for (int i = 0; i < n; ++i)
-        if (nums[i] > nums[i+1]) return i; // here only need to compare nums[i] to nums[i+1]
-    return n-1;
-}
-
-
-// Soluton 2 : binary search
-int findPeakElement_bs(vector<int>& nums) {
-    int left = 0, right = nums.size()-1;
-    while (left < right) {
-        int mid = left + (right-left)/2;
-        if (nums[mid] > nums[mid+1])
-            right = mid;
-        else
-            left = mid+1;
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        int left = 0, right = nums.size()-1;
+        while (left < right) {
+            int mid = left + (right-left)/2;
+            if (nums[mid] > nums[mid+1]) // if nums[mid] > nums[mid+1], there must be a peak in nums[left,...,mid]
+                right = mid;
+            else // if nums[mid] < nums[mid+1], there must be a peak in nums[mid+1,...,right]
+                left = mid+1;
+        }
+        return left;
     }
-    return left;
-}
+};
 
 int main() {
-    vector<int> nums = {2, 1};
-    cout << findPeakElement_bs(nums) << endl;
+    Solution s;
+    vector<int> nums = {1,2};
+    cout << s.findPeakElement(nums) << endl;
     return 0;
 }
+
