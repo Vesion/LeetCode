@@ -1,20 +1,26 @@
 #include <iostream>
-#include <string>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-// do NOT make trouble to compare two integers, instead compare string
-string largestNumber(vector<int>& nums) {
-    sort(nums.begin(), nums.end(), [](const int& x, const int& y) {
-            return to_string(x) + to_string(y) > to_string(y) + to_string(x); });
-    if (nums[0] == 0) return "0";
-    string result;
-    for (auto & num : nums) result += to_string(num);
-    return result;
-}
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        if (nums.empty()) return "";
+        sort(nums.begin(), nums.end(), [](const int n1, const int n2) {
+                return to_string(n1)+to_string(n2) > to_string(n2)+to_string(n1); });
+        if (nums[0] == 0) return "0";
+        string res;
+        for (int num : nums) res += to_string(num);
+        return res;
+    }
+};
 
 int main() {
-    vector<int> nums = {0, 0};
-    cout << largestNumber(nums) << endl;
+    Solution s;
+    vector<int> nums = {0,0};
+    cout << s.largestNumber(nums) << endl;
     return 0;
 }
+
