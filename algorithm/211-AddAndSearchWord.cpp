@@ -1,66 +1,55 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-// This problem is an application of the Trie data structure (208-ImplementTrie)
-
-// Differ from 208, this time we use array[26] rather than vector to get good performance.
-// And TrieNode we do not include 'val' field. In other words, key is value.
-
-class TrieNode {
-public :
-    bool isEnd;
-    TrieNode* children[26];
-    TrieNode() : isEnd(false) {
-        fill_n(children, 26, nullptr);
-    }
-};
-
 class WordDictionary {
+private:
+    struct TrieNode {
+        bool isEnd;
+        TrieNode* nexts[26];
+        TrieNode() : isEnd(false) { fill_n(nexts, 26, nullptr); };
+    };
+
+    TrieNode* root;
+
+    bool dfs(string& word, int start, TrieNode* cur) {
+        if (!cur) return false;
+        if (start == (int)word.size()) return cur->isEnd;
+        if (word[start] != '.') return dfs(word, start+1, cur->nexts[word[start]-'a']);
+        for (int i = 0; i < 26; ++i)
+            if (dfs(word, start+1, cur->nexts[i])) return true;
+        return false;
+    }
+
 public:
-    WordDictionary() { root = new TrieNode(); } 
+    
+    WordDictionary() { root = new TrieNode(); }
 
     void addWord(string word) {
         TrieNode* cur = root;
-        for (auto & ch : word) {
-            if (!cur->children[ch - 'a'])
-                cur->children[ch - 'a'] = new TrieNode();
-            cur = cur->children[ch - 'a'];
+        for (char c : word) {
+            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
+            cur = cur->nexts[c-'a'];
         }
         cur->isEnd = true;
     }
 
     bool search(string word) {
-        return query(word, 0, root);
-    }
-
-private:
-    TrieNode* root;
-    
-    // use DFS to implement matching regex '.'
-    bool query(string& word, int start, TrieNode* node) {
-        TrieNode* cur = node;
-        for (int i = start; i < word.size(); ++i) {
-            if (cur && word[i] != '.')
-                cur = cur->children[word[i] - 'a'];
-            else if (cur && word[i] == '.') {
-                TrieNode* tmp = cur;
-                for (int j = 0; j < 26; ++j) {
-                    cur = tmp->children[j];
-                    if (query(word, i+1, cur)) return true;
-                }
-            }
-            else break;
-        }
-        return cur && cur->isEnd;
+        return dfs(word, 0, root);
     }
 };
 
 int main() {
-    WordDictionary wd;
-    wd.addWord("abcd");
-    cout << wd.search("abcd") << endl;
-    cout << wd.search("a...") << endl;
+    WordDictionary w;
+    w.addWord("bad");
+    w.addWord("dad");
+    w.addWord("mad");
+    cout << w.search("pad") << endl;
+    cout << w.search("bad") << endl;
+    cout << w.search(".ad") << endl;
+    cout << w.search("b..") << endl;
     return 0;
 }
+

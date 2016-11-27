@@ -1,71 +1,72 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <unordered_set>
+#include <string>
+#include <queue> 
 using namespace std;
 
-// based on 207-CourseSchedule, this problem require print topological sort
-
-
-// an auxiliary function to make a DAG
-vector<unordered_set<int>> makeGraph(int numCourses, vector<pair<int, int>>& prerequisites) {
-    vector<unordered_set<int>> graph(numCourses);
-    for (auto & p : prerequisites) graph[p.second].insert(p.first);
-    return graph;
-}
-
-
 // Solution 1 : BFS
-void getIndegree(vector<int>& indgree, vector<unordered_set<int>>& graph) {
-    for (auto & p : graph)
-        for (auto & nbr : p) indgree[nbr]++;
-}
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<vector<int>> graph(numCourses);
+        vector<int> indegree(numCourses, 0);
+        for (auto& p : prerequisites) {
+            graph[p.second].push_back(p.first);
+            indegree[p.first]++;
+        }
 
-vector<int> findOrder_BFS(int numCourses, vector<pair<int, int>>& prerequisites) {
-    vector<int> result;
-    auto graph = makeGraph(numCourses, prerequisites);   
-    vector<int> indgree(numCourses, 0); getIndegree(indgree, graph);
-    for (int i = 0; i < numCourses; ++i) {
-        int start = 0;
-        while (start < numCourses) { if (!indgree[start]) break; ++start; }
-        if (start == numCourses) return {};
-        indgree[start] = -1;
-        result.push_back(start); // 'start' node has been visited, push it to result
-        for (auto & nbr : graph[start]) --indgree[nbr];
-    }
-    return result;
-}
+        queue<int> q;
+        for (int i = 0; i < numCourses; ++i) if (indegree[i] == 0) q.push(i);
+        if (q.empty()) return {};
+
+        vector<int> res;
+        while (!q.empty()) {
+            int t = q.front(); q.pop();
+            numCourses--;
+            res.push_back(t);
+            for (int nbr : graph[t]) {
+                if (--indegree[nbr] == 0) q.push(nbr);
+            }
+            if (q.empty() && numCourses != 0) return {};
+        }
+        return res;
+    } 
+};
 
 
 // Solution 2 : DFS
-bool hasCycle(vector<unordered_set<int>>& graph, int node, vector<bool>& visited, vector<bool>& onpath, vector<int>& result) {
-    if (visited[node]) return false;
-    onpath[node] = visited[node] = true;
-    for (auto & nbr : graph[node])
-        if (onpath[nbr] || hasCycle(graph, nbr, visited, onpath, result))
-            return true;
-    onpath[node] = false;
-    result.push_back(node); // here we push nodes which are latter been visited into front of those are firstly been visited, so a final reversal is required
-    return false;
-}
+class Solution_2 {
+public:
+    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+        vector<vector<int>> graph(numCourses);
+        for (auto& p : prerequisites) graph[p.second].push_back(p.first);
 
-vector<int> findOrder_DFS(int numCourses, vector<pair<int, int>>& prerequisites) {
-    vector<int> result;
-    auto graph = makeGraph(numCourses, prerequisites);
-    vector<bool> visited(numCourses, false);
-    vector<bool> onpath(numCourses, false);
-    for (int i = 0; i < numCourses; ++i)
-        if (!visited[i] && hasCycle(graph, i, visited, onpath, result))
-            return {};
-    reverse(result.begin(), result.end()); // reverse to generate topological sequence
-    return result;
-}
+        vector<bool> visited(numCourses, false), onpath(numCourses, false);
+        vector<int> res;
+        for (int i = 0; i < numCourses; ++i) {
+            if (!visited[i] && hasCycle(i, graph, visited, onpath, res)) return {};
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    } 
+
+    bool hasCycle(int cur, vector<vector<int>>& graph, vector<bool>& visited, vector<bool>& onpath, vector<int>& res) {
+        if (visited[cur]) return false;
+        visited[cur] = onpath[cur] = true;
+        for (int nbr : graph[cur])
+            if (onpath[nbr] || hasCycle(nbr, graph, visited, onpath, res)) return true;
+        onpath[cur] = false;
+        res.push_back(cur);
+        return false;
+    }
+};
 
 
 int main() {
-    vector<pair<int, int>> prerequisites = {{1,0},{2,0},{3,1},{3,2}};
-    //vector<pair<int, int>> prerequisites = {{0,1},{3,1},{1,3},{3,2}};
-    //auto result = findOrder_BFS(4, prerequisites);
-    auto result = findOrder_DFS(4, prerequisites);
-    for (auto i:result) cout << i << " "; cout << endl;
+    Solution_2 s;
+    vector<pair<int,int>> p = {{1,0}};
+    s.findOrder(2, p);
     return 0;
 }
+

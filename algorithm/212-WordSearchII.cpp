@@ -1,68 +1,63 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
-#include <unordered_set>
+#include <vector>
+#include <string>
+#include <unordered_set> 
 using namespace std;
 
-struct TrieNode {
-    bool isEnd;
-    TrieNode* children[26];
-    TrieNode() : isEnd(false) {
-        fill_n(children, 26, nullptr);
-    }
-};
-
-class Trie {
+class Solution {
 private:
+    struct TrieNode {
+        bool isEnd;
+        TrieNode* nexts[26];
+        TrieNode() : isEnd(false) { fill_n(nexts, 26, nullptr); }
+    };
+
     TrieNode* root;
-public:
-    Trie(vector<string>& words) {
-        root = new TrieNode();
-        for (auto & word : words)
-            addWord(word);
-    }
 
-    TrieNode* getRoot() { return root; }
-
-    void addWord(string& word) {
+    void insert(string word) {
         TrieNode* cur = root;
-        for (auto & ch : word) {
-            if (!cur->children[ch-'a'])
-                cur->children[ch-'a'] = new TrieNode();
-            cur = cur->children[ch-'a'];
+        for (char c : word) {
+            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
+            cur = cur->nexts[c-'a'];
         }
         cur->isEnd = true;
     }
+
+public:
+    int m, n;
+    unordered_set<string> sres;
+
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        if (board.empty()) return {};
+        root = new TrieNode();
+        for (string& word : words) insert(word);
+
+        m = board.size(), n = board[0].size();
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j)
+                dfs(board, i, j, root, "");
+        vector<string> res;
+        for (string s : sres) res.push_back(s);
+        return res;
+    }
+
+    void dfs(vector<vector<char>>& board, int x, int y, TrieNode* cur, string path) {
+        char c = board[x][y];
+        if (c == ' ' || !cur->nexts[c-'a']) return;
+
+        cur = cur->nexts[c-'a'];
+        path += c;
+        if (cur->isEnd) sres.insert(path);
+
+        board[x][y] = ' ';
+        if (x-1 >= 0) dfs(board, x-1, y, cur, path);
+        if (x+1 < m) dfs(board, x+1, y, cur, path);
+        if (y-1 >= 0) dfs(board, x, y-1, cur, path);
+        if (y+1 < n) dfs(board, x, y+1, cur, path);
+        board[x][y] = c;
+    }
 };
-
-void dfs(vector<vector<char>>& board, TrieNode* root, int x, int y, int m, int n, unordered_set<string>& r, string word) {
-    if (x < 0 || x >= m || y < 0 || y >= n || board[x][y] == ' ') return; // out if bound or visit a char was visited before in this turn
-    if (!root->children[board[x][y]-'a']) return; // do not match in trie
-    root = root->children[board[x][y]-'a']; // if match, trie down
-    word += board[x][y];
-    if (root->isEnd) r.insert(word);
-    char c = board[x][y];
-    board[x][y] = ' ';
-    dfs(board, root, x+1, y, m, n, r, word);
-    dfs(board, root, x, y+1, m, n, r, word);
-    dfs(board, root, x-1, y, m, n, r, word);
-    dfs(board, root, x, y-1, m, n, r, word);
-    board[x][y] = c;
-}
-
-vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
-    Trie* trie = new Trie(words);
-    TrieNode* root = trie->getRoot();
-    unordered_set<string> r;
-    int m = board.size(); if (m == 0) return {};
-    int n = board[0].size(); if (n == 0) return {};
-    for (int i = 0; i < m; ++i)
-        for (int j = 0; j < n; ++j)
-            dfs(board, root, i, j, m, n, r, "");
-    vector<string> result;
-    for (auto & word : r) result.push_back(word);
-    return result;
-}
 
 int main() {
     vector<vector<char>> board = {
@@ -72,7 +67,9 @@ int main() {
         {'i','f','l','v'}
     };
     vector<string> words = {"oath","pea","eat","rain"};
-    auto result = findWords(board, words);
+    Solution s;
+    auto result = s.findWords(board, words);
     for (auto w:result) cout << w << endl;
     return 0;
 }
+
