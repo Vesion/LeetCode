@@ -1,23 +1,53 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
 using namespace std;
 
-// Solution 1 : brute-force, iterate all numbers, O(n), TLE of course
-int rangeBitwiseAnd_bf(int m, int n) {
-    int result = m;
-    for (int k = m+1; k <= n; ++k)
-        result &= k;
-    return result;
-}
+// Solution 1 : consider from lowest bit to highest bit, judge each bit whether can be 0 or not
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        long long res = m;
+        while (res) {
+            long long low = res & -res;
+            if (res + low <= n) res &= (res-1);
+            else break;
+        }
+        return res;
+    }
+};
 
 
-// Solution 2 : O(lgn)
-// Consider the bits from low to high. if n > m, the lowest bit will be 0, and then we could transfer the problem to sub-problem: rangeBitwiseAnd(m>>1, n>>1).
-int rangeBitwiseAnd(int m, int n) {
-    return (n > m) ? rangeBitwiseAnd(m>>1, n>>1)<<1 : m;
-}
+// Solution 2 : set right most bits to 0 if m != n
+class Solution_2 {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        int trans = 0;
+        while(m != n) {
+            ++trans;
+            m >>= 1;
+            n >>= 1;
+        }
+        return m << trans;
+    }
+};
+
+
+// Solution 3 : find the left most common bits (similar to solution 2, but faster)
+class Solution_3 {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        int mask = INT_MAX;
+        while ((m & mask) != (n & mask)) mask <<= 1;
+        return n & mask;
+    }
+};
+
 
 int main() {
-    cout << rangeBitwiseAnd_bf(4, 7) << endl;
-    cout << rangeBitwiseAnd(4, 7) << endl;
+    Solution s;
+    cout << s.rangeBitwiseAnd(0, INT_MAX) << endl;;
     return 0;
 }
+
