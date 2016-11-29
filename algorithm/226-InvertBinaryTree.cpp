@@ -1,52 +1,51 @@
 #include <iostream>
-#include <stack>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <stack> 
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
 
-// similiar to prevorder/inorder/postorder traversal
-
-// Solution 1 : recursive, here we use preorder
-TreeNode* invertTree(TreeNode* root) {
-    if (!root) return NULL;
-    // swap
-    swap(root->left, root->right);
-    // recursive
-    invertTree(root->left);
-    invertTree(root->right);
-    return root;
-}
+// Solution 1 : recursive
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return root;
+        swap(root->left, root->right);
+        invertTree(root->left);
+        invertTree(root->right);
+        return root;
+    } 
+};
 
 
 // Solution 2 : iterative
-TreeNode* invertTree_it(TreeNode* root) {
-    stack<TreeNode*> s;
-    s.push(root);
-    while (!s.empty()) {
-        auto node = s.top();
-        s.pop();
-        if (node) {
-            s.push(node->left);
-            s.push(node->right);
-            swap(node->left, node->right);
+class Solution_2 {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return root;
+        stack<TreeNode*> st;
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* t = st.top(); st.pop();
+            swap(t->left, t->right);
+            if (t->left) st.push(t->left);
+            if (t->right) st.push(t->right);
         }
-    }
-    return root;
-}
+        return root;
+    } 
+};
+
+
 
 int main() {
+    Solution s;
     return 0;
 }
+

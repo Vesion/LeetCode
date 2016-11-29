@@ -1,34 +1,32 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-void add(vector<string>& result, int start, int end) {
-    if (start != end)
-        result.push_back(to_string(start) + "->" + to_string(end));
-    else
-        result.push_back(to_string(end));
-}
-
-vector<string> summaryRanges(vector<int>& nums) {
-    vector<string> result;
-    int n = nums.size();
-    if (n == 0) return result;
-    int start = nums[0], end = nums[0];
-    for (int i = 1; i < n; ++i) {
-        if (nums[i] == end+1) ++end;
-        else {
-            add(result, start, end);
-            start = end = nums[i];
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        if (nums.empty()) return {};
+        int start = nums[0];
+        vector<string> res;
+        for (int i = 1; i < (int)nums.size(); ++i) {
+            if (nums[i-1]+1 < nums[i]) {
+                res.push_back(getRange(start, nums[i-1]));
+                start = nums[i];
+            }
         }
+        res.push_back(getRange(start, nums.back()));
+        return res;
     }
-    add(result, start, end);
-    return result;
-}
+    
+    string getRange(int n1, int n2) {
+        if (n1 == n2) return to_string(n1);
+        return to_string(n1) + "->" + to_string(n2);
+    }
+};
 
 int main() {
-    vector<int> nums = {1, 4, 6, 8};
-    auto r = summaryRanges(nums);
-    for (auto s:r) cout << s << endl;
+    Solution s;
     return 0;
 }

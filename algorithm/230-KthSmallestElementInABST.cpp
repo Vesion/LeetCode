@@ -1,92 +1,83 @@
 #include <iostream>
-#include <stack>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <stack> 
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-TreeNode* appendNode(TreeNode* root, int x) {
-    if (!root)
-        root = new TreeNode(x);
-    else {
-        if (x <= root->val) root->left = appendNode(root->left, x);
-        else root->right = appendNode(root->right, x);
+
+// Solution 1 : count number of nodes, O(nlogn)
+// If we can modify the node's structure, we can add a 'number of nodes' field, then it will cost O(logn) time.
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        if (!root) return 0;
+        int leftNodes = countNodes(root->left);
+        if (leftNodes+1 < k) return kthSmallest(root->right, k-leftNodes-1);
+        if (leftNodes+1 > k) return kthSmallest(root->left, k);
+        return root->val;
     }
-    return root;
-}
 
-void printInorder(TreeNode* root) {
-    if (root) {
-        printInorder(root->left);
-        cout << root->val << " ";
-        printInorder(root->right);
+    int countNodes(TreeNode* root) {
+        if (!root) return 0;
+        return countNodes(root->left) + countNodes(root->right) + 1;
     }
-}
+};
 
-void deleteTree(TreeNode* &root) {
-    if (!root) return;
-    deleteTree(root->left);
-    deleteTree(root->right);
-    delete root;
-    root = NULL;
-}
 
-// Solution 1 : inorder traversal, iterative with stack
-int kthSmallest_inorder(TreeNode* root, int k) {
-    stack<TreeNode*> s;
-    TreeNode* it = root;
-    int result;
-    while (it || !s.empty()) {
-        if (it) s.push(it), it = it->left;
-        else {
-            it = s.top(); s.pop();
-            result = it->val;
-            it = it->right;
-            if (!--k) break;
+// Solution 2.1 : inorder traversal, recursive
+class Solution_21 {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        if (!root) return 0;
+        int res = 0;
+        inorder(root, k, res);
+        return res;
+    }
+
+    void inorder(TreeNode* root, int& k, int& res) {
+        if (root) {
+            inorder(root->left, k, res);
+            if (--k == 0) {
+                res = root->val;
+                return;
+            }
+            inorder(root->right, k, res);
         }
     }
-    return result;
-}
+};
 
 
-// Solution 1 v2 : inorder traversal, recursive
-// we do not implement here
+// Solution 2.3 : inorder traversal, iterative
+class Solution_22 {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        if (!root) return 0;
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while (!st.empty() || cur) {
+            if (cur) {
+                st.push(cur);
+                cur = cur->left;
+            } else {
+                cur = st.top(); st.pop();
+                if (--k == 0) break;
+                cur = cur->right;
+            }
+        }
+        return cur->val;
+    }
+};
 
-
-// Solution 2 : binary search, preferable
-// Here for concise code, we do not use a table to store number of each subtree's nodes, so 'countNodes' is called in recursion, costing large time and doing repetitive work.
-// So if we could modify the BST node's structure, we should add a field 'number of nodes' into the structure.
-int countNodes(TreeNode* root) {
-    if (!root) return 0;
-    return countNodes(root->left) + countNodes(root->right) + 1;
-}
-
-int kthSmallest(TreeNode* root, int k) {
-    int left = countNodes(root->left);
-    if (k <= left) return kthSmallest(root->left, k);
-    if (k > left+1) return kthSmallest(root->right, k-1-left);
-    return root->val; // k == left+1
-}
 
 int main() {
-    TreeNode* root = NULL;
-    root = appendNode(root, 6);
-    root = appendNode(root, 4);
-    root = appendNode(root, 3);
-    root = appendNode(root, 5);
-    root = appendNode(root, 8);
-    root = appendNode(root, 7);
-    root = appendNode(root, 9);
-    printInorder(root);
-    cout << endl;
-
-    cout << kthSmallest_inorder(root, 4) << endl;
-    cout << kthSmallest(root, 4) << endl;
-
-    deleteTree(root);
+    Solution s;
     return 0;
 }
+

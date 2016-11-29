@@ -9,13 +9,11 @@ using namespace std;
 class Solution {
 public:
     int majorityElement(vector<int>& nums) {
-        int res, votes = 0;
+        int res = 0, votes = 0;
         for (int num : nums) {
-            if (votes == 0) {
-                res = num;
-                votes = 1;
-            } else {
-                if (res == num) ++votes;
+            if (num == res) ++votes;
+            else {
+                if (votes == 0) res = num, votes = 1;
                 else --votes;
             }
         }

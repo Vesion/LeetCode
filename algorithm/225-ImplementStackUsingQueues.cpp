@@ -1,42 +1,38 @@
 #include <iostream>
-#include <queue>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <queue> 
 using namespace std;
 
-// one queue, push then rotate to reverse order
 class Stack {
+private:
+    queue<int> q;
 public:
-    queue<int> que;
     void push(int x) {
-        que.push(x);
-        for(int i = 0; i < que.size()-1; ++i){
-            que.push(que.front());
-            que.pop();
+        int len = q.size();
+        q.push(x);
+        while (len--) {
+            int t = q.front();
+            q.pop();
+            q.push(t);
         }
     }
 
     void pop() {
-        que.pop();
+        q.pop();
     }
 
     int top() {
-        return que.front();
+        return q.front();
     }
 
     bool empty() {
-        return que.empty();
+        return q.empty();
     }
 };
 
 int main() {
-    Stack s;
-    cout << s.empty() << endl;
-    s.push(1); s.push(2); s.push(3);
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.empty() << endl;
     return 0;
 }
+
