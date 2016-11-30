@@ -10,20 +10,6 @@ struct ListNode {
     ListNode(int val) : val(val), next(NULL) {}
 };
 
-void print(ListNode* head) {
-    if (head) {
-        cout << head->val << " ";
-        print(head->next);
-    }
-}
-
-ListNode* append(ListNode* head, int val) {
-    if (!head) head = new ListNode(val);
-    else head->next = append(head->next, val);
-    return head;
-}
-
-
 // Solution 1.1 : trivial
 class Solution_1 {
 public:
