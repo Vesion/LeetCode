@@ -1,49 +1,34 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
 struct TreeNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode *left, *right;
+    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-void deleteTree(TreeNode* &root) {
-    if (root) {
-        deleteTree(root->left);
-        deleteTree(root->right);
-        delete root;
-        root = NULL;
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        if (root) dfs(root, "", res);
+        return res;
     }
-}
-
-void dfs(vector<string>& result, string path, TreeNode* root) {
-    if (!root->left && !root->right) {
-        result.push_back(path);
-        return;
+    
+    void dfs(TreeNode* root, string path, vector<string>& res) {
+        if (!root->left && !root->right) {
+            res.push_back(path + to_string(root->val));
+            return;
+        }
+        if (root->left) dfs(root->left, path + to_string(root->val) + "->", res);
+        if (root->right) dfs(root->right, path + to_string(root->val) + "->", res);
     }
-    if (root->left) dfs(result, path + "->" + to_string(root->left->val), root->left);
-    if (root->right) dfs(result, path + "->" + to_string(root->right->val), root->right);
-}
-
-vector<string> binaryTreePaths(TreeNode* root) {
-    if (!root) return {};
-    vector<string> result;
-    dfs(result, to_string(root->val), root);
-    return result;
-}
+};
 
 int main() {
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->left = new TreeNode(4);
-    root->right->left = new TreeNode(5);
-
-    auto r = binaryTreePaths(root);
-    for (auto i : r) cout << i << ' '; cout << endl;
-
-    deleteTree(root);
+    Solution s;
     return 0;
 }

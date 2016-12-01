@@ -1,26 +1,25 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
-// similiar to 136
-// firstly use XOR in one scan to get the diff, then find the first set bit, then nums can be divided into two groups with that bit set or not, XOR them respectively
-vector<int> singleNumber(vector<int>& nums) {
-    int diff = 0;
-    for (auto & num : nums)
-        diff ^= num;
-    diff &= -diff; // get the first set bit
-    
-    vector<int> result(2, 0);
-    for (auto & num : nums) {
-        if (num & diff) result[0] ^= num;
-        else result[1] ^= num;
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        int xor2 = 0;
+        for (int num : nums) xor2 ^= num;
+        int t = xor2 & -xor2;
+        vector<int> res(2, 0);
+        for (int num : nums) {
+            if (t&num) res[0] ^= num;
+            else res[1] ^= num;
+        }
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    vector<int> nums = {1, 2, 1, 3, 5, 2};
-    auto result = singleNumber(nums);
-    cout << result[0] << " " << result[1] << endl;
+    Solution s;
     return 0;
 }
