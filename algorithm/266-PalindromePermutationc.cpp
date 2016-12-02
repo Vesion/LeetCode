@@ -6,8 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    bool isUgly(int num) {
-        return (num != 0) && ((num == 1) || (num%2 == 0 && isUgly(num/2)) || (num%3 == 0 && isUgly(num/3)) || (num%5 == 0 && isUgly(num/5)));
+    bool canPermutePalindrome(string s) {
+        bitset<128> m;
+        for (char c : s) m.flip(c);
+        return m.count() < 2;
     }
 };
 

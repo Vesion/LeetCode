@@ -1,42 +1,50 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <set>
+#include <string>
+#include <set> 
 using namespace std;
 
-// dp problem, the key idea is to maintain a sorted array of 2, 3, 5's multiples
-
-
-// Solution 1 : do not sort myself, but use std::set, slow
-int nthUglyNumber_set(int n) {
-    if (n <= 5) return n;
-    set<long long> s;
-    for (int i = 1; i <= 5; ++i) s.insert(i);
-    long long result = 0;
-    while (n--) {
-        result = *s.begin();
-        s.erase(s.begin());
-        for (int i = 2; i <= 5; ++i) s.insert(i*result);
+// Solution 1 : set
+class Solution_1 {
+public:
+    int nthUglyNumber(int n) {
+        if (n <= 5) return n;
+        set<long long> s({1,2,3,4,5});
+        long long res = 0;
+        while (n--) {
+            res = *s.begin();
+            s.erase(s.begin());
+            s.insert(res*2);
+            s.insert(res*3);
+            s.insert(res*5);
+        }
+        return res;
     }
-    return result;
-}
+};
 
 
-// Solution 2 : maintain myself, use three indices to trace the last generated numbers based to 2, 3, 5, fast
-int nthUglyNumber(int n) {
-    vector<int> ugly(n, 1);
-    int p2 = 0, p3 = 0, p5 = 0; // indices
-    for (int i = 1; i < n; ++i) {
-        int m2 = ugly[p2]*2, m3 = ugly[p3]*3, m5 = ugly[p5]*5;
-        ugly[i] = min(m2, min(m3, m5));
-        if (ugly[i] == m2) ++p2;
-        if (ugly[i] == m3) ++p3;
-        if (ugly[i] == m5) ++p5;
+// Solution 2 : dp, tracking the smallest generated number based to 2, 3, 5
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> res(n, 1);
+        int p2 = 0, p3 = 0, p5 = 0;
+        for (int i = 1; i < n; ++i) {
+            int r2 = res[p2]*2, r3 = res[p3]*3, r5 = res[p5]*5;
+            res[i] = min(r2, min(r3, r5));
+            if (res[i] == r2) ++p2;
+            if (res[i] == r3) ++p3;
+            if (res[i] == r5) ++p5;
+        }
+        return res[n-1];
     }
-    return ugly[n-1];
-}
+};
+
 
 int main() {
-    cout << nthUglyNumber(1407) << endl;
-    cout << nthUglyNumber_set(1407) << endl;
+    Solution s;
+    cout << s.nthUglyNumber(7) << endl;
     return 0;
 }
+
