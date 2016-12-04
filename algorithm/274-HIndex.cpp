@@ -1,39 +1,53 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <unordered_map>
+#include <string>
 using namespace std;
 
-// Soluton 1 : sort, trivial, O(nlgn) time, O(1) space
-int hIndex_sort(vector<int>& citations) {
-    if (citations.empty()) return 0;
-    sort(citations.begin(), citations.end(), [](int a, int b) { return a > b; });
-    int i;
-    for (i = 1; i <= citations.size(); ++i)
-        if (citations[i-1] < i) break;
-    return i-1;
-}
+// Solution 1 : sort, O(nlogn+n) time, O(1) space
+class Solution_1 {
+public:
+    int hIndex(vector<int>& citations) {
+        if (citations.empty()) return 0;
+        sort(citations.begin(), citations.end(), greater<int>());
+        int n = citations.size();
+        // find the first one citations[i] < i+1
+        // if use binary search here, we can get O(nlogn + logn) time
+        for (int i = 0; i < n; ++i) {
+            if (citations[i] < i+1) return i;
+        }
+        return n;
+    }
+};
 
 
-// Solution 2 : hash table, like count sort, O(n) time, O(n) space
-int hIndex_count(vector<int>& citations) {
-    if (citations.empty()) return 0;
-    int n = citations.size();
-    vector<int> count(n+1, 0);
-    for (auto & c : citations) {
-        if (c > n) ++count[n];
-        else ++count[c];
+// Solution 2 : counting sort, O(n) time, O(n) space
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        if (citations.empty()) return 0;
+        int n = citations.size();
+        vector<int> count(n+1, 0);
+        for (int c : citations) {
+            if (c > n) count[n]++;
+            else count[c]++;
+        }
+
+        int total = 0;
+        for (int i = n; i >= 0; --i) {
+            total += count[i];
+            if (total >= i) return i;
+        }
+        return 0;
     }
-    int i, total = 0;
-    for (i = n; i >= 0; --i) {
-        total += count[i];
-        if (total >= i) return i;
-    }
-    return 0;
-}
+};
+
+
 
 int main() {
-    vector<int> citations = {0, 1};
-    cout << hIndex_sort(citations) << endl;
-    cout << hIndex_count(citations) << endl;
+    Solution s;
+    vector<int> c = {6,5,3,3,1,0};
+    cout << s.hIndex(c) << endl;
     return 0;
 }
+

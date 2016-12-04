@@ -1,50 +1,44 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-const string Small[] = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
-const string Middle[] = {"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
-const string Large[] = {"Hundred", "Thousand", "Million", "Billion"};
 
-void strip(string& s) {
-    auto b = s.find_first_not_of(" ");
-    auto e = s.find_last_not_of(" ");
-    s = s.substr(b, e-b+1);
-}
+// Clean code!
+class Solution {
+public:
+    string digit[20] = {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", 
+        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    string ten[10] = {"Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
 
-string convert(int num) { // convert a number less than 1000 to words
-    string result;
-    if (num >= 100) { result += Small[num/100] + " " + Large[0] + " "; num %= 100; }
-    if (num < 20) { if (num || result.empty()) result += Small[num];  }
-    else { // 100 > num >= 20 
-        result += Middle[num/10] + " "; num %= 10; 
-        if (num) result += Small[num];
+    string numberToWords(int num) {
+        if (num == 0) return "Zero";
+        string ret = int2string(num);
+        return ret.substr(1, ret.length() - 1); // trim
     }
-    strip(result);
-    return result;
-}
 
-string numberToWords(int num) {
-    vector<int> chunks;
-    while (num) { chunks.push_back(num%1000); num /= 1000; }
-    reverse(chunks.begin(), chunks.end());
-
-    string result;
-    int n = chunks.size();
-    for (int i = 0; i < n; ++i) {
-        string r = convert(chunks[i]);
-        if (r != "Zero") {
-            if (i != n-1) r += " " + Large[n-1-i] + " ";
-            result += r;
+    string int2string(int n) {
+        if (n >= 1000000000) {
+            return int2string(n / 1000000000) + " Billion" + int2string(n % 1000000000);
+        } else if (n >= 1000000) {
+            return int2string(n / 1000000) + " Million" + int2string(n % 1000000);
+        } else if (n >= 1000) {
+            return int2string(n / 1000) + " Thousand" + int2string(n % 1000);
+        } else if (n >= 100) {
+            return int2string(n / 100) + " Hundred" + int2string(n % 100);
+        } else if (n >= 20) {
+            return  " " + ten[n / 10] + int2string(n % 10);
+        } else if (n >= 1) {
+            return " " + digit[n];
+        } else {
+            return "";
         }
     }
-    if (result.empty()) result = "Zero";
-    strip(result);
-    return result;
-}
+};
 
 int main() {
-    cout << numberToWords(100011001) << endl;
+    Solution s;
     return 0;
 }
+
