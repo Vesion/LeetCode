@@ -12,9 +12,9 @@ public:
         vector<string> res;
         for (int i = 1; i < n; ++i) {
             if (s[i] == '+' && s[i-1] == '+') {
-                string cs = s;
-                cs[i-1] = cs[i] = '-';
-                res.push_back(cs);
+                s[i] = s[i-1] = '-';
+                res.push_back(s);
+                s[i] = s[i-1] = '+';
             }
         }
         return res;

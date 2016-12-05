@@ -6,42 +6,15 @@
 #include <sstream> 
 using namespace std;
 
-// Solution 1 : common backtracking without memoization, O(2^n)
+// Solution 1 : backtracking with memoization, O(2^n)
 class Solution_1 {
-public:
-    bool canWin(string s) {
-        int n = s.size();
-        if (n < 2) return false;
-        return win(s);
-    }
-
-    bool win(string& s) {
-        for (int i = 1; i < (int)s.size(); ++i) {
-            if (s[i] == '+' && s[i-1] == '+') {
-                s[i] = s[i-1] = '-';
-                if (!win(s)) {
-                    s[i] = s[i-1] = '+';
-                    return true;
-                }
-                s[i] = s[i-1] = '+';
-            }
-        }
-        return false;
-    }
-};
-
-
-// Solution 2 : backtracking with memoization, O(2^n)
-class Solution_2 {
 public:
     unordered_map<string, bool> m;
 
     bool canWin(string s) {
-        int n = s.size();
-        if (n < 2) return false;
         return win(s);
     }
-
+    
     bool win(string& s) {
         if (m.count(s)) return m[s];
         bool res = false;
@@ -82,8 +55,6 @@ public:
         return G;
     }
 };
-
-
 
 
 int main() {

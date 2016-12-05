@@ -12,20 +12,23 @@ class MedianFinder {
 private:
     priority_queue<int> small; // max-heap, store the smaller half part
     priority_queue<int, vector<int>, greater<int>> large; // min-heap, store the larger half part
+
 public:
-    
-    // Adds a number into the data structure.
     void addNum(int num) {
-        small.push(num);
-        large.push(small.top());
-        small.pop();
-        if (small.size() < large.size()) { // this condition only be true when insert the odd'th(1, 3, 5...) num
+        if (small.empty() || num <= small.top())
+            small.push(num);
+        else
+            large.push(num);
+
+        if (large.size() > small.size()) {
             small.push(large.top());
             large.pop();
+        } else if (small.size() == large.size()+2) {
+            large.push(small.top());
+            small.pop();
         }
     }
 
-    // Returns the median of current data stream
     double findMedian() {
         if (small.size() > large.size()) return small.top();
         return (small.top() + large.top()) * 0.5;
@@ -42,3 +45,4 @@ int main() {
 
     return 0;
 }
+
