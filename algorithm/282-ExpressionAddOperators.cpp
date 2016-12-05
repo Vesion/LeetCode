@@ -1,45 +1,40 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 using namespace std;
 
-
-
-// Solution 1 : dfs, brute-force, 324ms
-
-// path : expression generated so far
-//  pos : current visiting position of num
-//  cur : cumulative value so far, finally use it to compare with target
-//   pv : previous operand value
-//   op : previous operator used
-void dfs(vector<string>& result, string& num, int target, string path, int pos, long cur, long prev) {
-    if (pos == num.size()) {
-        if (cur == target) result.push_back(path);
-        return;
+class Solution {
+public:
+    vector<string> addOperators(string num, int target) {
+        if (num.empty()) return {};
+        vector<string> res;
+        dfs(num, 0, 0, 0, target, "", res);
+        return res;
     }
-    for (int i = pos; i < num.size(); ++i) {
-        if (num[pos] == '0' && i > pos) return; // meet prefix 0, prune
-        string t = num.substr(pos, i-pos+1);
-        long now = stol(t);
-        if (pos == 0)
-            dfs(result, num, target, path+t, i+1, now, now);
-        else {
-            dfs(result, num, target, path+'+'+t, i+1, cur+now, now);
-            dfs(result, num, target, path+'-'+t, i+1, cur-now, -now);
-            dfs(result, num, target, path+'*'+t, i+1, cur-prev+prev*now, prev*now); // well played
+
+    void dfs(string& num, int start, long long cur, long long pre, int target, string path, vector<string>& res) {
+        if (start == (int)num.size()) {
+            if (cur == target) res.push_back(path);
+            return;
+        }
+        for (int i = start; i < (int)num.size(); ++i) {
+            if (num[start] == '0' && i > start) return; // if prefix 0s
+            string s = num.substr(start, i-start+1);
+            long long t = stol(s);
+            if (start  == 0) 
+                dfs(num, i+1, t, t, target, path+s, res);
+            else {
+                dfs(num, i+1, cur+t, t, target, path+"+"+s, res);
+                dfs(num, i+1, cur-t, -t, target, path+"-"+s, res);
+                dfs(num, i+1, cur-pre+pre*t, pre*t, target, path+"*"+s, res); // this is why we need 'pre'
+            }
         }
     }
-}
-
-vector<string> addOperators(string num, int target) {
-    if (num.empty()) return {};
-    vector<string> result;
-    dfs(result, num, target, "", 0, 0, 0);
-    return result;
-}
+};
 
 int main() {
-    auto r = addOperators("3456237490", 9191);
-    for (auto s : r) cout << s << endl;
+    Solution s;
     return 0;
 }
+

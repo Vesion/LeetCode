@@ -25,7 +25,6 @@ public:
         peekedValue = 0;
 	}
 
-    // Returns the next element in the iteration without advancing the iterator.
 	int peek() {
         if (!hasPeeked) {
             hasPeeked = true;
@@ -38,7 +37,6 @@ public:
 	    if (hasPeeked) {
             hasPeeked = false;
             int result = peekedValue;
-            peekedValue = 0;
             return result;
         }
         return Iterator::next();
