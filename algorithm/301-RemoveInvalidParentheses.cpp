@@ -1,54 +1,99 @@
 #include <iostream>
-#include <string>
+#include <algorithm>
 #include <vector>
-#include <stack>
-#include <unordered_set>
+#include <string>
+#include <unordered_set> 
+#include <queue> 
 using namespace std;
 
-// Well, let's learn from ohters. :(
-
-
-// Solution 1 : dfs
-void dfs(string& s, int index, int lefts, int rights, int pairs, string path, unordered_set<string>& result) {
-    if (index == s.size()) {
-        if (lefts == 0 && rights == 0 && pairs == 0) result.insert(path); // a valid path must with 0 lefts, 0 rights, and all pairs eliminated
-        return;
-    }
-    if (s[index] == '(') {
-        if (lefts > 0) dfs(s, index+1, lefts-1, rights, pairs, path, result); // remove this '('
-        dfs(s, index+1, lefts, rights, pairs+1, path+s[index], result); // keep this '(', so generate a new pair
-    }
-    else if (s[index] == ')') {
-        if (rights > 0) dfs(s, index+1, lefts, rights-1, pairs, path, result); // remove this ')'
-        if (pairs > 0) dfs(s, index+1, lefts, rights, pairs-1, path+s[index], result); // keep this ')', so eliminate a pair
-    }
-    else // other letters
-        dfs(s, index+1, lefts, rights, pairs, path+s[index], result);
-}
-
-vector<string> removeInvalidParentheses(string s) {
-    unordered_set<string> result;
-    int lefts = 0, rights = 0; // count the remained '(' and ')' that need to be removed
-    for (auto & c : s) {
-        if (c == '(') ++lefts;
-        else if (c == ')') {
-            if (lefts > 0) --lefts;
-            else ++rights;
+// Solution 1 : DFS, generate without invalid lefts and rights
+class Solution {
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        int lefts = 0, rights = 0;
+        for (char c : s) {
+            if (c == '(') ++lefts;
+            else if (c == ')') {
+                if (lefts > 0) --lefts;
+                else ++rights;
+            }
         }
+
+        unordered_set<string> res;
+        dfs(s, 0, lefts, rights, 0, "", res);
+        return vector<string>(res.begin(), res.end());
     }
-    // one of lefts and rights must be 0, so it is the minimum number of parentheses to be removed
-    dfs(s, 0, lefts, rights, 0, "", result);
-    return vector<string>(result.begin(), result.end());
-}
+
+    void dfs(string& s, int start, int lefts, int rights, int pairs, string path, unordered_set<string>& res) {
+        if (start == (int)s.size()) {
+            if (lefts == 0 && rights == 0 && pairs == 0) res.insert(path);
+            return;
+        }
+
+        char c = s[start];
+        if (c == '(') {
+            if (lefts > 0) dfs(s, start+1, lefts-1, rights, pairs, path, res); // if there are still invalid lefts, remove this one
+            dfs(s, start+1, lefts, rights, pairs+1, path+c, res); // keep this left to form a pair
+        }
+        else if (c == ')') {
+            if (rights > 0) dfs(s, start+1, lefts, rights-1, pairs, path, res); // if there are still invalid rights, remove this one
+            if (pairs > 0) dfs(s, start+1, lefts, rights, pairs-1, path+c, res); // keep this right to eliminate a pair
+        }
+        else
+            dfs(s, start+1, lefts, rights, pairs, path+c, res);
+    }
+};
 
 
-// Solution 2 : bfs, it is close to brute-force to some extent.
-// https://leetcode.com/discuss/67842/share-my-java-bfs-solution
-// we do not implement it here du to its bad performance
 
+// Solution 2 : BFS, much slower
+// Similar to brute force, we extend states by remove a left or right level by level, and check if they are valid. O(2^n) time.
+class Solution_2 {
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> res;
+        unordered_set<string> visited;
+        queue<string> q;
+        q.push(s);
+        visited.insert(s);
+
+        bool found = false;
+        while (!q.empty()) {
+            string t = q.front(); q.pop();
+            if (isValid(t)) {
+                res.push_back(t);
+                found = true;
+            }
+            if (found) continue;
+            for (int i = 0; i < (int)t.size(); ++i) {
+                if (t[i] != '(' && t[i] != ')') continue;
+                string nextt = t.substr(0, i) + t.substr(i+1);
+                if (!visited.count(nextt)) {
+                    q.push(nextt);
+                    visited.insert(nextt);
+                }
+            }
+        }
+        return res;
+    }
+
+    bool isValid(string& s) {
+        int lefts = 0;
+        for (char c : s) {
+            if (c == '(') ++lefts;
+            else if (c == ')') {
+                if (lefts-- == 0) return false;
+            }
+        }
+        return lefts == 0;
+    }
+};
 
 int main() {
-    auto r = removeInvalidParentheses("(a)())()");
-    for (auto i:r) cout << i << endl;
+    Solution_2 s;
+    auto r = s.removeInvalidParentheses(")d))");
+    cout << r.size() << endl;
+    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
+

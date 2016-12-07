@@ -3,20 +3,18 @@
 #include <numeric>
 using namespace std;
 
-// learn to use std::partial_sum
 class NumArray {
-private:
-    vector<int> sum;
 public:
-    NumArray(vector<int> &nums) : sum(nums.size()+1, 0) {
-        partial_sum(nums.begin(), nums.end(), sum.begin()+1);
+    vector<long long> sums;
+    NumArray(vector<int> &nums) {
+        sums.resize(nums.size()+1);
+        partial_sum(nums.begin(), nums.end(), sums.begin()+1);
     }
 
     int sumRange(int i, int j) {
-        return sum[j+1] - sum[i];
+        return sums[j+1]-sums[i];
     }
 };
-
 
 
 int main() {
