@@ -1,25 +1,31 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
+#include <string>
 using namespace std;
 
 // greedy
-// Let miss be the smallest sum in [0,n] that we might be missing. Meaning we already know we can build all sums in [0,miss). Then if we have a number num <= miss in the given array, we can add it to those smaller sums to build all sums in [0,miss+num). If we don't, then we must add such a number to the array, and it's best to add miss itself, to maximize the reach.
-int minPatches(vector<int>& nums, int n) {
-    long long miss = 1, i = 0;
-    int result = 0;
-    while (miss <= n) {
-        if (i < nums.size() && miss >= nums[i]) {
-            miss += nums[i++];
-        } else {
-            ++result;
-            miss += miss;
+// https://discuss.leetcode.com/topic/45320/c-8ms-greedy-solution-with-explanation
+class Solution {
+public:
+    int minPatches(vector<int>& nums, int n) {
+        long long maxNum = 0;
+        int i = 0;
+        int res = 0;
+        while (maxNum < n) {
+            if (i < (int)nums.size() && nums[i] <= maxNum+1) {
+                maxNum += nums[i++];
+            } else {
+                maxNum += maxNum+1;
+                ++res;
+            }
         }
+        return res;
     }
-    return result;
-}
+};
 
 int main() {
-    vector<int> nums = {1, 2, 31, 33};
-    cout << minPatches(nums, INT_MAX) << endl;
+    Solution s;
     return 0;
 }
+

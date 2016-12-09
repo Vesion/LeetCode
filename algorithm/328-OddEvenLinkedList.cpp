@@ -7,54 +7,29 @@ struct ListNode {
     ListNode(int x) : val(x), next(NULL) {}
 };
 
-ListNode* appendNode(ListNode* head, int x) {
-    if (!head) head = new ListNode(x);
-    else head->next = appendNode(head->next, x);
-    return head;
-}
-
-void printList(ListNode* head) {
-    if (head) {
-        cout << head->val << " ";
-        printList(head->next);
-    } else cout << "NULL" << endl;
-}
-
-void deleteList(ListNode* &head) {
-    if (head) {
-        deleteList(head->next);
-        delete head;
-        head = NULL;
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if (!head || !head->next) return head;
+        ListNode *odd = head, *even = head->next;
+        bool f = true;
+        ListNode *po = odd, *pe = even;
+        while (po->next && pe->next) {
+            if (f) {
+                po->next = pe->next;
+                po = pe->next;
+            } else {
+                pe->next = po->next;
+                pe = po->next;
+            }
+            f = !f;
+        }
+        pe->next = NULL;
+        po->next = even;
+        return odd;
     }
-}
-
-ListNode* oddEvenList(ListNode* head) {
-    if (!head || !head->next) return head;
-    ListNode* second = head->next; // the head of second part
-    ListNode *odd = head, *even = second;
-    while (odd->next && even->next) {
-        odd->next = even->next;
-        even->next = even->next->next;
-        odd = odd->next;
-        even = odd->next;
-    }
-    odd->next = second;
-    return head;
-}
+};
 
 int main() {
-    ListNode* head = NULL;
-    head = appendNode(head, 1);
-    head = appendNode(head, 2);
-    head = appendNode(head, 3);
-    head = appendNode(head, 4);
-    head = appendNode(head, 5);
-    head = appendNode(head, 6);
-    printList(head);
-
-    head = oddEvenList(head);
-    printList(head);
-
-    deleteList(head);
     return 0;
 }
