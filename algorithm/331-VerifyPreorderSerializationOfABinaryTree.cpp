@@ -1,53 +1,55 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <stack>
-#include <sstream>
+#include <string>
+#include <sstream> 
+#include <stack> 
 using namespace std;
 
-
-// Solution 1 : stack, learn to use getline(istream& is, string& str, char delim)
-bool isValidSerialization_stack(string preorder) {
-    if (preorder.empty()) return false;
-    istringstream in(preorder);
-    string token;
-    stack<string> s;
-    while (getline(in, token, ',')) {
-        while (token == "#" && !s.empty() && s.top() == token) {
-            s.pop();
-            if (s.empty()) return false;
-            s.pop();
+// Solution 1 : stack
+class Solution {
+public:
+    bool isValidSerialization(string preorder) {
+        if (preorder.empty()) return false;
+        stack<string> st;
+        istringstream in(preorder);
+        string val;
+        while ( getline(in, val, ',')) {
+            while (val == "#" && !st.empty() && st.top() == "#") {
+                st.pop();
+                if (st.empty()) return false;
+                st.pop();
+            }
+            st.push(val);
         }
-        s.push(token);
+        return st.size() == 1 && st.top() == "#";
     }
-    return s.size()==1 && s.top()=="#";
-}
+};
 
 
-// Solution 2 : indegrees and outdegrees, skillful
-// https://leetcode.com/discuss/83824/7-lines-easy-java-solution
-bool isValidSerialization(string preorder) {
-    if (preorder.empty()) return false;
-    int diff = 1; // outdegrees - indegrees
-    istringstream in(preorder);
-    string token;
-    while (getline(in, token, ',')) {
-        if (--diff < 0) return false; // when a new node comes, it provides 1 indgree
-        if (token != "#") diff += 2; // a non-null node provides 2 outdegrees
+// Solution 2 : indegrees and outdegrees
+//      all non-null node provides 2 outdegree and 1 indegree (2 children and 1 parent), except root
+//      all null node provides 0 outdegree and 1 indegree (0 child and 1 parent).
+class Solution_2 {
+public:
+    bool isValidSerialization(string preorder) {
+        if (preorder.empty()) return false;
+        istringstream in(preorder);
+        int diff = 1;
+        string val;
+        while (getline(in, val, ',')) {
+            if (--diff < 0) return false;
+            if (val != "#") diff += 2;
+        }
+        return diff == 0;
     }
-    return diff == 0;
-}
-
-
-// Solution 3 : regex, more skillful
-// here given in JAVA
-//
-//public boolean isValidSerialization(String preorder) {
-    //String s = preorder.replaceAll("\\d+,#,#", "#");
-    //return s.equals("#") || !s.equals(preorder) && isValidSerialization(s);
-//}
+};
 
 int main() {
-    cout << isValidSerialization_stack("9,3,4,#,#,1,#,#,2,#,6,#,#") << endl;
-    cout << isValidSerialization("9,3,4,#,#,1,#,#,2,#,6,#,#") << endl;
+    Solution s;
+    cout << s.isValidSerialization("9,3,4,#,#,1,#,#,2,#,6,#,#") << endl;
+    cout << s.isValidSerialization("1,2,#,3,#,#,4,#,#") << endl;
+    cout << s.isValidSerialization("#") << endl;
     return 0;
 }
+

@@ -12,7 +12,7 @@ public:
         vector<int> m(128, 0);
         int res = 0;
         for (int i = 0, j = 0; j < (int)s.size(); ) {
-            if (m[s[j++]]++) 
+            if (m[s[j++]]++ != 0)
                 while (m[s[i++]]-- == 1); // find the repeating one
             res = max(res, j-i);
         }
