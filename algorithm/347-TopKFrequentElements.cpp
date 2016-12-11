@@ -1,53 +1,61 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <unordered_map>
+#include <string>
+#include <unordered_map> 
 #include <queue> 
 using namespace std;
 
-// Solution 1 : use std::make_heap and std::pop_heap
-vector<int> topKFrequent_heap(vector<int>& nums, int k) {
-    if (nums.empty()) return {};
-    unordered_map<int, int> m;
-    for (auto &n : nums) m[n]++;
+// Solution 1 : heap, O(nlogk)
+class Solution_1 {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int,int> m;
+        for (int num : nums) m[num]++;
 
-    vector<pair<int, int>> heap;
-    for (auto &i : m) heap.push_back({i.second, i.first});
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> q;
+        for (auto& p : m) {
+            q.push({p.second, p.first});
+            if ((int)q.size() > k) q.pop();
+        }
 
-    vector<int> result; 
-    make_heap(heap.begin(), heap.end());
-    while (k--) {
-        result.push_back(heap.front().second);
-        pop_heap(heap.begin(), heap.end());
-        heap.pop_back();
+        vector<int> res;
+        while (!q.empty()) {
+            res.push_back(q.top().second);
+            q.pop();
+        }
+        return res;
     }
-    return result;
-}
+};
 
 
-// Solution 1.2 : use std::priority_queue directly
-vector<int> topKFrequent_pq(vector<int>& nums, int k) {
-    if (nums.empty()) return {};
-    unordered_map<int, int> m;
-    for (auto &n : nums) m[n]++;
+// Solution 2 : bucket sort, O(n)
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int,int> m;
+        for (int num : nums) m[num]++;
 
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    for (auto &i : m) {
-        pq.push({i.second, i.first});
-        if ((int)pq.size() > k) pq.pop();
+        int n = nums.size();
+        vector<vector<int>> buc(n+1);
+        for (auto& p : m) buc[p.second].push_back(p.first);
+
+        vector<int> res;
+        for (int i = n; i >= 1 && (int)res.size() < k; --i) {
+            if (!buc[i].empty()) {
+                res.insert(res.end(), buc[i].begin(), buc[i].end());
+            }
+        }
+        return res;
     }
-
-    vector<int> result;
-    while (!pq.empty()) {
-        result.push_back(pq.top().second); pq.pop();
-    }
-    return result;
-}
+};
 
 
 int main() {
-    vector<int> nums = { 4,1,-1,2,-1,2,3 };
-    auto r = topKFrequent_heap(nums, 2);
-    //auto r = topKFrequent_pq(nums, 2);
-    for (auto &i : r) cout << i << " "; cout << endl;
+    Solution s;
+    vector<int> nums = {1,1,1,2,2,3};
+    auto r = s.topKFrequent(nums, 2);
+    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
+

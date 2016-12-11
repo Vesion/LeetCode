@@ -2,19 +2,25 @@
 #include <vector>
 using namespace std;
 
-string reverseVowels(string s) {
-    int l = s.size();
-    if (l <= 1) return s;
-    string vowels = "aeiouAEIOU";
-    for (int i = 0, j = l-1; i < j; ) {
-        while (vowels.find(s[i]) == string::npos && i < j) ++i;
-        while (vowels.find(s[j]) == string::npos && i < j) --j;
-        swap(s[i++], s[j--]);
+class Solution {
+public:
+    string reverseVowels(string s) {
+        int i = 0, j = s.size()-1;
+        while (i <= j) {
+            while (i <= j && !isVowel(s[i])) ++i;
+            while (i <= j && !isVowel(s[j])) --j;
+            if (i <= j) swap(s[i++], s[j--]);
+        }
+        return s;
     }
-    return s;
-}
+    
+    bool isVowel(char c) {
+        c = tolower(c);
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+    }
+};
+
 
 int main() {
-    cout << reverseVowels("leetcode") << endl;
     return 0;
 }
