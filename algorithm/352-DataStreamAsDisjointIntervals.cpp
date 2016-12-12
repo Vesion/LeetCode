@@ -21,17 +21,21 @@ public:
             intervals.push_back(Interval(val, val));
             return;
         }
+
         auto i = upper_bound(intervals.begin(), intervals.end(), val, [](const int lhs, const Interval rhs) { return lhs < rhs.start; });
+
         if (i == intervals.end()) {
             auto last = intervals.end() - 1;
             if (val <= last->end) return;
             if (val == last->end + 1) last->end += 1;
             else intervals.push_back(Interval(val, val));
-        } else if (i == intervals.begin()) {
+        }
+        else if (i == intervals.begin()) {
             auto first = intervals.begin();
             if (val == first->start - 1) first->start -= 1;
             else intervals.insert(first, Interval(val, val));
-        } else {
+        }
+        else {
             auto prev = i - 1;
             if (val <= prev->end) return;
             if (val == prev->end + 1) {

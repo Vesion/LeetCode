@@ -2,23 +2,17 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <deque> 
-#include <map> 
-#include <set> 
+#include <unordered_map> 
+#include <unordered_set> 
+#include <queue> 
 using namespace std;
 
 
 class Twitter {
 private:
-    map<int, vector<pair<int, int>>> posts;
-    map<int, set<int>> follows;
+    unordered_map<int, vector<pair<int, int>>> posts;
+    unordered_map<int, unordered_set<int>> follows;
     int timestamp;
-
-    struct Cmp {
-        bool operator() (const pair<int, int>& p1, const pair<int, int>& p2) const {
-            return p1.first > p2.first;
-        }
-    };
 
 public:
     Twitter() {
@@ -30,20 +24,25 @@ public:
     }
     
     vector<int> getNewsFeed(int userId) {
-        set<pair<int, int>, Cmp> snews;
-        for (auto& p : posts[userId]) {
-            snews.insert(p);
-            if (snews.size() > 10) snews.erase(--snews.end());
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> q;
+        for (auto& p : posts[userId]) { // get self's news
+            q.push(p);
+            if (q.size() > 10) q.pop();
         }
-        for (auto& followee : follows[userId]) {
+        for (auto& followee : follows[userId]) { // get followers' news
+            if (followee == userId) continue;
             for (auto& p : posts[followee]) {
-                snews.insert(p);
-                if (snews.size() > 10) snews.erase(--snews.end());
+                q.push(p);
+                if (q.size() > 10) q.pop();
             }
         }
 
         vector<int> news;
-        for (auto& p : snews) news.push_back(p.second);
+        while (!q.empty()) {
+            news.push_back(q.top().second);
+            q.pop();
+        }
+        reverse(news.begin(), news.end());
         return news;
     }
     
@@ -56,18 +55,9 @@ public:
     }
 };
 
-int main() {
-    Twitter t; 
-    t.postTweet(1, 10);
-    for (auto& e : t.getNewsFeed(1)) cout << e << " "; cout << endl; 
-    t.follow(1, 2);
-    for (int i = 0; i < 20; ++i) { 
-         t.postTweet(2, i);
-    } 
-    for (auto& e : t.getNewsFeed(1)) cout << e << " "; cout << endl; 
-    t.unfollow(1, 2);
-    for (auto& e : t.getNewsFeed(1)) cout << e << " "; cout << endl; 
 
-    for (auto& e : t.getNewsFeed(0)) cout << e << " "; cout << endl; 
+int main() {
     return 0;
 }
+
+
