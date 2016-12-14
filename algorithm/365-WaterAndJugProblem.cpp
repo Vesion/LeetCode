@@ -15,16 +15,16 @@ using namespace std;
 
 class Solution {
 public:
+    bool canMeasureWater(int x, int y, int z) {
+        if (z == 0) return true;
+        if (x*y == 0) return z == x || z == y;
+        int g = gcd(x, y);
+        return (z%g == 0 && z <= x+y);
+    }
+    
     int gcd(int x, int y) {
-        if (x < y) return gcd(y, x);
         if (y == 0) return x;
         return gcd(y, x%y);
-    }
-    bool canMeasureWater(int x, int y, int z) {
-        if (z > x+y) return false;
-        if (x == 0) return z == 0 || z == y;
-        if (y == 0) return z ==0 || z == x;
-        return z % gcd(x, y) == 0;
     }
 };
 

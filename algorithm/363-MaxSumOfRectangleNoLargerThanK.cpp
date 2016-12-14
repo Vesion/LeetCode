@@ -5,42 +5,39 @@
 #include <set> 
 using namespace std;
 
+// This problem is the 2D version of 'Max subarray sum no larger than k'
+
+// O(n^2 * mlogm)
 class Solution {
 public:
     int maxSumSubmatrix(vector<vector<int>>& matrix, int k) {
         if (matrix.empty()) return 0;
-        int m = matrix.size(), n = matrix[0].size(); 
-        int result = INT_MIN;
+        int m = matrix.size(), n = matrix[0].size();
 
-        for (int c1 = 0; c1 < n; ++c1) { // as problem says, the number of rows is larger than the number of columns, so we scan columns
-            vector<int> rowsum(m, 0);
+        int res = INT_MIN;
+        for (int c1 = 0; c1 < n; ++c1) {
+            vector<int> rowsums(m, 0);
             for (int c2 = c1; c2 < n; ++c2) {
-                for (int r = 0; r < m; ++r)
-                    rowsum[r] += matrix[r][c2];
-
-                set<int> cums;
-                cums.insert(0);
-                int cum = 0, local = INT_MIN;
-                for (auto &sum : rowsum) {
-                    cum += sum;
-                    auto it = cums.lower_bound(cum-k);
-                    if (it != cums.end()) 
-                        local = max(local, cum-*it);
-                    cums.insert(cum);
+                for (int i = 0; i < m; ++i) rowsums[i] += matrix[i][c2];
+                set<int> colsums;
+                colsums.insert(0);
+                int colsum = 0, local = INT_MIN;
+                for (int sum : rowsums) {
+                    colsum += sum;
+                    auto it = colsums.lower_bound(colsum-k);
+                    if (it != colsums.end()) 
+                        local = max(local, colsum-*it);
+                    colsums.insert(colsum);
                 }
-                result = max(result, local);
+                res = max(res, local);
             }
         }
-        return result;
+        return res;
     }
 };
 
 int main() {
     Solution s;
-    vector<vector<int>> matrix = {
-        {1, 0, 1},
-        {0, -2, 3}
-    };
-    cout << s.maxSumSubmatrix(matrix, 2) << endl;;
     return 0;
 }
+
