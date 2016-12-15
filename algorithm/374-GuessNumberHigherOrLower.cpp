@@ -5,24 +5,20 @@
 using namespace std;
 
 // @return -1 if my number is lower, 1 if my number is higher, otherwise return 0
-const int target = 6;
-int guess(int num) {
-    if (num < target) return 1;
-    if (num > target) return -1;
-    return 0;
-}
+int guess(int num);
 
 class Solution {
 public:
     int guessNumber(int n) {
-        int left = 1, right = n;
+        int left = 1, right = n, mid;
         while (left <= right) {
-            int mid = left + (right-left)/2;
-            if (guess(mid) == 0) return mid;
-            if (guess(mid) == -1) right = mid-1;
-            else left = mid+1;
+            mid = left + (right-left)/2;
+            int res = guess(mid);
+            if (res == 0) break;
+            if (res == 1) left = mid+1;
+            else right = mid-1;
         }
-        return -1;
+        return mid;
     }
 };
 

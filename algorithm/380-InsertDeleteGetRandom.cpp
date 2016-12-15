@@ -2,41 +2,51 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
+#include <unordered_map> 
 #include <random> 
 using namespace std;
 
 class RandomizedSet {
 private:
-    unordered_set<int> s;
+    vector<int> nums; // array ensures O(1) random access
+    unordered_map<int, int> index; // hash table ensures O(1) insert and delete
+
 public:
-    /** Initialize your data structure here. */
-    RandomizedSet() {
-    }
-    
-    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    RandomizedSet() { }
+
     bool insert(int val) {
-        if (s.count(val)) return false;
-        s.insert(val);    
+        if (index.count(val)) return false;
+        nums.push_back(val);
+        index[val] = nums.size()-1;
         return true;
     }
     
-    /** Removes a value from the set. Returns true if the set contained the specified element. */
     bool remove(int val) {
-        return s.erase(val);
+        if (!index.count(val)) return false;
+        int n = nums.size();
+        int id = index[val];
+        if (id < n-1) { // if val is not the last one, swap it with the last one, maintain the continuity
+            nums[id] = nums[n-1];
+            index[nums[n-1]] = id;
+        }
+        nums.pop_back();
+        index.erase(val);
+        return true;
     }
     
-    /** Get a random element from the set. */
     int getRandom() {
-        int rid = rand() % s.size();
-        auto bit = s.begin();
-        while (rid-- > 0) ++bit;
-        return *bit;
+        return nums[rand() % nums.size()];
     }
 };
 
 
 int main() {
     RandomizedSet rs;
+    cout << rs.insert(0) <<endl;;
+    cout << rs.insert(1) <<endl;;
+    cout << rs.remove(0) <<endl;;
+    cout << rs.insert(2) <<endl;;
+    cout << rs.remove(1) <<endl;;
+    cout <<rs.getRandom() <<endl;
     return 0;
 }

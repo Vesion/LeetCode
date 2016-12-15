@@ -4,44 +4,49 @@
 #include <string>
 using namespace std;
 
-
-
 // Solution 1 : dp, O(n^2)
-class Solution_dp {
+class Solution_1 {
 public:
     int wiggleMaxLength(vector<int>& nums) {
         int n = nums.size();
         if (n <= 1) return n;
-        vector<vector<int>> dp(n, vector<int>(2, 1));
+        vector<pair<int,int>> dp(n);
+        dp[0].first = dp[0].second = 1;
+        int res = 0;
         for (int i = 1; i < n; ++i) {
+            dp[i].first = dp[i].second = 1;
             for (int j = i-1; j >= 0; --j) {
-                if (nums[i] < nums[j]) dp[i][0] = max(dp[i][0], dp[j][1]+1);
-                else if (nums[i] > nums[j]) dp[i][1] = max(dp[i][1], dp[j][0]+1);
+                if (nums[i] > nums[j]) dp[i].first = max(dp[i].first, dp[j].second+1);
+                else if (nums[i] < nums[j]) dp[i].second = max(dp[i].second, dp[j].first+1);
             }
+            res = max(res, max(dp[i].first, dp[i].second));
         }
-        return max(dp[n-1][0], dp[n-1][1]);
+        return res;
     }
 };
 
 
-// Solution 2 : greedy, O(n)
+// Solution 2 : greedy
+// Maintain a longest wiggle sequence, for each num, reset it to min when down, or max when up.
 class Solution {
 public:
     int wiggleMaxLength(vector<int>& nums) {
         int n = nums.size();
         if (n <= 1) return n;
-        int c1 = 1, c2 = 1;
+        int up = 1, down = 1;
         for (int i = 1; i < n; ++i) {
-            if (nums[i] > nums[i-1]) c1 = c2+1;
-            else if (nums[i] < nums[i-1]) c2 = c1+1;
+            if (nums[i] > nums[i-1]) up = down+1;
+            else if (nums[i] < nums[i-1]) down = up+1;
         }
-        return max(c1, c2);
+        return max(up, down);
     }
 };
 
+
 int main() {
     Solution s;
-    vector<int>nums = {1,17,5,10,13,15,10,5,16,8};
-    cout << s.wiggleMaxLength(nums) <<endl;
+    vector<int> nums = {0,0};
+    cout << s.wiggleMaxLength(nums) << endl;
     return 0;
 }
+

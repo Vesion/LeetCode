@@ -4,29 +4,29 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : trivial
+// Solution 1 : fast power
+//      2^123 = 2^100 * 2^20 * 2^3
 class Solution {
 public:
-    int mod = 1337;
+    int superPow(int a, vector<int>& b) {
+        long long res = 1;
+        for (int n : b) {
+            res = powx(res, 10) * powx(a, n) % 1337;
+        }
+        return res;
+    }
 
-    long long powm(long long x, long long n) {
-        long long r = 1, t = x;
+    long long powx(long long x, long long n) {
+        long long res = 1;
         while (n) {
-            if (n & 1) r = (r * t) % mod;
-            t = (t * t) % mod;
+            if (n&1) res = (res*x) % 1337;
+            x = (x*x) % 1337;
             n >>= 1;
         }
-        return r % mod;
-    }
-
-    int superPow(int a, vector<int>& b) {
-        if (b.empty()) return a % mod;
-        long long r = 1;
-        for (int &n : b)
-            r = powm(r, 10) * powm(a, n) % mod;
-        return r;
+        return res;
     }
 };
+
 
 
 // Solution 2 : Math solution based on Euler's theorem
