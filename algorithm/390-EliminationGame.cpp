@@ -4,36 +4,26 @@
 #include <string>
 using namespace std;
 
-
-// Solution 1 : iteratively simulate the whole procedure, O(nlogn)
-class Solution_it {
+class Solution {
 public:
     int lastRemaining(int n) {
-        int num = n;
-        bool lefting = true;
-        int head = 1;
-        int step = 1;
+        int start = 1, step = 1, num = n;
+        bool fromLeft = true;
         while (num > 1) {
-            if (lefting || num % 2) head += step;
-            num /= 2;
+            // start will be eliminated only if:
+            //      1. this turn goes from left to right
+            //      2. this turn goes from right to left, and there are odd number of nums
+            // if so, we must add start by step
+            if (fromLeft || num & 1) start += step;
             step *= 2;
-            lefting = !lefting;
+            num /= 2;
+            fromLeft = !fromLeft;
         }
-        return head;;
+        return start;
     }
 };
-
-
-// Solution 2 : recursively
-class Solution_re {
-public:
-    int lastRemaining(int n) {
-        if (n == 1) return 1;
-        return 2 * (1 + n / 2 - lastRemaining(n / 2));
-    }
-};
-
 
 int main() {
+    Solution s;
     return 0;
 }

@@ -5,54 +5,38 @@
 #include <stack> 
 using namespace std;
 
-vector<string> split(string& s, char f) {
-    vector<string> r;
-    s.push_back(f);
-    unsigned long i = 0, j = s.find(f, 0);
-    while (j != string::npos) {
-        r.push_back(s.substr(i, j-i));
-        i = j+1;
-        j = s.find(f, i);
-    }
-    return r;
-}
-
-// Solution 1.1 : stack
-class Solution_st {
-public:
-    int lengthLongestPath(string input) {
-        int result = 0;
-
-        stack<int> st;
-        st.push(0);
-        auto ss = split(input, '\n');
-        for (auto& s : ss) {
-            auto level = s.find_first_not_of('\t'); // level start from 0
-            while (level+1 < st.size()) st.pop(); // find its parent
-            int len = st.top() + 1 + s.size() - level; // 'parent/s'
-            st.push(len);
-            if (s.find('.') != string::npos) result = max(result, len-1); // remove the first '/'
-        }
-        return result;
-    }
-};
-
-
-// Solution 1.2 : use vector as stack
+// stack, greedy
 class Solution {
 public:
     int lengthLongestPath(string input) {
-        int result = 0;
-        auto ss = split(input, '\n');
-        vector<int> lens(ss.size());
-        for (auto& s : ss) {
-            auto level = s.find_first_not_of('\t');
-            int len = lens[level] + 1 + s.size() - level;
-            lens[level+1] = len;
-            if (s.find('.') != string::npos) result = max(result, len-1);
+        int res = 0;
+        int i = 0, n = input.size();
+        stack<int> st;
+        while (i < n) {
+            while (input[i] == '\n') ++i;
+
+            int level = 0;
+            while (i < n && input[i] == '\t') { // count tabs as its level
+                ++level;
+                ++i;
+            }
+
+            int j = i;
+            bool isfile = false;
+            while (j < n && input[j] != '\n') { // count its length
+                if (input[j] == '.') isfile = true;
+                ++j;
+            }
+            int len = j-i;
+
+            while ((int)st.size() > level) st.pop(); // find its parent directory
+            int parentLen = st.empty() ? 0 : st.top();
+            if (isfile) res = max(res, len + parentLen);
+            else st.push(parentLen+len+1);
+            i = j;
         }
-        return result;
-    }
+        return res;
+    }  
 };
 
 

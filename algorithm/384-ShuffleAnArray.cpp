@@ -8,34 +8,26 @@ using namespace std;
 // The classical shuffle algorithm: Fisher Yates Algorithm
 class Solution {
 private:
-    vector<int> nums;
-
+    vector<int> origin, nums;
 public:
     Solution(vector<int> nums) {
-        this->nums = nums;        
+        this->origin = this->nums = nums;
     }
     
     vector<int> reset() {
+        nums = origin;
         return nums;
     }
     
     vector<int> shuffle() {
-        auto c = nums;
-        for (int i = 0; i < (int)c.size(); ++i) {
-            int j = rand() % (c.size() - i);
-            swap(c[i], c[i+j]);
+        for (int i = nums.size()-1; i >= 0; --i) {
+            swap(nums[i], nums[rand()%(i+1)]);
         }
-        return c;
+        return nums;
     }
 };
 
+
 int main() {
-    vector<int> nums = {1, 2, 3};
-    Solution s(nums);
-    s.shuffle();
-    s.shuffle();
-    s.shuffle();
-    auto r = s.reset();
-    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
