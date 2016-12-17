@@ -5,50 +5,56 @@
 using namespace std;
 
 
-// Solution 1 : naive dfs
-class Solution_dfs {
+// Solution 1 : trivial dfs
+class Solution_1 {
 public:
-    int result = INT_MAX;
-    void dfs(long long n, int steps) {
-        if (n == 2) {
-            result = min(result, steps);
+    int integerReplacement(int n) {
+        int res = INT_MAX;
+        dfs(n, 0, res);
+        return res;
+    }
+
+    void dfs(long long n, int step, int& res) {
+        if (n == 1) {
+            res = min(res, step);
             return;
         }
-        if (n % 2) {
-            dfs(n-1, steps+1);
-            dfs(n+1, steps+1);
-        }
-        else dfs(n/2, steps+1);
-    }
-
-    int integerReplacement(int n) {
-        if (n == 1) return 0;
-        dfs(n, 1);
-        return result;
+        if (n&1) {
+            dfs(n+1, step+1, res);
+            dfs(n-1, step+1, res);
+        } else
+            dfs(n/2, step+1, res);
     }
 };
 
 
-// Solution 2 : more deep analysis, iterative
+// Solution 2 : bitmap
+// eliminate 1 as soon as possible, so when:
+//      n is even, n /= 2 (right shift)
+//      n is odd, if the last two significant bits are
+//          01, n -= 1
+//          10, n += 1
 class Solution {
 public:
-    int integerReplacement(int a) {
-        int c = 0;
-        long long n = a;
-        while (n != 1) {
-            if (n % 2) {
-                if (n != 3 && (n+1) % 4 == 0) n++;
-                else n--;
+    int integerReplacement(int n) {
+        int res = 0;
+        long long ln = n;
+        while (ln != 1) {
+            if ((ln&1) == 0) ln >>= 1;
+            else {
+                if (ln == 3 || ((ln>>1)&1) == 0) --ln;
+                else ++ln;
             }
-            else n /= 2;
-            ++c;
+            ++res;
         }
-        return c;
+        return res;
     }
 };
+
 
 int main() {
     Solution s;
-    cout << s.integerReplacement(INT_MAX) << endl;
+    cout << s.integerReplacement(2) <<endl;
     return 0;
 }
+

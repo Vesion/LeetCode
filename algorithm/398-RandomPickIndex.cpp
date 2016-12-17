@@ -4,24 +4,25 @@
 #include <string>
 using namespace std;
 
-class Solution {
-public:
-    vector<int> nums;
 
+// Reservoir Sampling algorithm
+class Solution {
+private:
+    vector<int> nums;
+public:
     Solution(vector<int> nums) {
         this->nums = nums;
     }
     
     int pick(int target) {
-        int index = -1;
-        int c = 0;
+        int count = 1;
+        int res;
         for (int i = 0; i < (int)nums.size(); ++i) {
             if (nums[i] == target) {
-                ++c;
-                if (rand() % c == 0) index = i;
+                if (rand()%count++ == 0) res = i;
             }
         }
-        return index;
+        return res;
     }
 };
 

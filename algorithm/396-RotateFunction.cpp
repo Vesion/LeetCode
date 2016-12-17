@@ -5,32 +5,29 @@
 using namespace std;
 
 
-// Math solution
-// https://discuss.leetcode.com/topic/58459/java-o-n-solution-with-explanation
-//
+// Pure math
 class Solution {
 public:
     int maxRotateFunction(vector<int>& A) {
+        if (A.empty()) return 0;
         int n = A.size();
-        int sum = 0;
-        int F = 0;
-        for (int i = 0; i < n; ++i) { // sum and F(0)
+        int sum = 0, F = 0; // sum and F(0)
+        for (int i = 0; i < n; ++i) {
             sum += A[i];
             F += i * A[i];
         }
 
-        int result = F;
+        int res = F;
         for (int i = 1; i < n; ++i) {
-            F = F + sum - n * A[n-i]; // F(i) = F(i-1) + sum - n*Bk[0]
-            result = max(result, F);
+            F = F + sum - n*A[n-i]; // F(i) = F(i-1) + sum - n*Bk[0]
+            res = max(res, F);
         }
-        return result;
+        return res;
     }
 };
 
 int main() {
     Solution s;
-    vector<int> A = {4, 3, 2, 6} ;
-    cout << s.maxRotateFunction(A) <<endl;
     return 0;
 }
+

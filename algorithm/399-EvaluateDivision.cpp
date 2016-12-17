@@ -5,62 +5,57 @@
 #include <map> 
 #include <set> 
 #include <queue> 
+#include <unordered_map> 
 using namespace std;
 
-// Solution 1 : graph + bfs/dfs
-class Solution_bfs {
+// Convert equations into edges with weight 1 of a graph
+//      e.g. a / b = 2.0
+//           a -> b, with value 2.0
+//           b -> a, with value 1/2.0
+// Then, for a qeury (x, y), we need to find a path from x to y, and time weights
+
+
+// Solution 1 : trivial dfs, it can find path, and that's all.
+// Furthermore, we can use other algorithms to find the shortest path, like BFS, Dijkstra, BellmanFord, FloydWarshall, etc.
+class Solution {
 public:
-    map<string, set<string>> graph;
-    map<pair<string, string>, double> weights;
-    map<string, bool> visited;
-
-    void make(vector<pair<string, string>>& equations, vector<double>& values) {
-        for (int i = 0; i < (int)equations.size(); ++i) {
-            auto p = equations[i];
-            graph[p.first].insert(p.second);
-            graph[p.second].insert(p.first);
-            weights[p] = values[i];
-            weights[{p.second, p.first}] = 1.0 / values[i];
-        }
-    }
-
-    double bfs(string& s1, string& s2) {
-        queue<pair<string, double>> q;
-        q.push({s1, 1.0});
-        while (!q.empty()) {
-            auto p = q.front(); q.pop();
-            string s = p.first;
-            double r = p.second;
-
-            if (visited[s]) continue;
-            visited[s] = true;
-
-            if (graph.find(s) == graph.end()) break;
-            for (auto &nbr : graph[s]) {
-                double newr = r * weights[{s, nbr}];
-                if (nbr == s2) return newr;
-                q.push({nbr, newr});
-            }
-        }
-        return -1.0;
-    }
+    unordered_map<string, vector<pair<string, double>>> graph;
+    unordered_map<string, bool> visited;
 
     vector<double> calcEquation(vector<pair<string, string>> equations, vector<double>& values, vector<pair<string, string>> queries) {
-        make(equations, values);
-        int n = queries.size();
-        vector<double> results(n);
+        int n = equations.size();
         for (int i = 0; i < n; ++i) {
-            for (auto &v : visited) v.second = false;
-            auto p = queries[i];
-            results[i] = bfs(p.first, p.second);
+            graph[equations[i].first].push_back({equations[i].second, values[i]});
+            graph[equations[i].second].push_back({equations[i].first, 1.0/values[i]});
         }
-        return results;
+
+        vector<double> res;
+        for (auto& q : queries) {
+            double r = 1.0;
+            visited.clear();
+            if (!graph.count(q.first) || !graph.count(q.second) || !dfs(q.first, q.second, r)) res.push_back(-1.0);
+            else res.push_back(r);
+        }
+        return res;
+    }
+
+    bool dfs(string start, string end, double& res) {
+        if (start == end) return true;
+        visited[start] = true;
+        for (auto& p : graph[start]) {
+            if (!visited[p.first]) {
+                res *= p.second;
+                if (dfs(p.first, end, res)) return true;
+                res /= p.second;
+            }
+        }
+        return false;
     }
 };
 
 
-// Solution 2 : uion-find set
-class Solution {
+// Solution 2 : uion-find
+class Solution_2 {
 private:
     struct Node {
         Node* parent;

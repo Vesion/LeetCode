@@ -4,33 +4,36 @@
 #include <string>
 using namespace std;
 
-// divide and conquer
+
+// Divide and conquer
+// First count each character's occurrence times, then split string with those smaller than k and recursive
 class Solution {
 public:
     int longestSubstring(string s, int k) {
-        return longestSubstring(s, k, 0, s.size());
+        return partition(s, k, 0, s.size());
     }
 
-    int longestSubstring(string& s, int k, int start, int end) {
-        int c[26] = {0};
-        for (int i = start; i < end; ++i) c[s[i]-'a']++;
+    int partition(string& s, int k, int start, int end) {
+        int m[26] = {0};
+        for (int i = start; i < end; ++i) m[s[i]-'a']++;
 
-        int result = 0;
-        for (int i = start; i < end; ) {
-            while (i < end && c[s[i]-'a'] < k) ++i;
-            if (i == end) break;
-            int j = i;
-            while (j < end && c[s[j]-'a'] >= k) ++j;
-            if (i == start && j == end) return end-start;
-            result = max(result, longestSubstring(s, k, i, j));
-            i = j;
+        int res = 0;
+        int i = start;
+        while (i < end) {
+            if (m[s[i]-'a'] >= k) {
+                int j = i;
+                while (i < end && m[s[i]-'a'] >= k) ++i;
+                if (j == start && i == end) return i-j; // recursion terminates
+                res = max(res, partition(s, k, j, i));
+            } else ++i;
         }
-        return result;
+        return res;
     }
 };
 
 int main() {
     Solution s;
-    cout << s.longestSubstring("ababacb", 3) << endl;
+    cout << s.longestSubstring("aaabbb", 3) <<endl;
     return 0;
 }
+

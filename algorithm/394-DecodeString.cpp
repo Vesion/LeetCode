@@ -4,37 +4,41 @@
 #include <string>
 using namespace std;
 
-
-// Solution 1 : top-down parser, recursive descent
+// Top-down parser
 class Solution {
 public:
     string decodeString(string s) {
-        int i = 0;
-        return decodeString(s, i);
-    }
+        int cur = 0;
+        return parse(s, cur);
+    }    
 
-    string decodeString(string& s, int& i) {
-        string r = "";
-
-        while (i < (int)s.size()) {
-            if (isdigit(s[i])) {
-                int c = 0;
-                while (isdigit(s[i])) c = c * 10 + (s[i++] - '0');
-                ++i; // eat '['
-                string t = decodeString(s, i);
-                while (c--) r += t;
-                ++i; // eat ']'
+    string parse(string& s, int& cur) {
+        string res;
+        int num = 0;
+        while (cur < (int)s.size()) {
+            if (isalpha(s[cur])) {
+                res += s[cur++];
             }
-            else if (isalpha(s[i])) r += s[i++];
-            else break; // ']'
+            else if (isdigit(s[cur])) {
+                num = num*10 + (s[cur++]-'0');
+            }
+            else if (s[cur] == '[') {
+                string t = parse(s, ++cur);
+                while (num--) res += t;
+                num = 0;
+            }
+            else if (s[cur] == ']') {
+                ++cur;
+                break;
+            }
         }
-
-        return r;
+        return res;
     }
 };
 
 int main() {
     Solution s;
-    cout << s.decodeString("2[abc]3[cd]ef") <<endl;
+    cout << s.decodeString("1[2[3[4[a]]]]") <<endl;
     return 0;
 }
+

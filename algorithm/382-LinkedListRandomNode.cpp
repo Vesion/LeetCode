@@ -10,6 +10,8 @@ struct ListNode {
     ListNode(int val) : val(val), next(NULL) {}
 };
 
+
+// Reservoir Sampling algorithm
 class Solution {
 private:
     ListNode* head;

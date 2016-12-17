@@ -13,7 +13,7 @@ using namespace std;
 // Do not implement here.
 
 
-// Solution 1 : heap + swipe line, O(nlogn) time
+// Solution 1 : heap + sweep line, O(nlogn) time
 class Solution_sl {
 public:
     vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {

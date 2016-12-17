@@ -2,66 +2,110 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <unordered_set> 
 #include <set> 
+#include <queue> 
 using namespace std;
 
-// Judging if there are any two rectanges overlapped, is a very classical problem.
-// Solution : Swipe line
-
+// Solution 1 : Compare areas and use sweep line to detect overlapping, O(nlogn)
+// Very skillful to use std::set, rather than verbose interval/segment tree!
 class Solution {
 public:
-    using ll = long long;
     bool isRectangleCover(vector<vector<int>>& rectangles) {
         if (rectangles.empty()) return false;
-        int minX = rectangles[0][0], minY = rectangles[0][1];
-        int maxX = rectangles[0][2], maxY = rectangles[0][3];
-        vector<pair<int, int>> events;
+        int x1 = INT_MAX, y1 = INT_MAX;
+        int x2 = INT_MIN, y2 = INT_MIN;
+        int area = 0;
 
-        ll actualArea = 0;
+        // {time, index}
+        // time is the x-coordinate of each vertical edge, 
+        // index is each edge's id, furthermore, it indicates it's a left edge or right edge, left for inserting, right for removing, and we use negative index for right edge
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> events;
+        
         for (int i = 0; i < (int)rectangles.size(); ++i) {
-            int x1 = rectangles[i][0], y1 = rectangles[i][1], x2 = rectangles[i][2], y2 = rectangles[i][3];
-            minX = min(minX, x1), minY = min(minY, y1);
-            maxX = max(maxX, x2), maxY = max(maxY, y2);
-            actualArea += (ll)(x2-x1) * (y2-y1);
-            events.push_back({x1, i+1});
-            events.push_back({x2, -(i+1)});
+            auto& rect = rectangles[i];
+            x1 = min(x1, rect[0]), y1 = min(y1, rect[1]);
+            x2 = max(x2, rect[2]), y2 = max(y2, rect[3]);
+
+            area += (rect[0]-rect[2]) * (rect[1]-rect[3]);
+            
+            events.push({rect[0], i+1});
+            events.push({rect[2], -(i+1)});
         }
 
-        ll idealArea = (ll)(maxX-minX)*(maxY-minY);
-        if (idealArea != actualArea) return false;
-
-        sort(events.begin(), events.end());
-
-        auto cmp = [&] (int i, int j) { // the core thoughts !
-            if (rectangles[i][1] < rectangles[j][3] && rectangles[j][1] < rectangles[i][3])
-                return false;
+        // we detect vertical edges overlapping when they are inserted into a interval tree (here we use std::set)
+        // if two vertical edges occur like below:
+        //          |
+        //          |
+        //      |   |
+        //      |   e2
+        //      |
+        //      e1
+        // they overlap, in this case we do not allow to insert successfully
+        auto comp = [&rectangles] (int i, int j) {
+            if (rectangles[i][1] < rectangles[j][3] && rectangles[j][1] < rectangles[i][3]) return false;
             return rectangles[i][1] < rectangles[j][1];
         };
+        set<int, decltype(comp)> verticals(comp);
 
-        set<int, decltype(cmp)> verticals(cmp);
-
-        for (auto &e : events) {
-            if (e.second > 0) {
-                // use 'cmp' above to compare two verticals, 
-                // if current vertical cannot be inserted (means it equals to some one vertical in the set), there must be overlapping
-                if (verticals.count(e.second-1)) return false; 
+        while (!events.empty()) {
+            auto e = events.top(); events.pop();
+            if (e.second > 0) { // this is a left edge, try to insert it
+                if (verticals.count(e.second-1)) // if find overlapping, return false
+                    return false;
                 verticals.insert(e.second-1);
-            } else
+            } else { // this is a right edge, remove it
                 verticals.erase(-e.second-1);
+            }
         }
-        return true;
+        return area == (x1-x2) * (y1-y2);
     }
 };
 
+
+// Solution 2 : Compare areas and count points, O(n)
+// Perfect rectangle must satisfy two conditions:
+//      1. the large rectangle area should be equal to the sum of small rectangles
+//      2. there must be even number of inner points, and must be only one point for four corners
+class Solution_2 {
+public:
+    bool isRectangleCover(vector<vector<int>>& rectangles) {
+        if (rectangles.empty()) return false;
+
+        int x1 = INT_MAX, y1 = INT_MAX;
+        int x2 = INT_MIN, y2 = INT_MIN;
+        unordered_set<string> s;
+        int area = 0;
+
+        for (auto& rect : rectangles) {
+            x1 = min(x1, rect[0]), y1 = min(y1, rect[1]);
+            x2 = max(x2, rect[2]), y2 = max(y2, rect[3]);
+
+            area += (rect[0]-rect[2]) * (rect[1]-rect[3]);
+
+            string point1 = to_string(rect[0]) + " " + to_string(rect[1]);
+            string point2 = to_string(rect[0]) + " " + to_string(rect[3]);
+            string point3 = to_string(rect[2]) + " " + to_string(rect[1]);
+            string point4 = to_string(rect[2]) + " " + to_string(rect[3]);
+            if (s.count(point1)) s.erase(point1); else s.insert(point1);
+            if (s.count(point2)) s.erase(point2); else s.insert(point2);
+            if (s.count(point3)) s.erase(point3); else s.insert(point3);
+            if (s.count(point4)) s.erase(point4); else s.insert(point4);
+        }
+
+        if (s.size() != 4 
+            || !s.count(to_string(x1) + " " + to_string(y1)) 
+            || !s.count(to_string(x1) + " " + to_string(y2)) 
+            || !s.count(to_string(x2) + " " + to_string(y1)) 
+            || !s.count(to_string(x2) + " " + to_string(y2))) 
+            return false;
+        return area == (x1-x2) * (y1-y2);
+    }
+};
+
+
 int main() {
     Solution s;
-    vector<vector<int>> rectangles = {
-          { 1,1,3,3 },
-  { 1,3,2,4 },
-  { 2,2,4,4 }
-
-    };
-    cout << s.isRectangleCover(rectangles) <<endl;
     return 0;
 }
 

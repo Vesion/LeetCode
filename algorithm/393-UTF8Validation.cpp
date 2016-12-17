@@ -6,34 +6,27 @@ using namespace std;
 
 class Solution {
 public:
-    bool validate(int x) {
-        return ((x ^ 0x80) > 0x3f);
-    }
-
     bool validUtf8(vector<int>& data) {
-        int i = 0;
-        while (i < (int)data.size()) {
-            if ((data[i] ^ 0xF0) <= 0x07) { // u4;
-                int c = 3;
-                while (c--) if (validate(data[++i])) return false;
-            } else if ((data[i] ^ 0xE0) <= 0x0F) { // u3
-                int c = 2;
-                while (c--) if (validate(data[++i])) return false;
-            } else if ((data[i] ^ 0xC0) <= 0x1F) { // u2
-                int c = 1;
-                while (c--) if (validate(data[++i])) return false;
-            } else if ((data[i] ^ 0x0) <= 0x7F) { // u1
-                ;
-            } else return false;
-            ++i;
+        int count = 0;
+        for (int c : data) {
+            if (count == 0) {
+                if ((c >> 5) == 0b110) count = 1;
+                else if ((c >> 4) == 0b1110) count = 2;
+                else if ((c >> 3) == 0b11110) count = 3;
+                else if ((c >> 7) != 0b0) return false;
+            } else {
+                if ((c >> 6) != 0b10) return false;
+                --count;
+            }
         }
-        return true;
+        return count == 0;
     }
 };
 
 int main() {
     Solution s;
-    vector<int> data = {235, 140, 4};
-    cout << s.validUtf8(data) <<endl;
+    vector<int> data = {197, 130, 1};
+    cout << s.validUtf8(data) << endl;
     return 0;
 }
+
