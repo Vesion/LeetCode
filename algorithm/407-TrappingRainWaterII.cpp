@@ -5,107 +5,51 @@
 #include <queue> 
 using namespace std;
 
+// A naive solution is iterate height from 1 to 20000, accumulate water level by level using dfs, TLE
+// So we need a better search strategy.
 
-// Solution 0 : dfs (flood fill), TLE
-class Solution_dfs {
+// heap + bfs
+class Solution {
 public:
-    int area;
-    int m, n;
-    bool out;
-    bool visited[111][111];
-    int h;
-
-    void dfs(int x, int y, vector<vector<int>>& height) {
-        if (visited[x][y] || height[x][y] > h) return;
-        if (x == 0 || x == m-1 || y == 0 || y == n-1) {
-            out = true;
-            return;
-        }
-        visited[x][y] = true;
-        ++area;
-        dfs(x-1, y, height);
-        dfs(x, y-1, height);
-        dfs(x+1, y, height);
-        dfs(x, y+1, height);
-    }
-
     int trapRainWater(vector<vector<int>>& heightMap) {
         if (heightMap.empty()) return 0;
-        m = heightMap.size(), n = heightMap[0].size();    
-        int result = 0;
-        for (h = 1; h <= 20000; ++h) {
-            memset(visited, false, sizeof visited);
-            for (int i = 0; i < m; ++i) {
-                for (int j = 0; j < n; ++j) {
-                    if (heightMap[i][j] <= h) {
-                        out = false;
-                        area = 0;
-                        dfs(i, j, heightMap);
-                        if (!out) result += area;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-};
-
-
-// Solution 1 : bfs + heap
-class Solution {
-private:
-    struct Cell {
-        int r, c, height;
-        Cell(int r, int c, int h) : r(r), c(c), height(h) {}
-        bool operator<(const Cell& other) const { return this->height > other.height; } // we need a min-queue
-    };
-
-    int go[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-
-public:
-    int trapRainWater(vector<vector<int>>& heightMap) {
-        if (heightMap.empty()) return 0;    
         int m = heightMap.size(), n = heightMap[0].size();
 
-        priority_queue<Cell> pq;
-        vector<vector<int>> visited(m, vector<int>(n, false));
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> q; // minimum heap, {height, pos = i*n+j}
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
 
-        // enqueue 4 border
+        // enqueue 4 borders
         for (int i = 0; i < m; ++i) {
-            pq.push(Cell(i, 0, heightMap[i][0]));
-            pq.push(Cell(i, n-1, heightMap[i][n-1]));
-            visited[i][0] = visited[i][n-1] = true;
+            q.push({heightMap[i][0], i*n+0}); visited[i][0] = true;
+            q.push({heightMap[i][n-1], i*n+n-1}); visited[i][n-1] = true;
         }
         for (int j = 0; j < n; ++j) {
-            pq.push(Cell(0, j, heightMap[0][j]));
-            pq.push(Cell(m-1, j, heightMap[m-1][j]));
-            visited[0][j] = visited[m-1][j] = true;
+            q.push({heightMap[0][j], 0*n+j}); visited[0][j] = true;
+            q.push({heightMap[m-1][j], (m-1)*n+j}); visited[m-1][j] = true;
         }
 
-        int result = 0;
-        while (!pq.empty()) {
-            auto cell = pq.top(); pq.pop();
-            for (int i = 0; i < 4; ++i) {
-                int r = cell.r + go[i][0];
-                int c = cell.c + go[i][1];
-                if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c]) continue;
-                visited[r][c] = true;
-                result += max(0, cell.height - heightMap[r][c]);
-                pq.push(Cell(r, c, max(cell.height, heightMap[r][c]))); // push the cell with water contained if it has
+        int res = 0;
+        int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+        while (!q.empty()) {
+            auto t = q.top(); q.pop();
+            int height = t.first;
+            int x = t.second/n, y = t.second%n;
+            for (int d = 0; d < 4; ++d) {
+                int nx = x+go[d][0], ny = y+go[d][1];
+                if (nx < 0 || nx >= m || ny < 0 || ny >= n || visited[nx][ny]) continue;
+                visited[nx][ny] = true;
+                res += max(0, height-heightMap[nx][ny]);
+                q.push({max(height, heightMap[nx][ny]), nx*n+ny}); // fill the new cell with water if it is lower
             }
         }
-        return result;
+        return res;
     }
 };
-
 
 int main() {
     Solution s;
-    vector<vector<int>> h = {
-        {4, 4, 4}, 
-        {4, 3, 4}, 
-        {4, 1, 4}, 
-    };
-    cout << s.trapRainWater(h);
+    vector<vector<int>> h ={ { 2,2,2 },{ 2,1,2 },{ 2,1,2 },{ 2,1,2 } };
+    cout << s.trapRainWater(h) << endl;
     return 0;
 }
+
