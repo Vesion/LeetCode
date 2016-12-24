@@ -4,30 +4,31 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : enumerate, O(n) time, be careful with duplicates
 class Solution {
 public:
     int thirdMax(vector<int>& nums) {
-        if  (nums.size() < 3)
-            return *max_element(nums.begin(), nums.end());
-        
-        int top3[3] = {INT_MIN, INT_MIN, INT_MIN,};
-        for (auto n : nums) {
-            if (n > top3[0] && n != top3[1] && n != top3[2]) {
-                top3[0] = n;
-                if (top3[0] > top3[1])
-                    swap(top3[0], top3[1]);
-                if (top3[1] > top3[2])
-                    swap(top3[1], top3[2]);
+        long long first = LONG_MIN, second = LONG_MIN, third = LONG_MIN;
+        for (int num : nums) {
+            if (num == first || num == second || num == third) continue;
+            if (num > first) {
+                third = second;
+                second = first;
+                first = num;
+            } else if (num > second) {
+                third = second;
+                second = num;
+            } else if (num > third) {
+                third = num;
             }
         }
-        return top3[0];
+        return third == LONG_MIN ? first : third;
     }
 };
 
+
 int main() {
     Solution s;
-    vector<int> nums = {INT_MIN, INT_MIN, 1, 2, 2, 2, 3};
+    vector<int> nums = {INT_MIN, INT_MIN,2,2,2};
     cout << s.thirdMax(nums) <<endl;;
     return 0;
 }

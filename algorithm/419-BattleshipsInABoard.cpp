@@ -6,8 +6,25 @@
 using namespace std;
 
 
-// Soluton 1 : dfs
+// Solution 1 : just count ship heads
 class Solution {
+public:
+    int countBattleships(vector<vector<char>>& board) {
+        if (board.empty()) return 0;
+        int m = board.size(), n = board[0].size();
+        int res = 0;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (board[i][j] == 'X' && (i == 0 || board[i-1][j] != 'X') && (j == 0 || board[i][j-1] != 'X'))
+                    ++res;
+            }
+        }
+        return res;
+    }
+};
+
+// Soluton 2 : flood fill, dfs
+class Solution_2 {
 public:
     int m, n; 
     vector<vector<bool>> flag;
@@ -35,8 +52,8 @@ public:
 };
 
 
-// Solution 2 : bfs
-class Solution_bfs {
+// Solution 3 : flood fill, bfs
+class Solution_3 {
 public:
     int go[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     int countBattleships(vector<vector<char>>& board) {
@@ -68,10 +85,8 @@ public:
 };
 
 
-
-
 int main() {
-    Solution_bfs s;
+    Solution s;
     vector<vector<char>> board = {
         {'X', 'X', '.', 'X'},
         {'.', '.', '.', 'X'},

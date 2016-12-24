@@ -6,44 +6,29 @@
 #include <bitset> 
 using namespace std;
 
-
-// Solution 1 : dfs
+// Solution 1 : dp, similar to 'complete knapsack'
 class Solution {
 public:
-    bool dfs(vector<int>& nums, int cur, int sum) {
-        if (sum == 0) return true;
-        if (sum < 0) return false;
-        for (int i = cur; i < (int)nums.size(); ++i)
-            if (dfs(nums, i+1, sum-nums[i])) return true;
-        return false;
-    }
     bool canPartition(vector<int>& nums) {
-        long long sum = accumulate(nums.begin(), nums.end(), 0);
-        return sum & 1 ? false : dfs(nums, 0, sum/2);
-    }
-};
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        if (sum&1) return false;
+        sum >>= 1;
 
-
-// Solution 2 : dp
-class Solution_dp {
-public:
-    bool canPartition(vector<int>& nums) {
-        long long sum = accumulate(nums.begin(), nums.end(), 0);
-        if (sum & 1) return false;
-        sum /= 2;
-        vector<int> dp(sum+1, 0);
-        for (int i = 1; i <= sum; ++i) dp[i] = INT_MIN;
+        vector<int> dp(sum+1, INT_MIN);
+        dp[0] = 0;
         for (int i = 0; i < (int)nums.size(); ++i) {
-            for (int j = sum; j >= nums[i]; --j)
-                dp[j] = max(dp[j-nums[i]]+1, dp[j]);
+            for (int j = sum; j >= nums[i]; --j) {
+                dp[j] = max(dp[j], dp[j-nums[i]]+1);
+            }
         }
         return dp[sum] > 0;
     }
 };
 
 
-// Solution 3 : bitset, tricky
-class Solution_bit {
+// Solution 2 : hash table, use tricky bitmap
+// record each sum, and check total_sum/2 finally
+class Solution_2 {
 public:
     bool canPartition(vector<int>& nums) {
         bitset<5001> bits(1);

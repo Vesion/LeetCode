@@ -7,21 +7,21 @@ using namespace std;
 class Solution {
 public:
     vector<string> fizzBuzz(int n) {
-        if (n < 0) return {};    
+        int three = 3, five = 5;
         vector<string> result(n);
         for (int i = 1; i <= n; ++i) {
-            if (i%15 == 0) result[i-1] = "FizzBuzz";
-            else if (i%3 == 0) result[i-1] = "Fizz";
-            else if (i%5 == 0) result[i-1] = "Buzz";
-            else result[i-1] = to_string(i);
+            if (i != three && i != five) result[i-1] = to_string(i);
+            else {
+                if (i == three) { result[i-1] += "Fizz"; three += 3; }
+                if (i == five) { result[i-1] += "Buzz"; five += 5; }
+            }
         }
         return result;
     }
 };
 
+
 int main() {
     Solution s;
-    auto r = s.fizzBuzz(15);
-    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
