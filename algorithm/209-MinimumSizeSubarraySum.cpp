@@ -9,14 +9,13 @@ using namespace std;
 class Solution {
 public:
     int minSubArrayLen(int s, vector<int>& nums) {
-        int left = 0, right = 0;
+        int i = 0, j = 0, sum = 0;
         int res = INT_MAX;
-        int sum = 0;
-        while (right < (int)nums.size()) {
-            sum += nums[right++];
+        while (j < (int)nums.size()) {
+            sum += nums[j++];
             while (sum >= s) {
-                res = min(res, right-left);
-                sum -= nums[left++];
+                res = min(res, j-i);
+                sum -= nums[i++];
             }
         }
         return res == INT_MAX ? 0 : res;

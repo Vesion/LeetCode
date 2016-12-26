@@ -8,23 +8,19 @@ using namespace std;
 class Solution {
 public:
     int lengthOfLongestSubstringTwoDistinct(string s) {
-        int n = s.size();
-        if (n <= 1) return n;
         vector<int> m(128, 0);
-        int left = 0, right = 0;
-        int c = 0;
+        int i = 0, j = 0, c = 0;
         int res = 0;
-        while (right < (int)s.size()) {
-            if (m[s[right++]]++ == 0) ++c;
-            while (c > 2) {
-                res = max(res, right-left-1);
-                if (m[s[left++]]-- == 1) --c;
-            }
+        while (j < (int)s.size()) {
+            if (m[s[j++]]++ == 0) ++c;
+            while (c > 2)
+                if (m[s[i++]]-- == 1) --c;
+            res = max(res, j-i);
         }
-        res = max(res, right-left);
         return res;
     }
 };
+
 
 int main() {
     Solution s;

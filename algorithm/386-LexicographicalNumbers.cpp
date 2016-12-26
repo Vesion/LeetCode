@@ -37,7 +37,7 @@ public:
             if (cur*10 <= n) {
                 cur *= 10;
             } else {
-                if (cur >= n) cur /= 10;
+                if (cur == n) cur /= 10;
                 ++cur;
                 while (cur%10 == 0) cur /= 10;
             } 

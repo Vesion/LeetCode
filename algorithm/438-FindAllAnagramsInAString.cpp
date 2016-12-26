@@ -4,23 +4,25 @@
 #include <string>
 using namespace std;
 
-
-// Sliding window / Two pointers
+// Sliding window
+// This problem is a bit of different with other sliding window's:
+//      we move a fixed-size-window from left to right, use a counter to validate anagrams.
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
-        vector<int> table(128, 0);
-        for (char& c : p) table[c]++;
-        int counter = p.size(), start = 0, end = 0;
-        vector<int> result;
-        while (end < (int)s.size()) {
-            if (table[s[end++]]-- > 0) counter--; // extend
-            if (counter == 0) result.push_back(start); // find a valid substring
-            if (end-start == (int)p.size() && table[s[start++]]++ >= 0) counter++; // shrink
+        vector<int> m(128, 0);
+        for (char c : p) m[c]++;
+        int i = 0, j = 0, c = p.size();
+        vector<int> res;
+        while (j < (int)s.size()) {
+            if (m[s[j++]]-- > 0) --c;
+            if (c == 0) res.push_back(i);
+            if (j-i == (int)p.size() && m[s[i++]]++ >= 0) ++c;
         }
-        return result;
+        return res;
     }
 };
+
 
 int main() {
     Solution s;

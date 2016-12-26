@@ -4,16 +4,17 @@
 #include <string>
 using namespace std;
 
-
 // Sliding Window (hash table + two pointers)
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
         vector<int> m(128, 0);
+        int i = 0, j = 0, c = 0;
         int res = 0;
-        for (int i = 0, j = 0; j < (int)s.size(); ) {
-            if (m[s[j++]]++ != 0)
-                while (m[s[i++]]-- == 1); // find the repeating one
+        while (j < (int)s.size()) {
+            if (m[s[j++]]++ > 0) ++c;
+            while (c > 0)
+                if (m[s[i++]]-- > 1) --c;
             res = max(res, j-i);
         }
         return res;

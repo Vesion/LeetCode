@@ -4,28 +4,41 @@
 #include <string>
 using namespace std;
 
-
-// A very good problem to learn Sliding Window Problem
-
-// We need to maintain a sliding window:
+// Solution 1 : maintain a sliding window:
 //      (length of substring - number of times of the maximum occurring character in the substring) <= k
-//
-class Solution {
+// it's very slow because we calculate real max_element every time
+class Solution_1 {
 public:
     int characterReplacement(string s, int k) {
-        vector<int> table(128, 0);
-        int start = 0, end = 0, len = 0;
-        while (end < (int)s.size()) {
-            table[s[end++]]++;
-            if (end-start-*max_element(table.begin(), table.end()) > k)
-                table[s[start++]]--;
-            len = max(len, end-start);
+        vector<int> m(128, 0);
+        int i = 0, j = 0;
+        int res = 0;
+        while (j < (int)s.size()) {
+            m[s[j++]]++;
+            while (j-i-*max_element(m.begin(), m.end()) > k) m[s[i++]]--;
+            res = max(res, j-i);
         }
-        return len;
+        return res;
     }
 };
 
+
+// Solution 2 : no need to calculate real-time max_element, much faster
+// https://discuss.leetcode.com/topic/63494/java-12-lines-o-n-sliding-window-solution-with-explanation/2
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        vector<int> m(128, 0);
+        int i = 0, j = 0, c = 0;
+        while (j < (int)s.size()) {
+            c = max(c, ++m[s[j++]]);
+            if (j-i-c > k) m[s[i++]]--;
+        }
+        return j-i;
+    }
+};
+
+
 int main() {
-    Solution s;
     return 0;
 }

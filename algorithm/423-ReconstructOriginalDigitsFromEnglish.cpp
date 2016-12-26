@@ -6,36 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    //string d[10] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-    //                 z      o       w       h        u       f       x    s          g      n
     string originalDigits(string s) {
-        int m[26];
-        fill_n(m, 26, 0);
-        for (char& c : s) m[c-'a']++;
-        string result = "";
-        result += string(m['z'-'a'], '0'); // 0
-        result += string(m['w'-'a'], '2'); // 2
-        result += string(m['u'-'a'], '4'); // 4
-        result += string(m['x'-'a'], '6'); // 6
-        result += string(m['g'-'a'], '8'); // 8
-        m['f'-'a'] -= m['u'-'a'];
-        result += string(m['f'-'a'], '5'); // 5
-        m['s'-'a'] -= m['x'-'a'];
-        result += string(m['s'-'a'], '7'); // 7
-        m['h'-'a'] -= m['g'-'a'];
-        result += string(m['h'-'a'], '3'); // 3
-        m['o'-'a'] -= (m['z'-'a'] + m['w'-'a'] + m['u'-'a']);
-        result += string(m['o'-'a'], '1'); // 1
-        m['n'-'a'] -= (m['o'-'a'] + m['s'-'a']);
-        result += string(m['n'-'a']/2, '9'); // 9
-        sort(result.begin(), result.end());
-        return result;
+        vector<int> m(128, 0);
+        for (char c : s) m[c]++;
+        int d[10] = {0};
+        d[0] = m['z'];
+        d[2] = m['w'];
+        d[4] = m['u'];
+        d[6] = m['x'];
+        d[8] = m['g'];
 
+        d[3] = m['h'] - d[8];
+        d[5] = m['f'] - d[4];
+
+        d[7] = m['v'] - d[5];
+        d[1] = m['o'] - d[2] - d[4] - d[0];
+        d[9] = m['i'] - d[5] - d[6] - d[8];
+
+        string res;
+        for (int i = 0; i < 10; ++i) res += d[i] > 0 ? string(d[i], '0'+i) : "";
+        return res;
     }
 };
 
 int main() {
     Solution s;
-    cout << s.originalDigits("fviefuro");
+    cout << s.originalDigits("fviefuro") <<endl;
     return 0;
 }
+
