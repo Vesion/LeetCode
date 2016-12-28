@@ -7,6 +7,7 @@ using namespace std;
 // Sliding window
 // This problem is a bit of different with other sliding window's:
 //      we move a fixed-size-window from left to right, use a counter to validate anagrams.
+//
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
