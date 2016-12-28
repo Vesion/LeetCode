@@ -2,39 +2,33 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <unordered_set> 
 #include <unordered_map> 
 using namespace std;
 
 class Solution {
 public:
     int numberOfBoomerangs(vector<pair<int, int>>& points) {
-        if (points.empty()) return 0;
-        unordered_map<long long, int> g;
         int n = points.size();
         int res = 0;
+        unordered_map<int, int> m;
         for (int i = 0; i < n; ++i) {
+            m.clear();
             for (int j = 0; j < n; ++j) {
-                if (i != j) {
-                    g[dist(points[i], points[j])]++;
-                }
+                if (i == j) continue;
+                int d = (points[i].first-points[j].first)*(points[i].first-points[j].first) + (points[i].second-points[j].second)*(points[i].second-points[j].second);
+                m[d]++;
             }
-            for (auto& p : g)
-                res += (p.second * (p.second-1));
-            g.clear();
+            for (auto& p : m) if (p.second >= 2) res += p.second * (p.second-1);
         }
         return res;
-    }
-
-    long long dist(pair<int,int>&p1, pair<int,int>&p2) {
-        long long r = (p1.first-p2.first)*(p1.first-p2.first) + (p1.second-p2.second)*(p1.second-p2.second);
-        return r;
     }
 };
 
 int main() {
-    Solution solution;
-    vector<pair<int, int>> points = {{0,0}, {0,1}, {0,-1}, {10000, 0}};
-    cout << solution.numberOfBoomerangs(points) << endl;
+    Solution s;
+    vector<pair<int,int>> p = {{0,0}, {1,0}, {2,0}};
+    cout <<s.numberOfBoomerangs(p) << endl;
     return 0;
 }
 
