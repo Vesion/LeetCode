@@ -2,26 +2,68 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
-#include <map> 
+#include <queue> 
 using namespace std;
 
-class Solution {
+
+// Solution 1 : heap, O(nlogn)
+class Solution_1 {
 public:
     string frequencySort(string s) {
-        if (s.empty()) return "";
-        unordered_map<char, int> m;
-        for (char &c : s) m[c]++;
-        multimap<int, char, greater<int>> d;
-        for (auto &p : m) d.insert({p.second, p.first});
-        string r;
-        for (auto &p : d) r += string(p.first, p.second);
-        return r;
+        vector<int> m(128, 0);
+        for (char c : s) m[c]++;
+        priority_queue<pair<int, char>> q;
+        for (int i = 0; i < 128; ++i)
+            if (m[i]) q.push({m[i], i});
+        string res;
+        while (!q.empty()) {
+            int t = q.top().first;
+            char c = q.top().second;
+            q.pop();
+            res += string(t, c);
+        }
+        return res;
     }
 };
 
+// Solution 2 : sort with frequency, O(nlogn)
+class Solution_2 {
+public:
+    string frequencySort(string s) {
+        vector<int> m(128, 0);
+        for (char c : s) m[c]++;
+        sort(s.begin(), s.end(), 
+            [&m](const char& c1, const char& c2) {
+                if (m[c1] == m[c2]) return c1 < c2;
+                return m[c1] > m[c2]; });
+        return s;
+    }
+};
+
+
+// Solution 3 : bucket sort, O(n)
+class Solution {
+public:
+    string frequencySort(string s) {
+        vector<int> m(128, 0);
+        for (char c : s) m[c]++;
+
+        int n = s.size();
+        vector<string> buckets(n+1, "");
+        for (int i = 0; i < 128; ++i) 
+            if (m[i]) buckets[m[i]].append(m[i], (char)i);
+
+        string res;
+        for (int i = n; i >= 0; --i)
+            if (!buckets[i].empty()) res += buckets[i];
+        return res;
+    }
+};
+
+
 int main() {
     Solution s;
-    cout << s.frequencySort("abaaadcd") << endl;;
+    cout << s.frequencySort("Acacbb") << endl;
     return 0;
 }
+
