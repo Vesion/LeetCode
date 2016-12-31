@@ -6,43 +6,36 @@
 #include <deque> 
 using namespace std;
 
-// Solution 1 : top-down dp, dfs + memo
+// Similar to 294-FlipGameII
+
+
+// Solution 1 : top-down dp
 class Solution {
-    vector<int> cache;
-    int state;
-    int maxInt;
 public:
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
-        int sum = maxChoosableInteger * (maxChoosableInteger + 1) / 2;
-        if (sum < desiredTotal) return false;
+        if (maxChoosableInteger * (maxChoosableInteger + 1) / 2 < desiredTotal) return false;
         if (desiredTotal <= 0) return true;
-        maxInt = maxChoosableInteger;
-        state = 0;
-        cache = vector<int> (1<<maxChoosableInteger, -1);
-        return helper(desiredTotal);
+        int used = 0;
+        vector<int> m(1<<maxChoosableInteger, -1);
+        return win(desiredTotal, maxChoosableInteger, used, m);
     }
 
-    bool helper(int desiredTotal) {
+    bool win(int desiredTotal, int maxChoosableInteger, int& used, vector<int>& m) {
         if (desiredTotal <= 0) return false;
-        if (cache[state] != -1) return cache[state];
-        int mask = 1;
-        for (int i=0; i<maxInt; ++i) {
-            if (!(state & mask)) {
-                state |= mask;
-                if (!helper(desiredTotal-i-1)) {
-                    state &= ~mask;
-                    cache[state] = 1;
-
-                    return true;
-                }
-                state &= ~mask;
+        if (m[used] != -1) return m[used];
+        bool res = false;
+        for (int i = 0; i < maxChoosableInteger; ++i) {
+            int mask = 1 << i;
+            if (!(used & mask)) {
+                used |= mask;
+                res = !win(desiredTotal-i-1, maxChoosableInteger, used, m);
+                used ^= mask;
+                if (res) break;
             }
-            mask <<= 1;
         }
-        cache[state] = 0;
-        return false;
+        m[used] = res;
+        return res;
     }
-
 };
 
 
