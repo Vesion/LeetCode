@@ -26,7 +26,7 @@ public:
 
 
 // Solution 2 : KMP, O(n)
-class Solution {
+class Solution_2 {
 public:
     bool repeatedSubstringPattern(string str) {
         int n = str.size();
@@ -38,6 +38,20 @@ public:
             prefix[i] = j;
         }
         return prefix[n-1] && (prefix[n-1] % (n-prefix[n-1]) == 0);
+    }
+};
+
+
+// Solution 3 : an awesome solution! Orz
+// https://discuss.leetcode.com/topic/68206/easy-python-solution-with-explaination
+//
+// Proof:
+// https://discuss.leetcode.com/topic/72732/rigorous-proof-why-condition-s-s-find-s-1-s-size-is-equivalent-to-substring-repetition
+//
+class Solution {
+public:
+    bool repeatedSubstringPattern(string str) {
+        return (str+str).find(str, 1) < str.size();
     }
 };
 
