@@ -4,7 +4,6 @@
 #include <string>
 using namespace std;
 
-
 // The final sorted nums needs to satisfy two conditions:
 //      1. If i is odd, then nums[i] >= nums[i - 1];
 //      2. If i is even, then nums[i] <= nums[i - 1].
@@ -12,10 +11,9 @@ using namespace std;
 class Solution {
 public:
     void wiggleSort(vector<int>& nums) {
-        int n = nums.size();
-        for (int i = 1; i < n; ++i) {
-            if (((i&1) && nums[i] < nums[i-1]) || (!(i&1) && nums[i] > nums[i-1]))
-                    swap(nums[i], nums[i-1]);
+        for (int i = 0; i < (int)nums.size()-1; ++i) {
+            if (i%2 == 1 && nums[i] < nums[i+1]) swap(nums[i], nums[i+1]);
+            if (i%2 == 0 && nums[i] > nums[i+1]) swap(nums[i], nums[i+1]);
         }
     }
 };

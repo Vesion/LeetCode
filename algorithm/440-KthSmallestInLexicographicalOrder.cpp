@@ -4,12 +4,10 @@
 #include <string>
 using namespace std;
 
-
 // This is a hard counting problem.
-//
 // https://discuss.leetcode.com/topic/64624/concise-easy-to-understand-java-5ms-solution-with-explaination
-// https://discuss.leetcode.com/topic/64462/c-python-0ms-o-log-n-2-time-o-1-space-super-easy-solution-with-detailed-explanations
-
+//
+// Count nodes in a denary tree
 class Solution {
 public:
     int findKthNumber(int n, int k) {
@@ -31,8 +29,9 @@ public:
     }
 };
 
+
 int main() {
     Solution s;
-    cout << s.findKthNumber(1000000, 1) << endl;
+    cout << s.findKthNumber(1000000, 100) << endl;
     return 0;
 }

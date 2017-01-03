@@ -34,22 +34,22 @@ public:
 class Solution_2 {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
-        vector<int> res;
-        TreeNode* pre = NULL; // the last poped node
-        TreeNode* cur = root;
+        if (!root) return {};
         stack<TreeNode*> st;
-        while (cur || !st.empty()) {
+        TreeNode *pre = NULL, *cur = root;
+        vector<int> res;
+        while (!st.empty() || cur) {
             if (cur) {
                 st.push(cur);
                 cur = cur->left;
             } else {
                 TreeNode* t = st.top();
-                if (t->right && t->right != pre)
+                if (t->right && t->right != pre) {
                     cur = t->right;
-                else {
-                    st.pop();
-                    res.push_back(t->val);
+                } else {
                     pre = t;
+                    res.push_back(t->val);
+                    st.pop();
                 }
             }
         }
@@ -57,8 +57,8 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

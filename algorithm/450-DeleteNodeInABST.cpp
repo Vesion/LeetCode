@@ -27,21 +27,21 @@ public:
                 delete root;
                 return left;
             }
-            TreeNode* p = findSuccessor(root->right);
-            root->val = p->val;
-            root->right = deleteNode(root->right, p->val);
+            TreeNode* successor = findSuccessor(root->right);
+            root->val = successor->val;
+            root->right = deleteNode(root->right, successor->val);
         }
         return root;
     }
-
+    
     TreeNode* findSuccessor(TreeNode* root) {
         if (!root->left) return root;
         return findSuccessor(root->left);
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

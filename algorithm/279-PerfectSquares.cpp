@@ -11,9 +11,9 @@ using namespace std;
 class Solution_1 {
 public:
     int numSquares(int n) {
-        vector<int> dp(n+1, 0);
+        vector<int> dp(n+1, INT_MAX);
+        dp[0] = 0;
         for (int i = 1; i <= n; ++i) {
-            dp[i] = i;
             for (int j = 1; j*j <= i; ++j) {
                 dp[i] = min(dp[i], dp[i-j*j]+1);
             }
@@ -29,33 +29,33 @@ class Solution {
 public:
     int numSquares(int n) {
         vector<int> squares;
-        vector<bool> visited(n+1, false);
-        for (int i = 1; i*i <= n; ++i) {
-            squares.push_back(i*i);
-            visited[i*i] = true;
-        }
+        for (int i = 1; i*i <= n; ++i) squares.push_back(i*i);
         if (squares.back() == n) return 1;
-
+        
         queue<int> q;
-        for (int s : squares) q.push(s);
-
+        vector<bool> visited(n+1, false);
+        for (int s : squares) {
+            q.push(s);
+            visited[s] = true;
+        }
+        
         int level = 1;
         while (!q.empty()) {
             ++level;
             int len = q.size();
-            for (int i = 0; i < len; ++i) {
-                int node = q.front(); q.pop();
+            while (len--) {
+                int t = q.front(); q.pop();
                 for (int s : squares) {
-                    if (node+s == n) return level;
-                    if ((node+s < n) && !visited[node+s]) {
-                        q.push(node+s);
-                        visited[node+s] = true;
+                    if (t+s == n) return level;
+                    if (t+s > n) break;
+                    if (t+s < n && !visited[t+s]) {
+                        q.push(t+s);
+                        visited[t+s] = true;
                     }
-                    else if (node+s > n) break;
                 }
             }
         }
-        return 0; // never
+        return 0;
     }
 };
 

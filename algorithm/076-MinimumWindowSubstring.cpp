@@ -11,12 +11,12 @@ public:
         vector<int> m(128, 0);
         for (char c : t) m[c]++;
         int i = 0, j = 0, c = t.size();
-        int len = INT_MAX, start = 0;
+        int start = 0, len = INT_MAX;
         while (j < (int)s.size()) {
             if (m[s[j++]]-- > 0) --c;
-            while (c == 0) { // find a valid substring
-                if (j-i < len) { len = j-i; start = i; }
-                if (m[s[i++]]++ == 0) ++c; // shrink window to turn it into an invalid substring
+            while (c == 0) {
+                if (j-i < len) { start = i, len = min(len, j-i); }
+                if (m[s[i++]]++ == 0) ++c;
             }
         }
         return len == INT_MAX ? "" : s.substr(start, len);
@@ -25,7 +25,6 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
 

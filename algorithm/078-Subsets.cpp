@@ -27,7 +27,7 @@ public:
 };
 
 
-// Solution 2 : bit manipulation
+// Solution 2 : bitmap, there are total 2^n subsets
 class Solution_2 {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
@@ -44,8 +44,8 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

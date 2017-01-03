@@ -18,11 +18,11 @@ public:
     }
     
     int move(int row, int col, int player) {
-        int v = player == 1 ? 1 : -1;
-        rows[row] += v;
-        cols[col] += v;
-        if (row == col) diagonal += v;
-        if (row == n-1-col) anti_diagonal += v;
+        int val = (player == 1) ? 1 : -1;
+        rows[row] += val;
+        cols[col] += val;
+        diagonal += (row == col) ? val : 0;
+        anti_diagonal += (row == n-1-col) ? val : 0;
         if (rows[row] == n || cols[col] == n || diagonal == n || anti_diagonal == n) return 1;
         if (rows[row] == -n || cols[col] == -n || diagonal == -n || anti_diagonal == -n) return 2;
         return 0;
