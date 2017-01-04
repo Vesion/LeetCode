@@ -5,30 +5,24 @@
 #include <numeric> 
 using namespace std;
 
-
 // This is a 'set partition' problem, it's NPC.
 // backtracking, O(2^n)
 class Solution {
 public:
-    vector<bool> used;
-    int n;
-
     bool makesquare(vector<int>& nums) {
         int sum = accumulate(nums.begin(), nums.end(), 0);
         if (sum == 0 || sum%4) return false;
-        n = nums.size();
-        used.resize(n, false);
-        return dfs(nums, 0, 0, sum/4, 0);
+        vector<bool> used(nums.size(), false);
+        return dfs(nums, 0, 0, sum/4, 0, used);
     }
 
-    bool dfs(vector<int>& nums, int start, int sum, int target, int edges) {
-        if (edges == 4) return true;
-        if (sum == target) return dfs(nums, 0, 0, target, edges+1);
-        if (sum > target) return false;
-        for (int i = start; i < n; ++i) {
-            if (!used[i]) {
+    bool dfs(vector<int>& nums, int start, int sum, int target, int edges, vector<bool>& used) {
+        if (edges == 3) return true; // we only need to construct 3 edges
+        if (sum == target) return dfs(nums, 0, 0, target, edges+1, used); // one edge complete
+        for (int i = start; i < (int)nums.size(); ++i) {
+            if (!used[i] && sum+nums[i] <= target) {
                 used[i] = true;
-                if (dfs(nums, i+1, sum+nums[i], target, edges)) return true;
+                if (dfs(nums, i+1, sum+nums[i], target, edges, used)) return true;
                 used[i] = false;
             }
         }

@@ -4,17 +4,8 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : recursive
+// Solution 1 : iterative
 class Solution {
-public:
-    int getSum(int a, int b) {
-        return (b == 0) ? a : getSum(a^b, (a&b)<<1);    
-    }
-};
-
-
-// Solution 2 : iterative
-class Solution_2 {
 public:
     int getSum(int a, int b) {
         while (b) { // repeat until no carry
@@ -27,9 +18,15 @@ public:
 };
 
 
+// Solution 2 : recursive
+class Solution_2 {
+public:
+    int getSum(int a, int b) {
+        return (b == 0) ? a : getSum(a^b, (a&b)<<1);    
+    }
+};
+
+
 int main() {
-    Solution s;
-    cout << s.getSum(99, 99) <<endl;
     return 0;
 }
-

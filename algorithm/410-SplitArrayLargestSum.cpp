@@ -10,7 +10,6 @@ using namespace std;
 class Solution {
 public:
     int splitArray(vector<int>& nums, int m) {
-        if (nums.empty() || m == 0) return 0;
         int left = 0, right = 0;
         for (int num : nums) {
             left = max(left, num);
@@ -18,35 +17,35 @@ public:
         }
         while (left <= right) {
             int mid = left + (right-left)/2;
-            if (!canSplit(nums, mid, m)) left = mid+1; // if cannot split, it means upper is too small
-            else right = mid-1;
+            if (canSplit(nums, m, mid)) right = mid-1;
+            else left = mid+1;
         }
         return left;
     }
 
     // check if nums can be split into m subarrays with largest one's sum no greater than upper
     // or, given upper sum, check if it can be split into no more than m subarrays
-    bool canSplit(vector<int>& nums, int upper, int m) {
-        int sum = 0;
-        int c = 1;
+    bool canSplit(vector<int>& nums, int m, int upper) {
+        int sum = 0, count = 1;
         for (int num : nums) {
             sum += num;
             if (sum > upper) {
-                ++c;
+                ++count;
                 sum = num;
             }
         }
-        return c <= m;
+        return count <= m;
     }
 };
 
 
-// Solution 2 : dp, O(n^3), TLE
+// Solution 2 : dp, O(m*n^2), TLE
 // but this one is more general, numbers can be negative here.
 //
-// dp[s,j] is the solution for splitting subarray n[j]...n[L-1] into s parts.
-// dp[s+1,i] = min{ max(dp[s,j], n[i]+...+n[j-1]) }, i+1 <= j <= L-s
+// dp[s][i] is the solution for splitting nums[0...i] into s subarrays
+//      dp[s][i] = min( max(dp[s-1][j], nums[j+1] + ... + nums[i]) ), s-1 <= j <= i-1
 //
+// our target is dp[m][n-1]
 class Solution_2 {
 public:
     using ll = long long;
@@ -55,27 +54,26 @@ public:
         vector<ll> sums(n+1, 0);
         for (int i = 1; i <= n; ++i) sums[i] = sums[i-1] + nums[i-1];
 
-        vector<ll> dp(n, 0);
-        for (int i = 0; i < n; ++i) dp[i] = sums[n]-sums[i]; // dp[i] = nums[i+1] + nums[i+2] + ... + nums[n-1]
+        vector<vector<ll>> dp(m+1, vector<ll>(n));
+        for (int i = 0; i < n; ++i) dp[1][i] = sums[i+1];
 
-        for (int s = 1; s < m; ++s) {
-            for (int i = 0; i < n-s; ++i) {
-                dp[i] = LONG_MAX;
-                for (int j = i+1; i <= n-s; ++j) {
-                    ll tmp = max(dp[j], sums[j]-sums[i]);
-                    if (tmp <= dp[i]) dp[i] = tmp;
-                    else break;
+        for (int s = 2; s <= m; ++s) {
+            for (int i = 1; i < n; ++i) {
+                dp[s][i] = LONG_MAX;
+                for (int j = s-2; j <= i-1; ++j) { // be careful with j's range
+                    dp[s][i] = min(dp[s][i], max(dp[s-1][j], sums[i+1]-sums[j+1]));
                 }
             }
         }
-        return dp[0];
+        return dp[m][n-1];
     }
 };
 
 
-
 int main() {
-    Solution s;
+    Solution_2 s2;
+    vector<int> nums = {1,5,6,7,8,19,32,0,3};
+    cout << s2.splitArray(nums, 2) <<endl;
     return 0;
 }
 

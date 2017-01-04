@@ -10,28 +10,26 @@ class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
         vector<vector<int>> graph(numCourses);
-        vector<int> indegree(numCourses, 0);
+        vector<int> indegrees(numCourses, 0);
         for (auto& p : prerequisites) {
             graph[p.second].push_back(p.first);
-            indegree[p.first]++;
+            indegrees[p.first]++;
         }
-
+        
         queue<int> q;
-        for (int i = 0; i < numCourses; ++i) if (indegree[i] == 0) q.push(i);
-        if (q.empty()) return {};
-
+        for (int i = 0; i < numCourses; ++i) if (indegrees[i] == 0) q.push(i);
+        
         vector<int> res;
         while (!q.empty()) {
             int t = q.front(); q.pop();
-            numCourses--;
             res.push_back(t);
-            for (int nbr : graph[t]) {
-                if (--indegree[nbr] == 0) q.push(nbr);
+            for (int& nbr : graph[t]) {
+                if (--indegrees[nbr] == 0) q.push(nbr);
             }
-            if (q.empty() && numCourses != 0) return {};
         }
+        if ((int)res.size() != numCourses) return {};
         return res;
-    } 
+    }
 };
 
 
@@ -45,7 +43,7 @@ public:
         vector<bool> visited(numCourses, false), onpath(numCourses, false);
         vector<int> res;
         for (int i = 0; i < numCourses; ++i) {
-            if (!visited[i] && hasCycle(i, graph, visited, onpath, res)) return {};
+            if (hasCycle(i, graph, visited, onpath, res)) return {};
         }
         reverse(res.begin(), res.end());
         return res;
@@ -55,7 +53,8 @@ public:
         if (visited[cur]) return false;
         visited[cur] = onpath[cur] = true;
         for (int nbr : graph[cur])
-            if (onpath[nbr] || hasCycle(nbr, graph, visited, onpath, res)) return true;
+            if (onpath[nbr] 
+            || hasCycle(nbr, graph, visited, onpath, res)) return true;
         onpath[cur] = false;
         res.push_back(cur);
         return false;

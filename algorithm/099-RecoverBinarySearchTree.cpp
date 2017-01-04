@@ -11,33 +11,37 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-// Similar to 098-ValidateBinarySearchTree, find two invalid nodes, and swap their values
+// Solution 1 : inorder traversal with stack, O(logn) space
 class Solution {
 public:
     void recoverTree(TreeNode* root) {
         if (!root) return;
-        TreeNode *e1 = NULL, *e2 = NULL;
-        TreeNode *pre = NULL, *cur = root;
         stack<TreeNode*> st;
-        while (cur || !st.empty()) {
-            while (cur) {
+        TreeNode *cur = root, *pre = NULL;
+        TreeNode *e1 = NULL, *e2 = NULL;
+        while (!st.empty() || cur) {
+            if (cur) {
                 st.push(cur);
                 cur = cur->left;
+            } else {
+                cur = st.top(); st.pop();
+                if (pre && cur->val < pre->val) { // be careful with the [0, 1] corner case
+                    if (!e1) e1 = pre;
+                    e2 = cur;
+                }
+                pre = cur;
+                cur = cur->right;
             }
-            cur = st.top(); st.pop();
-            if (pre && cur->val <= pre->val) {
-                if (!e1) e1 = pre;
-                e2 = cur;
-            }
-            pre = cur;
-            cur = cur->right;
         }
         swap(e1->val, e2->val);
     }
 };
 
+
+// Solution 2 : Morris traversal, O(1) space
+
+
 int main() {
-    Solution s;
     return 0;
 }
 

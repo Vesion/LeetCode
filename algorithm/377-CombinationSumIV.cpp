@@ -4,7 +4,28 @@
 #include <string>
 using namespace std;
 
-// dp, similar to complete knapsack problem
+// Solution 1 : top-down, memo dp
+class Solution_1 {
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<int> dp(target+1, -1);
+        dp[0] = 1;
+        return dfs(nums, target, dp);
+    }
+    
+    int dfs(vector<int>& nums, int target, vector<int>& dp) {
+        if (target == 0) return 1;
+        if (dp[target] != -1) return dp[target];
+        int res = 0;
+        for (int& num : nums)
+            if (num <= target) res += dfs(nums, target-num, dp);
+        dp[target] = res;
+        return res;
+    }
+};
+
+
+// Solution 2 : bottom-up dp
 class Solution {
 public:
     int combinationSum4(vector<int>& nums, int target) {
@@ -19,10 +40,8 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    vector<int> nums = {1,2,3};
-    cout << s.combinationSum4(nums, 4);
     return 0;
 }
 

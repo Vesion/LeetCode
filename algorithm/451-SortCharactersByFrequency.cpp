@@ -47,15 +47,13 @@ public:
     string frequencySort(string s) {
         vector<int> m(128, 0);
         for (char c : s) m[c]++;
-
+        
         int n = s.size();
         vector<string> buckets(n+1, "");
-        for (int i = 0; i < 128; ++i) 
-            if (m[i]) buckets[m[i]].append(m[i], (char)i);
+        for (int i = 0; i < 128; ++i) buckets[m[i]] += string(m[i], i);
 
-        string res;
-        for (int i = n; i >= 0; --i)
-            if (!buckets[i].empty()) res += buckets[i];
+        string res = "";
+        for (int i = n; i >= 0; --i) res += buckets[i];
         return res;
     }
 };
@@ -63,7 +61,6 @@ public:
 
 int main() {
     Solution s;
-    cout << s.frequencySort("Acacbb") << endl;
+    cout << s.frequencySort("") << endl;
     return 0;
 }
-
