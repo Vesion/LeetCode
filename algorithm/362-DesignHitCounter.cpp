@@ -5,6 +5,8 @@
 #include <map> 
 using namespace std;
 
+// Solution using queue is trivial and not scale.
+// We use two fixed array to record not only hits, but times.
 class HitCounter {
 private:
     vector<int> times, hits;
@@ -36,15 +38,5 @@ public:
 
 
 int main() {
-    HitCounter h;
-    h.hit(1);
-    h.hit(1);
-    h.hit(1);
-    h.hit(300);
-    //cout << h.getHits(300) << endl;;
-    h.hit(300);
-    //cout << h.getHits(300) << endl;;
-    h.hit(301);
-    cout << h.getHits(301) << endl;;
     return 0;
 }

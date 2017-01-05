@@ -4,22 +4,21 @@
 #include <string>
 using namespace std;
 
-// Similar to 'MaxSubarrySum'
+// dp, similar to 'MaxSubarrySum'
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
-        int minp = INT_MAX;
-        int res = 0;
-        for (int i = 0; i < (int)prices.size(); ++i) {
-            minp = min(minp, prices[i]);
-            res = max(res, prices[i]-minp);
+        int res = 0, min_price = INT_MAX;
+        for (int& price : prices) {
+            res = max(res, price-min_price);
+            min_price = min(min_price, price);
         }
         return res;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

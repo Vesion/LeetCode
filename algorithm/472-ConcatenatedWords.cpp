@@ -55,18 +55,16 @@ public:
 class Solution {
 public:
     vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
-        if (words.empty()) return {};
-        sort(words.begin(), words.end(), [](const string& w1, const string& w2) { return w1.size() < w2.size(); });
+        sort(words.begin(), words.end(), [](const string s1, const string s2) { return s1.size() < s2.size(); }); // sort with length
         unordered_set<string> dict;
-
         vector<string> res;
         for (string& w : words) {
-            if (canBreak(w, dict)) res.push_back(w);
+            if (canBreak(w, dict)) res.push_back(w); // words in dict are shorter than current one
             dict.insert(w);
         }
         return res;
     }
-
+    
     bool canBreak(string& word, unordered_set<string>& dict) {
         if (word.empty() || dict.empty()) return false;
         int n = word.size();
@@ -76,15 +74,13 @@ public:
             for (int j = 0; j < i; ++j) {
                 if (dp[j] && dict.count(word.substr(j, i-j))) {
                     dp[i] = true;
-                    break;
+                    break; // we only care about if it can be broken, so we can stop here
                 }
             }
         }
         return dp[n];
     }
 };
-
-
 
 
 int main() {

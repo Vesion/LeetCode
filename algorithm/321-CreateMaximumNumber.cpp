@@ -4,6 +4,9 @@
 #include <string>
 using namespace std;
 
+// O((m+n)^3)
+// It is possible to achieve O(n + m) runtime for the merge function by by creating a suffix array on the concatenation of nums1 and nums2.
+// Therefore, the total runtime can be further improved to O((n+m)^2).
 class Solution {
 public:
     vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
@@ -19,22 +22,13 @@ public:
         
     }
 
-    // compare two numbers
+    // compare two numbers, O(m+n)
     bool larger(vector<int>& nums1, int m, int i, vector<int>& nums2, int n, int j) {
         while (i < m && j < n && nums1[i] == nums2[j]) ++i, ++j;
         return j == n || (i < m && nums1[i] > nums2[j]);
     }
 
-    // merge two numbers
-    vector<int> merge(vector<int>& nums1, vector<int>& nums2) {
-        int m = nums1.size(), n = nums2.size();
-        vector<int> res(m+n);
-        for (int i = 0, j = 0, k = 0; k < m+n; ++k)
-            res[k] = larger(nums1, m, i, nums2, n, j) ? nums1[i++] : nums2[j++];
-        return res;
-    }
-
-    // get the max k-digits-number in a array
+    // get the max k-digits-number in a array, O(n)
     vector<int> getMax(vector<int>& nums, int k) {
         int n = nums.size();
         vector<int> res(k);
@@ -45,7 +39,17 @@ public:
         }
         return res;
     }
+
+    // merge two numbers into a largest number, O((m+n)^2)
+    vector<int> merge(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size(), n = nums2.size();
+        vector<int> res(m+n);
+        for (int i = 0, j = 0, k = 0; k < m+n; ++k)
+            res[k] = larger(nums1, m, i, nums2, n, j) ? nums1[i++] : nums2[j++];
+        return res;
+    }
 };
+
 
 int main() {
     Solution s;
@@ -55,4 +59,3 @@ int main() {
     for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
-

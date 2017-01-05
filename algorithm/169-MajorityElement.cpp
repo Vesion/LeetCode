@@ -22,20 +22,16 @@ public:
 };
 
 
-// Solution 2 : Divide and conquer, O(nlogn) time, O(1) space
+// Solution 2 : Hash table, O(n) time, O(n) space
 class Solution_2 {
 public:
     int majorityElement(vector<int>& nums) {
-        return majority(nums, 0, nums.size() - 1);
-    }
-
-    int majority(vector<int>& nums, int left, int right) {
-        if (left == right) return nums[left];
-        int mid = left + ((right - left) >> 1);
-        int lm = majority(nums, left, mid);
-        int rm = majority(nums, mid + 1, right);
-        if (lm == rm) return lm;
-        return count(nums.begin() + left, nums.begin() + right + 1, lm) > count(nums.begin() + left, nums.begin() + right + 1, rm) ? lm : rm;
+        unordered_map<int, int> m; 
+        for (auto & num : nums) {
+            ++m[num];
+            if (m[num] > (int)nums.size()/2) return num;
+        }
+        return 0; // never
     }
 };
 
@@ -50,16 +46,20 @@ public:
 };
 
 
-// Solution 4 : Hash table, O(n) time, O(n) space
+// Solution 4 : Divide and conquer, O(nlogn) time, O(1) space
 class Solution_4 {
 public:
     int majorityElement(vector<int>& nums) {
-        unordered_map<int, int> m; 
-        for (auto & num : nums) {
-            ++m[num];
-            if (m[num] > (int)nums.size()/2) return num;
-        }
-        return 0; // never
+        return majority(nums, 0, nums.size() - 1);
+    }
+
+    int majority(vector<int>& nums, int left, int right) {
+        if (left == right) return nums[left];
+        int mid = left + ((right - left) >> 1);
+        int lm = majority(nums, left, mid);
+        int rm = majority(nums, mid + 1, right);
+        if (lm == rm) return lm;
+        return count(nums.begin() + left, nums.begin() + right + 1, lm) > count(nums.begin() + left, nums.begin() + right + 1, rm) ? lm : rm;
     }
 };
 
