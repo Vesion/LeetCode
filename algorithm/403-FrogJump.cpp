@@ -40,7 +40,8 @@ public:
         dp[0].insert(0);
         for (int pos : stones) {
             for (int step : dp[pos]) {
-                if (step-1 > 0) dp[pos + step-1].insert(step-1);
+                if (step-1 > 0) // Note that the frog can only jump in the forward direction.
+                    dp[pos + step-1].insert(step-1);
                 dp[pos + step].insert(step);
                 dp[pos + step+1].insert(step+1);
             }

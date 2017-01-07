@@ -18,11 +18,8 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    vector<int> nums = {1,0,2};
-    s.sortColors(nums);
-    for (auto& e : nums) cout << e << " "; cout << endl; 
     return 0;
 }
 

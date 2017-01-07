@@ -10,45 +10,35 @@ struct ListNode {
     ListNode(int val) : val(val), next(NULL) {}
 };
 
-// Solution 1 : recursively
+// Solution 1 : recursive
 class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
         if (!head || !head->next) return head;
-        ListNode* p = head->next;
-        head->next = swapPairs(p->next);
-        p->next = head;
-        return p;
+        ListNode* newhead = head->next;
+        head->next = swapPairs(newhead->next);
+        newhead->next = head;
+        return newhead;
     }
 };
 
 
-// Solution 2 : iterative, first split into two lists, then chain them
+// Solution 2 : iterative
 class Solution_2 {
 public:
     ListNode* swapPairs(ListNode* head) {
-        if (!head || !head->next) return head;
-        ListNode* r = head->next;
-        ListNode* h1 = head;
-        ListNode* h2 = head->next;
-        ListNode *p1 = h1, *p2 = h2;
-        while (p1 && p2 && p1->next && p2->next) {
-            p1->next = p2->next;
-            p1 = p1->next;
-            p2->next = p1->next;
-            p2 = p2->next;
+        ListNode dummy(0); dummy.next = head;
+        ListNode* cur = &dummy;
+        while (cur->next && cur->next->next) {
+            ListNode* first = cur->next;
+            ListNode* second = cur->next->next;
+            ListNode* third = cur->next->next->next;
+            cur->next = second;
+            second->next = first;
+            first->next = third;
+            cur = first;
         }
-        if (p1) p1->next = NULL;
-        if (p2) p2->next = NULL;
-        while (h1 && h2) {
-            ListNode* t1 = h1->next;
-            ListNode* t2 = h2->next;
-            h2->next = h1;
-            if (t2) h1->next = t2;
-            h1 = t1;
-            h2 = t2;
-        }
-        return r;
+        return dummy.next;
     }
 };
 
@@ -57,17 +47,14 @@ public:
 class Solution_3 {
 public:
     ListNode* swapPairs(ListNode* head) {
-        if (!head || !head->next) return head;
-        ListNode** pp = &head;
-        ListNode* r = head->next;
-        while (*pp && (*pp)->next) {
-            ListNode* tmp = (*pp)->next;
-            (*pp)->next = tmp->next; // cur's next points to next's next
-            tmp->next = *pp; // next's next points to cur
-            *pp = tmp; // pre's next points to next (the new cur), this is why we need two-level-pointer
-            pp = &((*pp)->next->next);
+        ListNode **pp = &head, *a, *b;
+        while ((a = *pp) && (b = a->next)) {
+            a->next = b->next;
+            b->next = a;
+            *pp = b; // think about how this work
+            pp = &(a->next);
         }
-        return r;
+        return head;
     }
 };
 

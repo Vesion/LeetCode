@@ -2,52 +2,77 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <stack> 
 using namespace std;
 
-// top-down parser
+// Solution 1 : top-down parser, recursive descent
 class Solution {
 public:
     int calculate(string s) {
         int i = 0;
-        int n = s.size();
-        return eval(s, i, n);
+        return parse(s, i);
     }
-
-    int eval(string& s, int& i, int n) {
-        int res = 0;
-        int sign = 1;
-        while (i < n) {
+    
+    int parse(string& s, int& i) {
+        int res = 0, sign = 1;
+        while (i < (int)s.size()) {
             if (isdigit(s[i])) {
-                int right = 0;
-                while (i < n && isdigit(s[i])) {
-                    right = right*10 + (s[i++]-'0');
-                }
-                res += sign * right;
-                --i;
-            }
-            else if (s[i] == '+') {
-                sign = 1;
-            }
-            else if (s[i] == '-') {
-                sign = -1;
-            }
-            else if (s[i] == '(') {
-                res += sign * eval(s, ++i, n);
-            }
-            else if (s[i] == ')') {
-                break;
-            }
-            ++i;
+                int num = 0;
+                while (i < (int)s.size() && isdigit(s[i])) num = num*10 + s[i++]-'0';
+                res += num*sign;
+            } else if (s[i] == '+') {
+                sign = 1; ++i;
+            } else if (s[i] == '-') {
+                sign = -1; ++i;
+            } else if (s[i] == '(') {
+                res += parse(s, ++i)*sign;
+            } else if (s[i] == ')') {
+                ++i; break;
+            } else ++i;
         }
         return res;
     }
 };
 
+
+// Solution 2 : use stack manually
+class Solution_2 {
+public:
+    int calculate(string s) {
+        int res = 0, sign = 1, i = 0;
+        stack<int> st;
+        while (i < (int)s.size()) {
+            if (isdigit(s[i])) {
+                int num = 0;
+                while (i < (int)s.size() && isdigit(s[i])) num = num*10 + s[i++]-'0';
+                res += num*sign;
+            } else if (s[i] == '+') {
+                sign = 1; ++i;
+            } else if (s[i] == '-') {
+                sign = -1; ++i;
+            } else if (s[i] == '(') {
+                st.push(res);
+                st.push(sign);
+                res = 0, sign = 1;
+                ++i;
+            } else if (s[i] == ')') {
+                int outer_sign = st.top(); st.pop();
+                int outer_res = st.top(); st.pop();
+                res = outer_res + res*outer_sign;
+                ++i;
+            } else ++i;
+        }
+        return res;
+    }
+};
+
+
 int main() {
-    Solution s;
+    Solution_2 s;
     cout << s.calculate("1+1") << endl;
     cout << s.calculate("2-1+2") << endl;
     cout << s.calculate("(1+(4+5+2)-3)+(6+8)") << endl;
+    cout << s.calculate("1-(5)") << endl;
     return 0;
 }
 

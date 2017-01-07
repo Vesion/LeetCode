@@ -17,15 +17,15 @@ public:
     int minMeetingRooms(vector<Interval>& intervals) {
         if (intervals.empty()) return 0;
         sort(intervals.begin(), intervals.end(), [](const Interval i1, const Interval i2) { return i1.start < i2.start; });
-        priority_queue<int, vector<int>, greater<int>> q; // store each room's last end time
-        q.push(intervals[0].end);
-        for (int i = 1; i < intervals.size(); ++i) {
-            if (intervals[i].start >= q.top()) q.pop();
-            q.push(intervals[i].end);
+        priority_queue<int, vector<int>, greater<int>> pq; // store each room's last end time
+        for (Interval& i : intervals) {
+            if (!pq.empty() && i.start >= pq.top()) pq.pop();
+            pq.push(i.end);
         }
-        return q.size();
+        return pq.size();
     }
 };
+
 
 int main() {
     Solution s;

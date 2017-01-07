@@ -18,7 +18,7 @@ public:
 };
 
 
-// Solution 2 : find median and three-way partition, O(n) time, O(1) space ?
+// Solution 2 : find median and three-way partition, O(n) time, O(1) space
 // Do we really need to sort the whole array? Of course not, we just need three-parts sorted, it's three-way-partition.
 //      find median has been solved in 215-KthLargestElementInAnArray
 //      three-way partition has been solved in 075-SortColors
@@ -36,17 +36,17 @@ public:
         int mid = *midptr;
         
         // Index-rewiring.
-        #define A(i) nums[(1+2*(i)) % (n|1)]
+        #define v(i) (2*i+1) % (n|1)
 
         // 3-way-partition-to-wiggly in O(n) time with O(1) space.
         int i = 0, j = 0, k = n - 1;
-        while (j <= k) {
-            if (A(j) > mid)
-                swap(A(i++), A(j++));
-            else if (A(j) < mid)
-                swap(A(j), A(k--));
+        while (i <= k) {
+            if (nums[v(i)] > mid)
+                swap(nums[v(i++)], nums[v(j++)]);
+            else if (nums[v(i)] < mid)
+                swap(nums[v(i)], nums[v(k--)]);
             else
-                j++;
+                i++;
         }
     }
 };

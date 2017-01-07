@@ -7,7 +7,7 @@ using namespace std;
 
 // The classic 'Kth Largest Number' problem
 
-// Solution 1 : partition, O(n) average
+// Solution 1 : quickSelect, O(n) average
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {

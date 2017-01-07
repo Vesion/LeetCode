@@ -10,52 +10,34 @@ using namespace std;
 class Solution {
 public:
     string alienOrder(vector<string>& words) {
-        if (words.empty()) return "";
-        int n = words.size();
-
-        unordered_set<char> dict({words[0].begin(), words[0].end()});
         unordered_map<char, unordered_set<char>> graph;
-        for (int i = 1; i < n; ++i) {
-            dict.insert(words[i].begin(), words[i].end());
-            int l1 = words[i-1].size(), l2 = words[i].size();
-            int j = 0, k = 0;
-            while (j < l1 && k < l2) {
-                if (words[i-1][j] != words[i][k]) {
-                    graph[words[i-1][j]].insert(words[i][k]);
-                    break;
-                }
-                ++j; ++k;
-            }
-            if (j < l1 && k == l2) return "";
-        }
-
         unordered_map<char, int> indegrees;
-        for (auto& p : graph) {
-            for (char c : p.second) {
-                if (c != p.first) indegrees[c]++;
+        for (int i = 0; i < (int)words.size(); ++i) {
+            for (char&c : words[i]) indegrees[c] = 0;
+            if (i == 0) continue;
+            for (int j = 0; j < (int)words[i-1].size(); ++j) {
+                if (j == (int)words[i].size()) return ""; // for cases like ["wrtkj", "wrt]
+                if (words[i-1][j] != words[i][j]) { graph[words[i-1][j]].insert(words[i][j]); break; }
             }
         }
-
+        for (auto& p : graph) for (char node : p.second) indegrees[node]++;
         queue<char> q;
-        for (char c : dict) if (indegrees[c] == 0) q.push(c);
-        if (q.empty()) return "";
+        for (auto& p : indegrees) if(p.second == 0) q.push(p.first);
 
         string res;
         while (!q.empty()) {
             char t = q.front(); q.pop();
             res += t;
-            for (char nbr : graph[t]) {
-                if (--indegrees[nbr] == 0) q.push(nbr);
-            }
+            for (char nbr : graph[t]) if (--indegrees[nbr] == 0) q.push(nbr);
         }
-        return res.size() == dict.size() ? res : "";
+        return res.size() == indegrees.size() ? res : ""; // check cycle
     }
 };
 
 int main() {
     Solution s;
-    //vector<string> w = { "wrt", "wrf", "er", "ett", "rftt" };
-    vector<string> w = {"wrtkj"};
-    cout << s.alienOrder(w) << endl;
+    vector<string> words = {"wrtkj", "wrt"};
+    cout << s.alienOrder(words) <<endl;
     return 0;
 }
+
