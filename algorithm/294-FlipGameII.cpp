@@ -7,22 +7,21 @@
 using namespace std;
 
 // Solution 1 : backtracking with memoization, O(2^n)
-class Solution_1 {
+class Solution {
 public:
-    unordered_map<string, bool> m;
-
     bool canWin(string s) {
-        return win(s);
+        unordered_map<string, bool> m;
+        return win(s, m);
     }
     
-    bool win(string& s) {
+    bool win(string& s, unordered_map<string, bool>& m) {
         if (m.count(s)) return m[s];
         bool res = false;
         for (int i = 1; i < (int)s.size(); ++i) {
-            if (s[i] == '+' && s[i-1] == '+') {
-                s[i] = s[i-1] = '-';
-                res = !win(s);
-                s[i] = s[i-1] = '+';
+            if (s[i-1] == '+' && s[i] == '+') {
+                s[i-1] = s[i] = '-';
+                res = !win(s, m);
+                s[i-1] = s[i] = '+';
                 if (res) break;
             }
         }
@@ -32,9 +31,9 @@ public:
 };
 
 
-// Solution 3 : Awesome game theory! dp, O(n^2)
+// Solution 2 : Awesome game theory! dp, O(n^2)
 // https://discuss.leetcode.com/topic/27282/theory-matters-from-backtracking-128ms-to-dp-0ms
-class Solution {
+class Solution_2 {
 public:
     bool canWin(string s) {
         replace(s.begin(), s.end(), '-', ' ');
@@ -58,7 +57,5 @@ public:
 
 
 int main() {
-    Solution_1 s;
-    cout << s.canWin("+++++") << endl;
     return 0;
 }

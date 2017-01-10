@@ -40,9 +40,6 @@ public:
 
 
 int main() {
-    Solution s;
-    ListNode* head = new ListNode(1);
-    head = s.reverseList(head);
     return 0;
 }
 

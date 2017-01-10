@@ -7,20 +7,18 @@ using namespace std;
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
-        int n = nums.size();
-        if (n <= 2) return n;
-        int r = 2;
-        for (int i = 2; i < n; ++i) {
-            if (nums[i] != nums[r-2])
-                nums[r++] = nums[i];
+        const int d = 2; // for general case, duplicates are allowed at most d times
+        if (nums.size() < d) return nums.size();
+        int k = d;
+        for (int i = d; i < (int)nums.size(); ++i) {
+            if (nums[i] != nums[k-d]) nums[k++] = nums[i];
         }
-        nums.erase(nums.begin()+r, nums.end());
-        return r;
+        return k;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

@@ -9,42 +9,33 @@ class Solution {
 public:
     vector<int> largestDivisibleSubset(vector<int>& nums) {
         if (nums.empty()) return {};
-        int n = nums.size();
         sort(nums.begin(), nums.end());
-
-        vector<int> dp(n, 1); // dp[i] means the max length of valid sequence ending with nums[i]
-        vector<int> pre(n, -1); // the previous indexes of current valid sequence, for constructing at last
-        int maxLen = 0, maxIndex = 0;
-
+        int n = nums.size();
+        vector<int> dp(n, 1); // max length of subset for nums[0...i]
+        vector<int> pre(n, -1); // previous index of i for dp[i]
+        int maxLen = 1, end = 0;
         for (int i = 1; i < n; ++i) {
             for (int j = i-1; j >= 0; --j) {
-                if (nums[i] % nums[j] == 0) {
-                    if (dp[i] < dp[j]+1) {
-                        dp[i] = dp[j] + 1;
-                        pre[i] = j;
-                    }
+                if (nums[i]%nums[j] == 0 && dp[j]+1 > dp[i]) {
+                    dp[i] = dp[j]+1;
+                    pre[i] = j;
                 }
             }
-            if (dp[i] > maxLen) {
-                maxLen = dp[i];
-                maxIndex = i;
-            }
+            if (dp[i] > maxLen) maxLen = dp[i], end = i;
         }
-
-        vector<int> res;
-        while (maxIndex >= 0) {
-            res.push_back(nums[maxIndex]);
-            maxIndex = pre[maxIndex];
+        
+        // recover the longest subset
+        vector<int> res(maxLen);
+        for (int i = 0; i < maxLen; ++i) {
+            res[i] = nums[end];
+            end = pre[end];
         }
         return res;
     }
 };
 
+
 int main() {
-    Solution s;
-    vector<int> nums = {1,2,3};
-    auto r = s.largestDivisibleSubset(nums);
-    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
 

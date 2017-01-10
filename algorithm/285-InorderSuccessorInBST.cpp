@@ -15,6 +15,7 @@ struct TreeNode {
 // Successor:
 //      1. If p has right subtree, its successor is the left most one in his right subtree;
 //      2. Else, go from root to p, find the lowest one which is larger than p (left turn).
+// We can combine these two steps into one pass.
 
 
 // Solution 1 : iterative
@@ -22,18 +23,12 @@ class Solution {
 public:
     TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
         if (!root || !p) return NULL;
-
-        // these two situations can be merged into one loop :)
-        TreeNode* suc = NULL;
-        while (root) {
-            if (root->val > p->val) {
-                suc = root;
-                root = root->left;
-            } else {
-                root = root->right;
-            }
+        TreeNode *cur = root, *pre = NULL;
+        while (cur) {
+            if (cur->val > p->val) { pre = cur; cur = cur->left; }
+            else cur = cur->right;
         }
-        return suc;
+        return pre;
     }
 };
 

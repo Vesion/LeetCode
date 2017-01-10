@@ -8,25 +8,24 @@ using namespace std;
 class Solution {
 public:
     vector<int> majorityElement(vector<int>& nums) {
-        int res1 = -1, votes1 = 0;
-        int res2 = -2, votes2 = 0;
-        for (int num : nums) {
-            if (num == res1) ++votes1;
-            else if (num == res2) ++votes2;
+        int r1 = 0, c1 = 0, r2 = 1, c2 = 0;
+        for (int& num : nums) {
+            if (num == r1) ++c1;
+            else if (num == r2) ++c2;
             else {
-                if (votes1 == 0) res1 = num, votes1 = 1;
-                else if (votes2 == 0) res2 = num, votes2 = 1;
-                else --votes1, --votes2;
+                if (c1 == 0) { r1 = num; c1 = 1; }
+                else if (c2 == 0) { r2 = num; c2 = 1; }
+                else { --c1; --c2; }
             }
         }
-        votes1 = votes2 = 0;
-        for (int num : nums) {
-            if (num == res1) ++votes1;
-            else if (num == res2) ++ votes2;
+        c1 = c2 = 0;
+        for (int& num : nums) {
+            if (num == r1) ++c1;
+            else if (num == r2) ++c2;
         }
         vector<int> res;
-        if (votes1 > nums.size()/3) res.push_back(res1);
-        if (votes2 > nums.size()/3) res.push_back(res2);
+        if (c1 > (int)nums.size()/3) res.push_back(r1);
+        if (c2 > (int)nums.size()/3) res.push_back(r2);
         return res;
     }
 };
