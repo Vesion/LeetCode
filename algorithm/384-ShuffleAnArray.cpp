@@ -4,7 +4,6 @@
 #include <string>
 using namespace std;
 
-
 // The classical shuffle algorithm: Fisher Yates Algorithm
 class Solution {
 private:

@@ -6,26 +6,25 @@
 using namespace std;
 
 // Solution 1 : two stacks
-class MinStack_2 {
+class MinStack {
 private:
-    stack<int> num_st;
-    stack<int> min_st;
+    stack<int> st, min_st;
 
 public:
-    MinStack_2() { }
+    MinStack() { }
     
     void push(int x) {
-        num_st.push(x);
+        st.push(x);
         if (min_st.empty() || x <= min_st.top()) min_st.push(x);
     }
     
     void pop() {
-        if (num_st.top() == min_st.top()) min_st.pop();
-        num_st.pop();
+        if (st.top() == min_st.top()) min_st.pop();
+        st.pop();
     }
     
     int top() {
-        return num_st.top();
+        return st.top();
     }
     
     int getMin() {
@@ -35,14 +34,12 @@ public:
 
 
 // Solution 2 : one stack, billiant
-class MinStack {
+class MinStack_2 {
 private:
     stack<int> st;
     int min = INT_MAX;
 
 public:
-    MinStack() { }
-    
     void push(int x) {
         if (x <= min) {
             st.push(min); // push old min

@@ -49,20 +49,24 @@ public:
         vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
         for (int j = 2; j <= n; ++j) {
             for (int i = j-1; i >= 1; --i) {
-                int global_min = INT_MAX;
-                for (int k = i+1; k < j; ++k) {
-                    int local_max = k + max(dp[i][k-1], dp[k+1][j]);
-                    global_min = min(global_min, local_max);
+                if (i+1 == j) // e.g. guess between [1, 2], we must always guess 1 so that we only need 1 money to guarantee win
+                    dp[i][j] = i;
+                else {
+                    int global_min = INT_MAX;
+                    for (int k = i+1; k < j; ++k) {
+                        int local_max = k + max(dp[i][k-1], dp[k+1][j]);
+                        global_min = min(global_min, local_max);
+                    }
+                    dp[i][j] = global_min;
                 }
-                dp[i][j] = i == j-1 ? i : global_min;
             }
         }
         return dp[1][n];
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

@@ -37,13 +37,15 @@ public:
             if (str[i] == str[j]) ++j;
             prefix[i] = j;
         }
-        return prefix[n-1] && (prefix[n-1] % (n-prefix[n-1]) == 0);
+        return prefix[n-1] && (n % (n-prefix[n-1]) == 0);
     }
 };
 
 
 // Solution 3 : an awesome solution! Orz
 // https://discuss.leetcode.com/topic/68206/easy-python-solution-with-explaination
+// Let T = S+S, if S can be found in T[1:-1], then S is self-repeated.
+// In C++, it can be written as T.find(S, 1) < S.size().
 //
 // Proof:
 // https://discuss.leetcode.com/topic/72732/rigorous-proof-why-condition-s-s-find-s-1-s-size-is-equivalent-to-substring-repetition

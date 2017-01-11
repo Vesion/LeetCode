@@ -8,10 +8,9 @@ using namespace std;
 class Solution {
 public:
     int evalRPN(vector<string>& tokens) {
-        if (tokens.empty()) return 0;
         stack<int> st;
         for (string& t : tokens) {
-            if (isalnum(t.back())) st.push(stoi(t));
+            if (isalnum(t.back())) st.push(stoi(t)); // use back() in case of like "-4"
             else {
                 int right = st.top(); st.pop();
                 int left = st.top(); st.pop();
@@ -23,12 +22,12 @@ public:
                 st.push(result);
             }
         }
-        return st.top();
+        return st.empty() ? 0 : st.top();
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 
