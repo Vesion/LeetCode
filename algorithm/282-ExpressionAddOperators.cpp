@@ -22,19 +22,18 @@ public:
             if (num[start] == '0' && i > start) return; // if prefix 0s
             string s = num.substr(start, i-start+1);
             long long t = stol(s);
-            if (start  == 0) 
+            if (start == 0) 
                 dfs(num, i+1, t, t, target, path+s, res);
             else {
                 dfs(num, i+1, cur+t, t, target, path+"+"+s, res);
                 dfs(num, i+1, cur-t, -t, target, path+"-"+s, res);
-                dfs(num, i+1, cur-pre+pre*t, pre*t, target, path+"*"+s, res); // this is why we need 'pre'
+                dfs(num, i+1, cur-pre+pre*t, pre*t, target, path+"*"+s, res); // '*' has higher precedence, so we need to recover old pre before multi
             }
         }
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

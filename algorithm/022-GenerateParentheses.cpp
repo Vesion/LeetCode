@@ -9,7 +9,6 @@ class Solution {
 public:
     vector<string> generateParenthesis(int n) {
         if (n == 0) return {""};
-        if (n == 1) return {"()"};
         vector<string> res;
         for (int i = 0; i < n; ++i) {
             for (string& s1 : generateParenthesis(i))
@@ -21,31 +20,28 @@ public:
 };
 
 
-// Solution 2 : common dfs
+// Solution 2 : generate one by one
 class Solution_2 {
 public:
     vector<string> generateParenthesis(int n) {
         vector<string> res;
-        dfs(res, "", n, 0);
+        dfs(n, 0, "", res);
         return res;
     }
 
-    void dfs(vector<string>& res, string path, int left, int right) {
+    // need left '('s and right ')'s
+    void dfs(int left, int right, string path, vector<string>& res) {
         if (left == 0 && right == 0) {
             res.push_back(path);
             return;
         }
-        if (left) dfs(res, path+'(', left-1, right+1);
-        if (right) dfs(res, path+')', left, right-1);
+        if (left) dfs(left-1, right+1, path+"(", res); // a '(' must match a ')'
+        if (right) dfs(left, right-1, path+")", res); // match
     }
 };
 
 
-
 int main() {
-    Solution_2 s;
-    auto r = s.generateParenthesis(3);
-    for (auto& e : r) cout << e << endl;; cout << endl; 
     return 0;
 }
 

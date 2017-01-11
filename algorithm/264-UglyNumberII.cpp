@@ -24,8 +24,6 @@ public:
 
 
 int main() {
-    Solution s;
-    cout << s.nthUglyNumber(7) << endl;
     return 0;
 }
 

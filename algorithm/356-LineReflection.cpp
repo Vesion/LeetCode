@@ -3,64 +3,65 @@
 #include <vector>
 #include <string>
 #include <set> 
+#include <unordered_set> 
 using namespace std;
 
-// Solution 1 : without set or map, verbose, O(nlogn)
+// Solution 1 : sort left half and right half, then check pairwise
 class Solution_1 {
 public:
     bool isReflected(vector<pair<int, int>>& points) {
         if (points.empty()) return true;
-        int n = points.size();
-        sort(points.begin(), points.end()); // sort with x
-        sort(points.begin(), points.begin()+(n+1)/2,
-                [] (const pair<int,int>& p1, const pair<int,int>& p2) { // sort first half with smaller x and larger y
-                    if (p1.first != p2.first) return p1.first < p2.first;
-                    return p1.second > p2.second;
-                });
+        int minx = INT_MAX, maxx = INT_MIN;
+        for (auto& p : points) minx = min(minx, p.first), maxx = max(maxx, p.first);
+        double midx = (minx + maxx) * 0.5;
 
-        float midx = (points[0].first + points[n-1].first) * 0.5;
-        if (midx == points[0].first) return true; // all points are in same line
-        if (points[0].second != points[n-1].second) return false; // judge first and last point
+        // use std::set to remove duplicates and sort
+        auto cmp = [](const pair<int,int>& p1, const pair<int,int>& p2) {
+            if (p1.first == p2.first) return p1.second > p2.second;
+            return p1.first < p2.first;
+        };
+        set<pair<int,int>, decltype(cmp)> left(cmp);
+        set<pair<int,int>> right;
+        for (auto& p : points) {
+            if (p.first < midx) left.insert(p);
+            else if (p.first > midx) right.insert(p);
+        }
 
-        int i = 1, j = n-2;
-        while (i <= j) {
-            if (points[i] == points[i-1]) { ++i; continue; } // skip coincide points
-            if (points[j] == points[j+1]) { --j; continue; }
-
-            float x = (points[i].first + points[j].first) * 0.5;
-            if (x != midx) return false;
-            if (points[i].second != points[j].second && x != midx) return false; // if y's different, need to double check x in case in the mid line
-            ++i, --j;
+        if (left.size() != right.size()) return false;
+        auto li = left.begin();
+        auto ri = right.rbegin();
+        while (li != left.end()) {
+            if ((li->first+ri->first)*0.5 == midx && li->second == ri->second) ++li, ++ri;
+            else return false;
         }
         return true;
     }
 };
 
 
-// Solution 2 : set, use string trick to hash, much more concise
+// Solution 2 : using string hash trick
 class Solution {
 public:
     bool isReflected(vector<pair<int, int>>& points) {
-        int left = INT_MAX, right = INT_MIN;
-        set<string> s;
+        if (points.empty()) return true;
+        int minx = INT_MAX, maxx = INT_MIN;
+        unordered_set<string> s;
         for (auto& p : points) {
-            left = min(left, p.first);
-            right = max(right, p.first);
+            minx = min(minx, p.first), maxx = max(maxx, p.first);
             s.insert(to_string(p.first) + " " + to_string(p.second));
         }
-
-        int sum = left + right;
+        int sum = minx + maxx;
+        
         for (auto& p : points) {
-            string ps = to_string(sum-p.first) + " " + to_string(p.second);
-            if (!s.count(ps)) return false;
+            string other = to_string(sum-p.first) + " " + to_string(p.second);
+            if (!s.count(other)) return false;
         }
         return true;
     }
 };
 
+
 int main() {
-    Solution s;
-    vector<pair<int,int>> p = {{1,1},{0,1},{-1,1},{0,0}};
-    cout << s.isReflected(p) << endl;
     return 0;
 }
+

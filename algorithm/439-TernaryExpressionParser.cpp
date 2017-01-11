@@ -10,28 +10,26 @@ using namespace std;
 // We recognize the expression with the '?'.
 
 
-// Solution 1 : stack
+// Solution 1 : stack, one pass O(n)
 class Solution {
 public:
     string parseTernary(string expression) {
-        int n = expression.size();
         stack<char> st;
-        for (int i = n-1; i >= 0; --i) {
-            char c = expression[i];
+        for (int i = (int)expression.size()-1; i >= 0; --i) {
             if (!st.empty() && st.top() == '?') {
-                st.pop(); // pop '?'
-                char left = st.top(); st.pop(); // get left value
-                st.pop(); // pop ':'
-                char right = st.top(); st.pop(); // get right value
-                st.push(c == 'T' ? left : right); // push the value of current single ternary expression
-            } else st.push(c);
+                st.pop();
+                char left = st.top(); st.pop();
+                st.pop();
+                char right = st.top(); st.pop();
+                st.push(expression[i] == 'T' ? left : right);
+            } else st.push(expression[i]);
         }
         return string(1, st.top());
     }
 };
 
 
-// Solution 2 : brute-force evaluate
+// Solution 2 : brute-force evaluate, O(n^2)
 class Solution_2 {
 public:
     string parseTernary(string expression) {
@@ -39,7 +37,7 @@ public:
             auto pos = expression.find_last_of('?');
             expression = expression.substr(0, pos-1) + (expression[pos-1] == 'T' ? expression[pos+1] : expression[pos+3]) + expression.substr(pos+4);
         }
-        return string(1, expression[0]);
+        return expression;
     }
 };
 
