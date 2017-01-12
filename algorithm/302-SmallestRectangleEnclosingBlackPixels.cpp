@@ -4,6 +4,7 @@
 #include <string>
 using namespace std;
 
+// binary search
 class Solution {
 public:
     int minArea(vector<vector<char>>& image, int x, int y) {
@@ -29,6 +30,7 @@ public:
         return golower ? end : start;
     }
 };
+
 
 int main() {
     Solution s;

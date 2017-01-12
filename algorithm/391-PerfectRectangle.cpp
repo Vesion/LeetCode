@@ -42,20 +42,19 @@ public:
         //      |
         //      e1
         // they overlap, in this case we do not allow to insert successfully
-        auto comp = [&rectangles] (int i, int j) {
+        auto cmp = [&rectangles] (int i, int j) {
             if (rectangles[i][1] < rectangles[j][3] && rectangles[j][1] < rectangles[i][3]) return false;
             return rectangles[i][1] < rectangles[j][1];
         };
-        set<int, decltype(comp)> verticals(comp);
+        set<int, decltype(cmp)> verticals(cmp);
 
         while (!events.empty()) {
-            auto e = events.top(); events.pop();
-            if (e.second > 0) { // this is a left edge, try to insert it
-                if (verticals.count(e.second-1)) // if find overlapping, return false
-                    return false;
-                verticals.insert(e.second-1);
-            } else { // this is a right edge, remove it
-                verticals.erase(-e.second-1);
+            int i = events.top().second; events.pop();
+            if (i > 0) {
+                if (verticals.count(i-1)) return false;
+                verticals.insert(i-1);
+            } else {
+                verticals.erase(-i-1);
             }
         }
         return area == (x1-x2) * (y1-y2);
@@ -105,7 +104,6 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
 

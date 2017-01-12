@@ -9,14 +9,13 @@ using namespace std;
 class Solution {
 public:
     bool isPerfectSquare(int num) {
-        long long left = 1, right = num;
+        int left = 1, right = num/2;
         while (left <= right) {
-            long long mid = left + (right-left)/2;
-            if (mid*mid == num) return true;
-            if (mid*mid < num) left = mid+1;
+            int mid = left + (right-left)/2;
+            if (mid < num/mid) left = mid+1; // don't use mul in case overflow
             else right = mid-1;
         }
-        return false;
+        return left*left == num;
     }
 };
 

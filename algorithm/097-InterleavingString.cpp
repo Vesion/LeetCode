@@ -22,9 +22,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    cout << s.isInterleave("db", "b", "cbb") << endl;;
     return 0;
 }
-

@@ -6,7 +6,6 @@
 #include <queue> 
 using namespace std;
 
-
 // Solution 1 : BFS, 42ms
 class Solution {
 public:
@@ -48,7 +47,6 @@ public:
         }
 
         vector<bool> visited(n, false);
-        queue<int> q;
         int res = 0;
         for (int i = 0; i < n; ++i) {
             if (visited[i]) continue;
@@ -71,37 +69,25 @@ public:
 class Solution_3 {
 public:
     int countComponents(int n, vector<pair<int, int>>& edges) {
-        root.resize(n);
+        vector<int> root(n);
         iota(root.begin(), root.end(), 0);
-        count = n;
-
-        for (auto& e : edges) unionSet(e.first, e.second);
-        return count;
-    }
-
-    vector<int> root;
-    int count;
-
-    void unionSet(int i, int j) {
-        int ri = findRoot(i), rj = findRoot(j);
-        if (ri != rj) {
-            root[ri] = rj;
-            --count;
+        for (auto& e : edges) {
+            int r1 = findRoot(e.first, root);
+            int r2 = findRoot(e.second, root);
+            if (r1 != r2) root[r1] = r2;
         }
+        int res = 0;
+        for (int i = 0; i < n; ++i) if (root[i] == i) ++res;
+        return res;
     }
-
-    int findRoot(int i) {
-        if (root[i] == i) return i;
-        root[i] = findRoot(root[i]);
+    
+    int findRoot(int i, vector<int>& root) {
+        if (i != root[i]) root[i] = findRoot(root[i], root);
         return root[i];
     }
 };
 
 
-
 int main() {
-    Solution s;
-    vector<pair<int,int>> e = {{0,1}, {1,2}, {3,4}};
-    cout << s.countComponents(5, e) << endl;
     return 0;
 }

@@ -12,6 +12,7 @@ struct TreeNode {
 };
 
 // Solution 1 : tree dp, O(n)
+// before this, think about how to solve 'number of subarrays sum to k' problem, use hash table
 class Solution {
 public:
     int pathSum(TreeNode* root, int sum) {
@@ -38,22 +39,18 @@ class Solution_2 {
 public:
     int pathSum(TreeNode* root, int sum) {
         if (!root) return 0;
-        return count(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
+        return dfs(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
     }
-
-    int count(TreeNode* root, int sum) {
+    
+    // count valid paths start from root
+    int dfs(TreeNode* root, int sum) {
         if (!root) return 0;
-        int res = 0;
-        if (root->val == sum) ++res;
-        res += count(root->left, sum-root->val);
-        res += count(root->right, sum-root->val);
-        return res;
+        return (root->val == sum) + dfs(root->left, sum-root->val) + dfs(root->right, sum-root->val);
     }
 };
 
 
 int main() {
-    Solution s;
     return 0;
 }
 
