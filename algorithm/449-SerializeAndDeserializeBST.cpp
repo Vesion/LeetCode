@@ -12,7 +12,7 @@ using namespace std;
 // We can build a BST only with its preorder sequence by inserting values one by one, it is O(nlogn)
 // Can we be faster?
 // Use lower and upper bound when build the tree
-//      serialize : encode every non null root value by preorder traversal, O(n)
+//      serialize : encode every non null node by preorder traversal, O(n)
 //      deserialize: we can pass by the lower bound and upper bound to know the boundary of a subtree, O(n)
 
 struct TreeNode {

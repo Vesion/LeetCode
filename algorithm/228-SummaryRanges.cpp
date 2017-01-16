@@ -11,7 +11,7 @@ public:
         int start = nums[0];
         vector<string> res;
         for (int i = 1; i < (int)nums.size(); ++i) {
-            if (nums[i-1]+1 < nums[i]) {
+            if (nums[i] > nums[i-1]+1) {
                 res.push_back(getRange(start, nums[i-1]));
                 start = nums[i];
             }
@@ -20,13 +20,14 @@ public:
         return res;
     }
     
-    string getRange(int n1, int n2) {
-        if (n1 == n2) return to_string(n1);
-        return to_string(n1) + "->" + to_string(n2);
+    string getRange(int start, int end) {
+        string r = to_string(start);
+        if (start < end) r += "->" + to_string(end);
+        return r;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }

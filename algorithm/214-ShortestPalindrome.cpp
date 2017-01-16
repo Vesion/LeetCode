@@ -19,7 +19,7 @@ public:
 
         string rs = s;
         reverse(rs.begin(), rs.end());
-        string t = s + "#" + rs;
+        string t = s + "#" + rs; // why use '#' to split them, think about case "aaaa"
         int m = t.size();
         vector<int> prefix(m, 0);
 

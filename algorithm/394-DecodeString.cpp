@@ -4,31 +4,27 @@
 #include <string>
 using namespace std;
 
-// Top-down parser
+// top-down parser
 class Solution {
 public:
     string decodeString(string s) {
-        int cur = 0;
-        return parse(s, cur);
-    }    
-
-    string parse(string& s, int& cur) {
+        int i = 0;
+        return parse(s, i);
+    }
+    
+    string parse(string& s, int& i) {
         string res;
         int num = 0;
-        while (cur < (int)s.size()) {
-            if (isalpha(s[cur])) {
-                res += s[cur++];
-            }
-            else if (isdigit(s[cur])) {
-                num = num*10 + (s[cur++]-'0');
-            }
-            else if (s[cur] == '[') {
-                string t = parse(s, ++cur);
-                while (num--) res += t;
+        while (i < (int)s.size()) {
+            if (isalpha(s[i])) res += s[i++];
+            else if (isdigit(s[i])) num = num*10 + s[i++]-'0';
+            else if (s[i] == '[') {
+                string p = parse(s, ++i);
+                while (num--) res += p;
                 num = 0;
             }
-            else if (s[cur] == ']') {
-                ++cur;
+            else if (s[i] == ']') {
+                ++i;
                 break;
             }
         }
@@ -36,9 +32,10 @@ public:
     }
 };
 
+
 int main() {
     Solution s;
-    cout << s.decodeString("1[2[3[4[a]]]]") <<endl;
+    cout << s.decodeString("a2[a]2[b]cc") << endl;
     return 0;
 }
 

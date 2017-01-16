@@ -13,7 +13,8 @@ public:
 
         if (nums[0] > lower) res.push_back(getRange(lower, nums[0]-1));
         for (int i = 1; i < n; ++i)
-            if (nums[i-1]+1 < nums[i]) res.push_back(getRange(nums[i-1]+1, nums[i]-1));
+            if ((long long)nums[i-1]+1 < nums[i]) // convert it to long long, in case overflow after +1
+                res.push_back(getRange(nums[i-1]+1, nums[i]-1));
         if (upper > nums[n-1]) res.push_back(getRange(nums[n-1]+1, upper));
 
         return res;
@@ -25,10 +26,12 @@ public:
     }
 };
 
+
 int main() {
     Solution s;
-    vector<int> nums = {3};
-    auto r= s.findMissingRanges(nums, 0, 5);
-    for (auto& e : r) cout << e << endl; cout << endl; 
+    vector<int>nums = { INT_MIN, INT_MIN, 0, INT_MAX, INT_MAX };
+    auto r = s.findMissingRanges(nums, INT_MIN, INT_MAX);
+    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
+

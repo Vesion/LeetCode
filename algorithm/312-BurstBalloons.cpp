@@ -22,7 +22,8 @@ public:
         if (memo[left][right]) return memo[left][right];
         int res = 0;
         for (int i = left+1; i < right; ++i) {
-            res = max(res, burst(nums, left, i, memo) + burst(nums, i, right, memo) + nums[left]*nums[i]*nums[right]);
+            res = max(res, burst(nums, left, i, memo) + burst(nums, i, right, memo) // calculate left half and right half recursively
+                    + nums[left]*nums[i]*nums[right]); // and don't forget to add the final bursted one * left_boarder * right_border
         }
         memo[left][right] = res;
         return res;
@@ -31,6 +32,8 @@ public:
 
 
 // Solution 2 : bottom-up, interval dp
+//      dp[i][j] = the max money of bursting the kth ballon in range (i, j) exclusive
+//      dp[i][j] = max(dp[i][k], dp[k][j]) + nums[i]*nums[k]*nums[j]
 class Solution {
 public:
     int maxCoins(vector<int>& nums) {
@@ -53,7 +56,6 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
 

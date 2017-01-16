@@ -11,7 +11,8 @@ public:
         long long count = 9;
         while (n > count) {
             n -= count;
-            start *= 10; ++d;
+            start *= 10;
+            ++d;
             count = 9 * start * d;
         }
 

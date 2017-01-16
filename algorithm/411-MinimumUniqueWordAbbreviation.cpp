@@ -6,8 +6,7 @@ using namespace std;
 
 // The core idea is to combine 320-GeneralizedAbbreviation and 408-ValidWordAbbreviation.
 
-// The plain solution is very slow, because each time it gets a abbreviation, it will validate it in O(m*k*n), m is size of dictionary, k is average length of all words, n is length of target.
-// So, the it is O(2^n * m*k*n)
+// The plain solution is very slow, because each time it gets a abbreviation, it will validate it in O(m*k*n), m is size of dictionary, k is average length of all words, n is length of target, it is O(2^n * m*k*n)
 class Solution_0 {
 public:
     string res;

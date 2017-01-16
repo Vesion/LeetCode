@@ -64,7 +64,10 @@ public:
             // if a^b = c, then a^c = b, b^c = a
             // find if there exists two numbers their xor is candidate
             for (int p : s) {
-                if (s.count(candidate ^ p)) { res = candidate; break; }
+                if (s.count(candidate ^ p)) { 
+                    res = candidate; 
+                    break; 
+                }
             }
         }
         return res;

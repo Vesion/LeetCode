@@ -7,8 +7,10 @@
 using namespace std;
 
 class ValidWordAbbr {
-public:
+private:
     unordered_map<string, unordered_set<string>> m;
+
+public:
     ValidWordAbbr(vector<string> &dictionary) {
         for (string& w : dictionary) {
             int n = w.size();

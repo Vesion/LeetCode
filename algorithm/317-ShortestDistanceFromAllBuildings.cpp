@@ -13,7 +13,7 @@ public:
         if (grid.empty()) return -1;
         int m = grid.size(), n = grid[0].size();
         int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
-        int walk = 0;
+        int walk = 0; // flag, walk only onto the cells that were reachable from all previous buildings, so no need fresh 'visited' for each bfs turn
         auto total = grid;
         int res;
         for (int i = 0; i < m; ++i) {
