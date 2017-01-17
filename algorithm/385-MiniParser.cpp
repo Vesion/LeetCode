@@ -20,41 +20,29 @@ public:
 class Solution {
 public:
     NestedInteger deserialize(string s) {
-        int cur = 0;
-        if (s[cur] == '[') return parseList(s, cur); 
-        else return parseInteger(s, cur);
+        int i = 0;
+        if (s[i] == '[') return parseList(s, i);
+        else return parseInteger(s, i);
     }
 
-    NestedInteger parseList(string& s, int &cur) { // one pair of [], one object
-        ++cur; // eat '['
-        NestedInteger result;
-        while (cur < (int)s.size()) {
-            if (s[cur] == '[') {
-                result.add(parseList(s, cur));
-            } else if (s[cur] == ',') {
-                ++cur;
-            } else if (s[cur] == ']') {
-                break;
-            } else {
-                result.add(parseInteger(s, cur));
-            }
+    NestedInteger parseList(string& s, int& i) {
+        NestedInteger res;
+        ++i; // read '['
+        while (i < (int)s.size()) {
+            if (s[i] == '[') res.add(parseList(s, i));
+            else if (s[i] == '-' || isdigit(s[i])) res.add(parseInteger(s, i));
+            else if (s[i] == ',') ++i;
+            else break;
         }
-        ++cur; // eat ']'
-        return result;
+        ++i; // read ']'
+        return res;
     }
 
-    NestedInteger parseInteger(string &s, int &cur) {
+    NestedInteger parseInteger(string& s, int& i) {
         int num = 0, sign = 1;
-        while (cur < (int)s.size()) {
-            if (s[cur] == '-') {
-                sign = -1;
-                ++cur;
-            } else if (s[cur] >= '0' && s[cur] <= '9') {
-                num = num * 10 + (s[cur] - '0');
-                ++cur;
-            } else break;
-        }
-        return NestedInteger(num * sign);
+        if (s[i] == '-') { sign = -1; ++i; }
+        while (i < (int)s.size() && isdigit(s[i])) num = num*10 + s[i++]-'0';
+        return NestedInteger(sign * num);
     }
 };
 

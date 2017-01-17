@@ -7,7 +7,6 @@ using namespace std;
 class Codec {
 public:
     string encode(vector<string>& strs) {
-        if (strs.empty()) return "";
         string res;
         for (string& s : strs) {
             res += to_string(s.size()) + "#" + s;
@@ -16,16 +15,13 @@ public:
     }
 
     vector<string> decode(string s) {
-        if (s.empty()) return {};
         vector<string> res;
-        int n = s.size();
         int i = 0;
-        while (i < n) {
-            int split = s.find_first_of("#", i);
-            int len = stoi(s.substr(i, split-i));
-            i = split+1;
-            res.push_back(s.substr(i, len));
-            i += len;
+        while (i < (int)s.size()) {
+            int j = s.find_first_of('#', i);
+            int len = stoi(s.substr(i, j-i));
+            res.push_back(s.substr(j+1, len));
+            i = j+1+len;
         }
         return res;
     }

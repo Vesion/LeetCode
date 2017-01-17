@@ -11,11 +11,13 @@ class Solution {
 public:
     int shortestDistance(vector<vector<int>>& grid) {
         if (grid.empty()) return -1;
+
         int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> total(m, vector<int>(n, 0));
+        int res;
         int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
         int walk = 0; // flag, walk only onto the cells that were reachable from all previous buildings, so no need fresh 'visited' for each bfs turn
-        auto total = grid;
-        int res;
+
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (grid[i][j] == 1) {
@@ -32,8 +34,8 @@ public:
                                 if (ni < 0 || ni >= m || nj < 0 || nj >= n || grid[ni][nj] != walk) continue;
                                 grid[ni][nj]--;
                                 total[ni][nj] += dist;
-                                q.push({ni,nj});
                                 res = min(res, total[ni][nj]);
+                                q.push({ni,nj});
                             }
                         }
                         dist++;
@@ -45,6 +47,7 @@ public:
         return res == INT_MAX ? -1 : res;
     }
 };
+
 
 int main() {
     Solution s;

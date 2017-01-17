@@ -6,31 +6,8 @@
 #include <stack> 
 using namespace std;
 
-// Solution 1 : stringstream
+// Solution 1 : stack
 class Solution {
-public:
-    int calculate(string s) {
-        istringstream in('+' + s + '+');
-        int res = 0, left = 0, right = 0;
-        char op;
-        while (in >> op) {
-            if (op == '+' || op == '-') {
-                res += left;
-                in >> left;
-                left *= (op == '+' ? 1 : -1);
-            } else {
-                in >> right;
-                if (op == '*') left *= right;
-                else left /= right;
-            }
-        }
-        return res;
-    }    
-};
-
-
-// Solution 2 : stack
-class Solution_2 {
 public:
     int calculate(string s) {
         int n = s.size();
@@ -63,8 +40,31 @@ public:
 };
 
 
+// Solution 2 : stringstream
+class Solution_2 {
+public:
+    int calculate(string s) {
+        istringstream in('+' + s + '+');
+        int res = 0, num = 0;
+        char op;
+        while (in >> op) {
+            if (op == '+' || op == '-') {
+                res += num;
+                in >> num;
+                num *= (op == '+' ? 1 : -1);
+            } else {
+                int right;
+                in >> right;
+                if (op == '*') num *= right;
+                else num /= right;
+            }
+        }
+        return res;
+    }    
+};
+
+
 int main() {
-    Solution s;
     return 0;
 }
 

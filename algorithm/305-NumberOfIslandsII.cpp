@@ -4,34 +4,19 @@
 #include <string>
 using namespace std;
 
+// union find
+// no need an extra m*n grid to record islands' position
+// we use root[id] != -1 to judge if it's an island
 class Solution {
-public:
-    vector<int> numIslands2(int m, int n, vector<pair<int, int>>& positions) {
-        if (m == 0 || n == 0 || positions.empty()) return {};
-        root.resize(m*n);
-        count = 0;
-        vector<int> res;
-        vector<vector<int>> grid(m, vector<int>(n, 0));
-
-        int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
-        for (auto& p : positions) {
-            int i = p.first, j = p.second;
-            ++count;
-            grid[i][j] = 1;
-            int id = i*n + j;
-            root[id] = id; 
-            for (int d = 0; d < 4; ++d) {
-                int ni = i+go[d][0], nj = j+go[d][1];
-                if (ni >= 0 && ni < m && nj >= 0 && nj < n && grid[ni][nj] == 1) unionSet(id, ni*n+nj);
-            }
-            res.push_back(count);
-        }
-        return res;
-    }
-
+private:
     vector<int> root;
     int count;
-
+    
+    int findRoot(int i) {
+        if (root[i] != i) root[i] = findRoot(root[i]);
+        return root[i];
+    }
+    
     void unionSet(int i, int j) {
         int ri = findRoot(i), rj = findRoot(j);
         if (ri != rj) {
@@ -39,13 +24,31 @@ public:
             --count;
         }
     }
-
-    int findRoot(int i) {
-        if (root[i] == i) return root[i];
-        root[i] = findRoot(root[i]);
-        return root[i];
+    
+public:
+    vector<int> numIslands2(int m, int n, vector<pair<int, int>>& positions) {
+        if (positions.empty()) return {};
+        root.resize(m*n, -1);
+        count = 0;
+        
+        int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+        vector<int> res;
+        for (auto& p : positions) {
+            int id = p.first*n + p.second;
+            root[id] = id;
+            ++count;
+            for (int d = 0; d < 4; ++d) {
+                int nx = p.first+go[d][0], ny = p.second+go[d][1];
+                int nid = nx*n + ny;
+                if (nx < 0 || nx >= m || ny < 0 || ny >= n || root[nid] == -1) continue; 
+                unionSet(id, nid);
+            }
+            res.push_back(count);
+        }
+        return res;
     }
 };
+
 
 int main() {
     Solution s;

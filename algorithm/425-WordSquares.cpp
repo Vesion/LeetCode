@@ -9,81 +9,78 @@ class Solution {
 private:
     struct TrieNode {
         TrieNode* nexts[26];
-        TrieNode() { fill_n(nexts, 26, nullptr); }
+        bool isEnd;
+        TrieNode() { isEnd = false, fill_n(nexts, 26, nullptr); }
     };
+    
     TrieNode* root;
 
     void insert(string& word) {
         TrieNode* cur = root;
-        for (char c : word) {
-            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
+        for (char& c : word) {
+            if (cur->nexts[c-'a'] == nullptr)
+                cur->nexts[c-'a'] = new TrieNode();
             cur = cur->nexts[c-'a'];
         }
+        cur->isEnd = true;
     }
-
-    vector<string> query(string s) {
+    
+    vector<string> queryWithPrefix(string& prefix) {
         vector<string> res;
-        string path;
-        query(s, 0, root, res, path);
+        query(prefix, 0, root, "", res);
         return res;
     }
-
-    // find all paths in the trie which prefixed with s
-    void query(string& s, int start, TrieNode* cur, vector<string>& res, string& path) {
-        if (start == n) {
+    
+    void query(string& s, int start, TrieNode* cur, string path, vector<string>& res) {
+        if (!cur) return;
+        if (cur->isEnd) {
             res.push_back(path);
             return;
         }
         if (start < (int)s.size()) {
-            if (!cur->nexts[s[start]-'a']) return;
-            else {
-                path.push_back(s[start]);
-                query(s, start+1, cur->nexts[s[start]-'a'], res, path);
-            }
+            char c = s[start];
+            if (cur->nexts[c-'a'] == nullptr) return;
+            query(s, start+1, cur->nexts[c-'a'], path+c, res);
         } else {
             for (int i = 0; i < 26; ++i) {
-                if (cur->nexts[i]) {
-                    path.push_back(i+'a');
-                    query(s, start+1, cur->nexts[i], res, path);
-                    path.pop_back();
-                }
+                if (cur->nexts[i] != nullptr)
+                    query(s, start+1, cur->nexts[i], path+string(1, 'a'+i), res);
             }
         }
     }
 
 public:
-    vector<vector<string>> res;
-    vector<string> path;
-    int n;
-
     vector<vector<string>> wordSquares(vector<string>& words) {
-        n = words[0].size();
-        root = new TrieNode();
-        for (string& w : words) insert(w);
+        if (words.empty()) return {};
 
-        for (string& start : words) { // try every word for the first row
-            path.push_back(start);
-            dfs(1, start);
-            path.clear();
+        root = new TrieNode();
+        for (string& word: words) insert(word);
+        
+        vector<vector<string>> res;
+        for (string& word : words) { // try every word as first row
+            vector<string> path({word});
+            dfs(word, 1, path, res);
         }
         return res;
     }
-
-    void dfs(int row, string& start) {
-        if (row == n) {
+    
+    void dfs(string& s, int start, vector<string>& path, vector<vector<string>>& res) {
+        if (start == (int)s.size()) {
             res.push_back(path);
             return;
         }
-        string prefix;
-        for (int i = 0; i < row; ++i) prefix += path[i][row];
-        auto words = query(prefix); // find all words with this prefix
-        if (words.empty()) return; // if no such words, terminate this search path
 
-        for (string& w : words) {
-            path.push_back(w);
-            dfs(row+1, start);
+        string prefix;
+        for (string& word : path) prefix += word[start];
+        auto r = queryWithPrefix(prefix);
+        if (r.empty()) return;
+
+        for (string& word : r) {
+            path.push_back(word);
+            dfs(s, start+1, path, res);
             path.pop_back();
         }
+        
     }
 };
 

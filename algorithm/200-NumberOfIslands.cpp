@@ -69,56 +69,47 @@ public:
 
 // Solution 3 : Union Find
 class Solution_3 {
+private:
+    vector<int> root;
+    int count;
+    
+    int findRoot(int i) {
+        if (root[i] != i) root[i] = findRoot(root[i]);
+        return root[i];
+    }
+    
+    void unionSet(int i, int j) {
+        int ri = findRoot(i), rj = findRoot(j);
+        if (ri != rj) {
+            root[ri] = rj;
+            --count;
+        }
+    }
 public:
-    int m, n;
-    int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
-
     int numIslands(vector<vector<char>>& grid) {
         if (grid.empty()) return 0;
-        m = grid.size(), n = grid[0].size();
+        int m = grid.size(), n = grid[0].size();
+        root.resize(m*n, -1);
+        count = 0;
 
-        initSet(grid);
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (grid[i][j] == '0') continue;
-                for (int d = 0; d < 4; ++d) {
-                    int x = i + go[d][0], y = j + go[d][1];
-                    if (x < 0 || x >= m || y < 0 || y >= n || grid[x][y] == '0') continue;
-                    unionSet(i*n+j, x*n+y);
+                if (grid[i][j] == '1') {
+                    int id = i*n + j;
+                    root[id] = id;
+                    ++count;
+                    if (i-1 >= 0) { // left one
+                        int nid = (i-1)*n+j;
+                        if (root[nid] != -1) unionSet(id, nid);
+                    }
+                    if (j-1 >= 0) { // upside one
+                        int nid = i*n+(j-1);
+                        if (root[nid] != -1) unionSet(id, nid);
+                    }
                 }
             }
         }
         return count;
-    }
-
-    int count;
-    vector<int> root;
-
-    void initSet(vector<vector<char>>& grid) {
-        count = 0;
-        root.resize(m*n);
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (grid[i][j] == '0') continue;
-                int id = i*n+j;
-                root[id] = id;
-                ++count;
-            }
-        }
-    }
-
-    void unionSet(int n1, int n2) {
-        int r1 = findRoot(n1), r2 = findRoot(n2);
-        if (r1 != r2) {
-            root[r1] = r2;
-            --count;
-        }
-    }
-
-    int findRoot(int n) {
-        if (root[n] == n) return n;
-        root[n] = findRoot(root[n]);
-        return root[n];
     }
 };
 

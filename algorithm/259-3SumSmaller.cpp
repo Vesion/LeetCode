@@ -15,7 +15,10 @@ public:
             int t = target-nums[i];
             int j = i+1, k = n-1;
             while (j < k) {
-                if (nums[j]+nums[k] < t) { res += k-j; ++j; }
+                if (nums[j]+nums[k] < t) { 
+                    res += k-j; // because nums are sorted, all k-j pairs {j, p} (j < p <= k) are all valid
+                    ++j; 
+                }
                 else --k;
             }
         }
@@ -23,7 +26,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }

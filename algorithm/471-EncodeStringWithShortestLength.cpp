@@ -4,7 +4,6 @@
 #include <string>
 using namespace std;
 
-
 // interval dp
 class Solution {
 public:
@@ -16,9 +15,8 @@ public:
                 int j = i+len-1;
                 dp[i][j] = s.substr(i, len);
                 for (int k = i; k < j; ++k) {
-                    string left = dp[i][k];
-                    string right = dp[k+1][j];
-                    if (left.size()+right.size() < dp[i][j].size()) dp[i][j] = left+right;
+                    if (dp[i][k].size()+dp[k+1][j].size() < dp[i][j].size())
+                        dp[i][j] = dp[i][k] + dp[k+1][j];
                 }
                 string co = collapse(s, i, j, dp);
                 if (co.size() < dp[i][j].size()) dp[i][j] = co;
@@ -28,11 +26,16 @@ public:
     }
 
     // find repeated pattern in s[i:j]
-    // this method is learnt from 459-RepeatedSubstringPattern solution 3
+    // this method: (t+t).find(t,1) < t.size()
+    // is learnt from 459-RepeatedSubstringPattern solution 3
     string collapse(string& s, int i, int j, vector<vector<string>>& dp) {
         string t = s.substr(i, j-i+1);
         auto pos = (t+t).find(t, 1);
         if (pos >= t.size()) return t;
+
+        // if s[i:j] is self-repeated, and its repeated pattern is s[i:p]
+        // then s[i:j] can be encoded into n[dp[i][p]] 
+        // because s[i:p] may have been encoded, so here must use dp[i][p]
         return to_string(t.size()/pos) + '[' + dp[i][i+pos-1] + ']';
     }
 };
