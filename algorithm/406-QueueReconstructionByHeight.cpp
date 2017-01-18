@@ -4,8 +4,6 @@
 #include <string>
 using namespace std;
 
-
-// Hard to come up with the proper greedy strategy myself :(
 // https://discuss.leetcode.com/topic/60394/easy-concept-with-python-c-java-solution
 //
 // Thinking process:
@@ -32,6 +30,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }

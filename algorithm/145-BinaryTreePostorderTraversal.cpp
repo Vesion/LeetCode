@@ -48,8 +48,8 @@ public:
                     cur = t->right;
                 } else {
                     pre = t;
-                    res.push_back(t->val);
                     st.pop();
+                    res.push_back(t->val);
                 }
             }
         }

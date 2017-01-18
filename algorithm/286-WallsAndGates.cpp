@@ -13,24 +13,24 @@ public:
         if (rooms.empty()) return;
         int m = rooms.size(), n = rooms[0].size();
         queue<pair<int,int>> q;
-        for (int i = 0; i < m; ++i)
-            for (int j = 0; j < n; ++j)
+        for (int i = 0; i < m; ++i) 
+            for (int j = 0; j < n; ++j) 
                 if (rooms[i][j] == 0) q.push({i, j});
-
-        int dist = 0;
-        int go[4][2] = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+        
+        int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+        int step = 1;
         while (!q.empty()) {
-            ++dist;
             int len = q.size();
             while (len--) {
-                int x = q.front().first, y = q.front().second; q.pop();
+                int i = q.front().first, j = q.front().second; q.pop();
                 for (int d = 0; d < 4; ++d) {
-                    int nx = x+go[d][0], ny = y+go[d][1];
-                    if (nx < 0 || nx >= m || ny < 0 || ny >= n || rooms[nx][ny] != INT_MAX) continue;
-                    rooms[nx][ny] = dist;
-                    q.push({nx, ny});
+                    int ni = i+go[d][0], nj = j+go[d][1];
+                    if (ni < 0 || ni >= m || nj < 0 || nj >= n || rooms[ni][nj] != INT_MAX) continue;
+                    rooms[ni][nj] = step;
+                    q.push({ni, nj});
                 }
             }
+            ++step;
         }
     }
 };

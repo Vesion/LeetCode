@@ -12,22 +12,9 @@ struct TreeNode {
 };
 
 class Codec {
-public:
-    string serialize(TreeNode* root) {
-        string res;
-        se(root, res);
-        return res;
-    }
-
-    TreeNode* deserialize(string data) {
-        istringstream in(data);
-        return de(in);
-    }
-
 private:
     void se(TreeNode* root, string& res) {
-        if (!root)
-            res += "# ";
+        if (!root) res += "# ";
         else {
             res += to_string(root->val) + " ";
             se(root->left, res);
@@ -43,6 +30,18 @@ private:
         root->left = de(in);
         root->right = de(in);
         return root;
+    }
+
+public:
+    string serialize(TreeNode* root) {
+        string res;
+        se(root, res);
+        return res;
+    }
+
+    TreeNode* deserialize(string data) {
+        istringstream in(data);
+        return de(in);
     }
 };
 

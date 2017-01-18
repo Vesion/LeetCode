@@ -11,10 +11,10 @@ using namespace std;
 class Solution_1 {
 public:
     int numSquares(int n) {
-        vector<int> dp(n+1, INT_MAX);
-        dp[0] = 0;
+        vector<int> dp(n+1, 0);
         for (int i = 1; i <= n; ++i) {
-            for (int j = 1; j*j <= i; ++j) {
+            dp[i] = INT_MAX;
+            for (int j = 1; j <= i/j; ++j) {
                 dp[i] = min(dp[i], dp[i-j*j]+1);
             }
         }
@@ -29,28 +29,28 @@ class Solution {
 public:
     int numSquares(int n) {
         vector<int> squares;
-        for (int i = 1; i*i <= n; ++i) squares.push_back(i*i);
-        if (squares.back() == n) return 1;
-        
         queue<int> q;
         vector<bool> visited(n+1, false);
-        for (int s : squares) {
-            q.push(s);
-            visited[s] = true;
+        for (int i = 1; i <= n/i; ++i) {
+            squares.push_back(i*i);
+            q.push(i*i);
+            visited[i*i] = true;
         }
+        if (squares.back() == n) return 1;
         
-        int level = 1;
+        int res = 1;
         while (!q.empty()) {
-            ++level;
+            ++res;
             int len = q.size();
             while (len--) {
                 int t = q.front(); q.pop();
-                for (int s : squares) {
-                    if (t+s == n) return level;
-                    if (t+s > n) break;
-                    if (t+s < n && !visited[t+s]) {
-                        q.push(t+s);
-                        visited[t+s] = true;
+                for (int& s : squares) {
+                    int next = t+s;
+                    if (next == n) return res; // return result before enqueue to speed up
+                    if (next > n) break;
+                    if (!visited[next]) {
+                        visited[next] = true;
+                        q.push(next);
                     }
                 }
             }

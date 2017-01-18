@@ -26,7 +26,7 @@ public:
 
 // solution above is just for the plain array, but in the follow-up, we will recieve data stream
 // thus we cannot store all numbers in memory, so we need to record k most recent indexes of zeroes
-class Solution_fo_followup {
+class Solution_for_followup {
 public:
     int findMaxConsecutiveOnes(vector<int>& nums) {
         int i = 0, j = 0;

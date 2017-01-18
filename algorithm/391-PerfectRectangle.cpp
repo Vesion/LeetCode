@@ -12,27 +12,26 @@ using namespace std;
 class Solution {
 public:
     bool isRectangleCover(vector<vector<int>>& rectangles) {
-        if (rectangles.empty()) return false;
-        int x1 = INT_MAX, y1 = INT_MAX;
-        int x2 = INT_MIN, y2 = INT_MIN;
+        int left = INT_MAX, bottom = INT_MAX, right = INT_MIN, top = INT_MIN;
         int area = 0;
 
         // {time, index}
         // time is the x-coordinate of each vertical edge, 
         // index is each edge's id, furthermore, it indicates it's a left edge or right edge, left for inserting, right for removing, and we use negative index for right edge
-        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> events;
-        
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+
         for (int i = 0; i < (int)rectangles.size(); ++i) {
-            auto& rect = rectangles[i];
-            x1 = min(x1, rect[0]), y1 = min(y1, rect[1]);
-            x2 = max(x2, rect[2]), y2 = max(y2, rect[3]);
+            int x1 = rectangles[i][0], y1 = rectangles[i][1], x2 = rectangles[i][2], y2 = rectangles[i][3];
+            left = min(left, x1), bottom = min(bottom, y1);
+            right = max(right, x2), top = max(top, y2);
 
-            area += (rect[0]-rect[2]) * (rect[1]-rect[3]);
-            
-            events.push({rect[0], i+1});
-            events.push({rect[2], -(i+1)});
+            area += (x2-x1)*(y2-y1);
+
+            pq.push({x1, i+1});
+            pq.push({x2, -(i+1)});
         }
-
+        if (area != (right-left)*(top-bottom)) return false;
+        
         // we detect vertical edges overlapping when they are inserted into a interval tree (here we use std::set)
         // if two vertical edges occur like below:
         //          |
@@ -42,22 +41,19 @@ public:
         //      |
         //      e1
         // they overlap, in this case we do not allow to insert successfully
-        auto cmp = [&rectangles] (int i, int j) {
-            if (rectangles[i][1] < rectangles[j][3] && rectangles[j][1] < rectangles[i][3]) return false;
+        auto cmp = [&rectangles](const int& i, const int& j) {
+            if (rectangles[i][1] < rectangles[j][3] && rectangles[i][3] > rectangles[j][1]) return false;
             return rectangles[i][1] < rectangles[j][1];
         };
-        set<int, decltype(cmp)> verticals(cmp);
-
-        while (!events.empty()) {
-            int i = events.top().second; events.pop();
+        set<int, decltype(cmp)> s(cmp);
+        while (!pq.empty()) {
+            int i = pq.top().second; pq.pop();
             if (i > 0) {
-                if (verticals.count(i-1)) return false;
-                verticals.insert(i-1);
-            } else {
-                verticals.erase(-i-1);
-            }
+                if (s.count(i-1)) return false;
+                s.insert(i-1);
+            } else s.erase(-i-1);
         }
-        return area == (x1-x2) * (y1-y2);
+        return true;
     }
 };
 

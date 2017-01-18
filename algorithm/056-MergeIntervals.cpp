@@ -14,20 +14,21 @@ struct Interval {
 class Solution {
 public:
     vector<Interval> merge(vector<Interval>& intervals) {
-        sort(intervals.begin(), intervals.end(), [](const Interval& i1, const Interval& i2) { return i1.start < i2.start; });
+        if (intervals.empty()) return {};
+        sort(intervals.begin(), intervals.end(), [](const Interval& i1, const Interval& i2) {
+            if (i1.start == i2.start) return i1.end < i2.end;
+            return i1.start < i2.start;
+        });
         vector<Interval> res;
-        for (auto& i : intervals) {
-            if (res.empty() || i.start > res.back().end)
-                res.push_back(i);
-            else 
-                res.back().end = max(res.back().end, i.end);
+        for (Interval& i : intervals) {
+            if (res.empty() || i.start > res.back().end) res.push_back(i);
+            else res.back().end = max(res.back().end, i.end);
         }
         return res;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

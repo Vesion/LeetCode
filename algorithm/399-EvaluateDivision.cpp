@@ -8,7 +8,7 @@
 #include <unordered_map> 
 using namespace std;
 
-// Convert equations into edges with weight 1 of a graph
+// Convert equations into edges with weight a/b of a graph
 //      e.g. a / b = 2.0
 //           a -> b, with value 2.0
 //           b -> a, with value 1/2.0

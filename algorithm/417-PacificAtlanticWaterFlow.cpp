@@ -47,36 +47,36 @@ public:
 
 // Solution 2 : DFS
 class Solution_2 {
-private:
-    int go[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-    vector<vector<int>> state; // 1 for Pacific, 2 for Atlantic, 3 for both
-    int m, n;
-    vector<pair<int, int>> result;
-
 public:
-    void dfs(vector<vector<int>>& matrix, int i, int j, int preH, int preS) {
-        if (i < 0 || i >= m || j < 0 || j >= n || matrix[i][j] < preH || (state[i][j] & preS) == preS)
-            return;
-        state[i][j] |= preS;
-        if (state[i][j] == 3) result.emplace_back(make_pair(i, j));
-        for (int d = 0; d < 4; ++d) 
-            dfs(matrix, i+go[d][0], j+go[d][1], matrix[i][j], state[i][j]);
-    }
-
+    int m, n;
+    int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    vector<vector<int>> state;
+    
     vector<pair<int, int>> pacificAtlantic(vector<vector<int>>& matrix) {
         if (matrix.empty()) return {};
         m = matrix.size(), n = matrix[0].size();
-        state.resize(m, vector<int>(n, false));
+        state.resize(m, vector<int>(n, 0));
 
-        for (int i = 0; i < m; ++i) {
-            dfs(matrix, i, 0, INT_MIN, 1);
-            dfs(matrix, i, n-1, INT_MIN, 2);
+        for (int i = 0; i < m; ++i) dfs(matrix, i, 0, 1);
+        for (int j = 1; j < n; ++j) dfs(matrix, 0, j, 1);
+
+        for (int i = 0; i < m; ++i) dfs(matrix, i, n-1, 2);
+        for (int j = 0; j < n-1; ++j) dfs(matrix, m-1, j, 2);
+        
+        vector<pair<int,int>> res;
+        for (int i = 0; i < m; ++i)
+            for (int j = 0; j < n; ++j)
+                if (state[i][j] == 3) res.push_back({i, j});
+        return res;
+    }
+    
+    void dfs(vector<vector<int>>& matrix, int i, int j, int s) {
+        state[i][j] |= s;
+        for (int d = 0; d < 4; ++d) {
+            int ni = i+go[d][0], nj = j+go[d][1];
+            if (ni < 0 || ni >= m || nj < 0 || nj >= n || matrix[ni][nj] < matrix[i][j] || (state[ni][nj]&s) == s) continue;
+            dfs(matrix, ni, nj, s);
         }
-        for (int j = 0; j < n; ++j) {
-            dfs(matrix, 0, j, INT_MIN, 1);
-            dfs(matrix, m-1, j, INT_MIN, 2);
-        }
-        return result;
     }
 };
 

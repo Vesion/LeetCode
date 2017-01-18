@@ -5,38 +5,16 @@
 #include <stack> 
 using namespace std;
 
-
-// Solution 0 : check recursively according BST definition, TLE
-class Solution_0 {
-public:
-    bool verifyPreorder(vector<int>& preorder) {
-        return verify(preorder, 0, preorder.size());
-    }
-    
-    bool verify(vector<int>& preorder, int start, int end) {
-        if (start+1 >= end) return true;
-        int root = preorder[start];
-        int right = start+1;
-        while (right < end) {
-            if (preorder[right] > root) {
-                for (int i = right; i < end; ++i) if (preorder[i] < root) return false;
-                break;
-            }
-            ++right;
-        }
-        return verify(preorder, start+1, right) && verify(preorder, right, end);
-    }
-};
-
-
-// Solution 1 : stack
 // https://discuss.leetcode.com/topic/41210/c-easy-to-understand-solution-with-thought-process-and-detailed-explanation
+// if a node is in the right subtree of a root, then all nodes come after must be larger than that root
+
+// Solution 1 : stack, O(n) time, O(n) space
 class Solution {
 public:
     bool verifyPreorder(vector<int>& preorder) {
         stack<int> st;
         int pre = INT_MIN; // the predecessors's value of current node
-        for (int cur : preorder) {
+        for (int& cur : preorder) {
             if (cur < pre) return false; // nodes in current's right subtree cannot be smaller than predecessor
             while (!st.empty() && cur > st.top()) { // enter right subtree
                 pre = st.top();
@@ -47,6 +25,25 @@ public:
         return true;
     }
 };
+
+
+// Solution 2 : use 'preorder' array to simulate stack, O(1) space
+class Solution_2 {
+public:
+    bool verifyPreorder(vector<int>& preorder) {
+        if (preorder.empty()) return true;
+        int pre = INT_MIN, i = -1;
+        for (int& cur : preorder) {
+            if (cur < pre) return false;
+            while (i != -1 && cur > preorder[i]) {
+                pre = preorder[i--];
+            }
+            preorder[++i] = cur;
+        }
+        return true;
+    }
+};
+
 
 
 int main() {

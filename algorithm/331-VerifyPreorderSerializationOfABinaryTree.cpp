@@ -10,15 +10,17 @@ using namespace std;
 class Solution {
 public:
     bool isValidSerialization(string preorder) {
-        if (preorder.empty()) return false;
-        stack<string> st;
+        if (preorder.empty()) return true;
         istringstream in(preorder);
+        stack<string> st;
         string val;
-        while ( getline(in, val, ',')) {
-            while (val == "#" && !st.empty() && st.top() == "#") {
-                st.pop();
-                if (st.empty()) return false;
-                st.pop();
+        while (getline(in, val, ',')) {
+            if (val == "#") {
+                while (!st.empty() && st.top() == "#") {
+                    st.pop();
+                    if (st.empty()) return false;
+                    st.pop();
+                }
             }
             st.push(val);
         }

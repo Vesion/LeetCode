@@ -23,7 +23,7 @@ public:
             q.push({heightMap[i][0], i*n+0}); visited[i][0] = true;
             q.push({heightMap[i][n-1], i*n+n-1}); visited[i][n-1] = true;
         }
-        for (int j = 0; j < n; ++j) {
+        for (int j = 1; j < n-1; ++j) {
             q.push({heightMap[0][j], 0*n+j}); visited[0][j] = true;
             q.push({heightMap[m-1][j], (m-1)*n+j}); visited[m-1][j] = true;
         }
@@ -46,9 +46,14 @@ public:
     }
 };
 
+// A big optimization:
+// Used DFS for the cells that are shorter or equal, 
+// because you know they are going to be switched to the root of the queue, why bother putting them back wasting logN time.
+
+
 int main() {
     Solution s;
-    vector<vector<int>> h ={ { 2,2,2 },{ 2,1,2 },{ 2,1,2 },{ 2,1,2 } };
+    vector<vector<int>> h = { { 1,4,3,1,3,2 },{ 3,2,1,3,2,4 },{ 2,3,3,2,3,1 } };
     cout << s.trapRainWater(h) << endl;
     return 0;
 }
