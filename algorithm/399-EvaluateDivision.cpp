@@ -19,33 +19,32 @@ using namespace std;
 // Furthermore, we can use other algorithms to find the shortest path, like BFS, Dijkstra, BellmanFord, FloydWarshall, etc.
 class Solution {
 public:
-    unordered_map<string, vector<pair<string, double>>> graph;
-    unordered_map<string, bool> visited;
 
     vector<double> calcEquation(vector<pair<string, string>> equations, vector<double>& values, vector<pair<string, string>> queries) {
-        int n = equations.size();
-        for (int i = 0; i < n; ++i) {
+        unordered_map<string, vector<pair<string, double>>> graph;
+        for (int i = 0; i < (int)equations.size(); ++i) {
             graph[equations[i].first].push_back({equations[i].second, values[i]});
             graph[equations[i].second].push_back({equations[i].first, 1.0/values[i]});
         }
 
+        unordered_map<string, bool> visited;
         vector<double> res;
         for (auto& q : queries) {
             double r = 1.0;
             visited.clear();
-            if (!graph.count(q.first) || !graph.count(q.second) || !dfs(q.first, q.second, r)) res.push_back(-1.0);
+            if (!graph.count(q.first) || !graph.count(q.second) || !dfs(graph, visited, q.first, q.second, r)) res.push_back(-1.0);
             else res.push_back(r);
         }
         return res;
     }
 
-    bool dfs(string start, string end, double& res) {
+    bool dfs(unordered_map<string, vector<pair<string, double>>>& graph, unordered_map<string, bool>& visited, string start, string end, double& res) {
         if (start == end) return true;
         visited[start] = true;
         for (auto& p : graph[start]) {
             if (!visited[p.first]) {
                 res *= p.second;
-                if (dfs(p.first, end, res)) return true;
+                if (dfs(graph, visited, p.first, end, res)) return true;
                 res /= p.second;
             }
         }
@@ -54,8 +53,37 @@ public:
 };
 
 
-// Solution 2 : uion-find
+// Solution 2 : A variation of FloydWarshall, computing quotients instead of shortest paths of all pairs of nodes
+// every query takes O(1) time
 class Solution_2 {
+public:
+    vector<double> calcEquation(vector<pair<string, string>> equations, vector<double>& values, vector<pair<string, string>> queries) {
+        unordered_map<string, unordered_map<string, double>> quot;
+        for (int i = 0; i < (int)equations.size(); ++i) {
+            quot[equations[i].first][equations[i].first] = 1.0;
+            quot[equations[i].second][equations[i].second] = 1.0;
+            quot[equations[i].first][equations[i].second] = values[i];
+            quot[equations[i].second][equations[i].first] = 1.0 / values[i];
+        }
+        for (auto& k : quot) {
+            for (auto& i : quot[k.first]) {
+                for (auto& j : quot[k.first]) {
+                    quot[i.first][j.first] = quot[i.first][k.first] * quot[k.first][j.first];
+                }
+            }
+        }
+        vector<double> res;
+        for (auto& q : queries) {
+            if (!quot.count(q.first) || !quot[q.first].count(q.second)) res.push_back(-1.0);
+            else res.push_back(quot[q.first][q.second]);
+        }
+        return res;
+    }
+};
+
+
+// Solution 3 : uion-find
+class Solution_3 {
 private:
     struct Node {
         Node* parent;

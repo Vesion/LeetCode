@@ -85,50 +85,56 @@ class Solution {
 public:
     string minAbbreviation(string target, vector<string>& dictionary) {
         int n = target.size();
-        int bn = 1 << n;
-        vector<int> diffs;
 
         // step 1 : preprocess dictionary
+        vector<int> diffs;
         for (string& word : dictionary) {
             if (word.size() != target.size()) continue;
             int diff = 0;
-            for (int i = 0; i < n; ++i)
-                diff = (diff << 1) | (target[i] != word[i]);
+            for (int i = 0; i < n; ++i) {
+                if (target[i] != word[i]) diff |= (1 << i);
+            }
             diffs.push_back(diff);
         }
-
-        // step 2 : generate abbreviations and find the minimum
-        int minAbbr = 0, minLen = INT_MAX;
-        for (int i = 0; i < bn; ++i) {
-            // get abbreviation's length
+        
+        // step 2 : generate abbreviations and find the shortest one
+        int minLen = INT_MAX, minAbbr = 0;
+        for (int i = 0; i < (1<<n); ++i) {
+            // note: we here use a very quick method to compute length, it is not the length defined in problem description
+            // e.g. abbbbbbbbbbc, one of its abbr is a10c, its length is 4, but we will get 3 here
+            // it doesn't matter because we just compare lengths, and a string's abbr's length will never get larger than the string's
             int len = n;
-            for (int twoones = 0b11; twoones < bn; twoones <<= 1) {
+            for (int twoones = 0b11; twoones < (1<<n); twoones <<= 1) {
                 if ((i & twoones) == 0) --len;
             }
             if (len >= minLen) continue;
+
             bool conflict = false;
-            for (int diff : diffs) {
+            for (int& diff : diffs) {
                 if ((i & diff) == 0) { conflict = true; break; }
             }
             if (conflict) continue;
+
             minLen = len;
             minAbbr = i;
         }
-
-        // step 3 : reconstruct result string from bit mask
-        string res; 
-        int num = 0;
+        
+        // step 3 : construct final result string using its bitmap
+        string res;
+        int c = 0;
         for (int i = 0; i < n; ++i) {
-            if ((minAbbr >> (n-1-i)) & 1) {
-                if (num) res += to_string(num);
-                num = 0;
+            if (((minAbbr>>i) & 1) == 1) {
+                if (c) res += to_string(c);
                 res += target[i];
-            } else ++num;
+                c = 0;
+            }
+            else ++c;
         }
-        if (num) res += to_string(num);
+        if (c) res += to_string(c);
         return res;
     }
 };
+
 
 int main() {
     Solution s;

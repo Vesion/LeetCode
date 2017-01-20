@@ -21,14 +21,12 @@ public:
         return true;
     }
     
+    // find position of val, let it hold the last number, then pop the last number
     bool remove(int val) {
         if (!index.count(val)) return false;
-        int n = nums.size();
         int id = index[val];
-        if (id < n-1) { // if val is not the last one, swap it with the last one, maintain the continuity
-            nums[id] = nums[n-1];
-            index[nums[n-1]] = id;
-        }
+        nums[id] = nums.back();
+        index[nums.back()] = id;
         nums.pop_back();
         index.erase(val);
         return true;

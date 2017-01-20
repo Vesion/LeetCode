@@ -16,28 +16,25 @@ public:
 class PeekingIterator : public Iterator {
 private:
     bool hasPeeked;
-    int peekedValue;
+    int nextVal;
 public:
 	PeekingIterator(const vector<int>& nums) : Iterator(nums) {
-        hasPeeked = false;
-        peekedValue = 0;
+	    hasPeeked = false;
 	}
 
 	int peek() {
-        if (!hasPeeked) {
-            hasPeeked = true;
-            peekedValue = Iterator::next();
-        }
-        return peekedValue;
+        if (!hasPeeked)
+            nextVal = Iterator::next();
+        hasPeeked = true;
+        return nextVal;
 	}
 
 	int next() {
 	    if (hasPeeked) {
-            hasPeeked = false;
-            int result = peekedValue;
-            return result;
-        } else 
-            return Iterator::next();
+	        hasPeeked = false;
+	        return nextVal;
+	    }
+	    return Iterator::next();
 	}
 
 	bool hasNext() const {

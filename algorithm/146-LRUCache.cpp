@@ -13,58 +13,40 @@ using namespace std;
 //      访问（get）节点时，若哈希表中有，直接根据哈希表中节点的地址访问，并把该节点移到链表头部，同时更新哈希表中该节点的地址；
 //      插入（set）节点时，若链表的size达到了上限capacit，则删除尾部节点，同时删除哈希表中对应的项；再把新节点插到链表头部，并在哈希表中添加对应的项。
 
-class LRUCache{
+class LRUCache {
 private:
-    struct CacheNode {
-        int key;
-        int value;
-        CacheNode(int k, int v) : key(k), value(v) {}
-    };
-
-    list<CacheNode> cacheList;
-    unordered_map<int, list<CacheNode>::iterator> cacheMap;
+    list<pair<int,int>> cache;
+    unordered_map<int, list<pair<int,int>>::iterator> pos;
     size_t capacity;
-
 public:
     LRUCache(int capacity) {
         this->capacity = capacity;
     }
-
+    
     int get(int key) {
-        if (cacheMap.count(key) == 0) return -1;
-        cacheList.splice(cacheList.begin(), cacheList, cacheMap[key]);
-        cacheMap[key] = cacheList.begin();
-        return cacheMap[key]->value;
+        if (!pos.count(key)) return -1;
+        auto it = pos[key];
+        cache.splice(cache.begin(), cache, it);
+        pos[key] = cache.begin();
+        return pos[key]->second;
     }
-
-    void set(int key, int value) {
-        if (cacheMap.count(key) == 0) {
-            if (cacheList.size() == this->capacity) {
-                cacheMap.erase(cacheList.back().key);
-                cacheList.pop_back();
+    
+    void put(int key, int value) {
+        if (!pos.count(key)) {
+            if (cache.size() == capacity) {
+                pos.erase(cache.back().first);
+                cache.pop_back();
             }
-            cacheList.push_front(CacheNode(key, value));
-            cacheMap[key] = cacheList.begin();
-        }
-        else {
+            cache.push_front({key, value});
+            pos[key] = cache.begin();
+        } else {
             get(key);
-            cacheList.front().value = value;
+            pos[key]->second = value;
         }
     }
 };
 
 
 int main() {
-    LRUCache lru(3);
-    cout << lru.get(1) << endl;
-
-    lru.set(1, 1);
-    lru.set(2, 2);
-    lru.set(3, 3);
-    cout << lru.get(1) << endl;
-
-    lru.set(4, 4);
-    cout << lru.get(2) << endl;
-
     return 0;
 }

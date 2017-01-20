@@ -7,37 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    // use array instead of unordered_map
-    vector<int> first = {'0', '1', '8', '6', '9'};
-    vector<int> second = {'0', '1', '8', '9', '6'};
-
     vector<string> findStrobogrammatic(int n) {
-        if (n == 0) return {};
-        if (n == 1) return {"0", "1", "8"};
+        unordered_map<char,char> m = {{'0','0'}, {'1','1'}, {'6','9'}, {'8','8'}, {'9','6'}};
         vector<string> res;
         string path(n, '0');
-        dfs(0, n-1, res, path);
+        dfs(0, n-1, m, path, res);
         return res;
     }
-
-    void dfs(int start, int end, vector<string>& res, string& path) {
+    
+    void dfs(int start, int end, unordered_map<char,char>& m, string& path, vector<string>& res) {
         if (start > end) {
             res.push_back(path);
             return;
         }
-        for (int i = 0; i < 5; ++i) {
-            if (start == end && i >= 3) break; // the middle one cannot be 6 or 9
-            if (start == 0 && i == 0) continue; // first digit cannot be 0
-            path[start] = first[i];
-            path[end] = second[i];
-            dfs(start+1, end-1, res, path);
+        for (auto& p : m) {
+            if (start < end && start == 0 && p.first == '0') continue; // prefix '0' is invalid
+            if (start == end && (p.first == '6' || p.first == '9')) continue; // the exact middle one cannot be '6' or '9'
+            path[start] = p.first;
+            path[end] = p.second;
+            dfs(start+1, end-1, m, path, res);
         }
     }
 };
 
+
 int main() {
-    Solution s;
-    auto r = s.findStrobogrammatic(3);
-    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
