@@ -14,19 +14,17 @@ public:
     vector<vector<string>> groupStrings(vector<string>& strings) {
         unordered_map<string, vector<string>> m;
         for (string& s : strings) {
-            int n = s.size();
             int d = s[0]-'a';
             string cs = s;
-            for (int i = 0; i < n; ++i) 
-                cs[i] = (s[i]-d)%26 + 'a';
+            for (char& c : cs) c = c-d >= 'a' ? c-d : c-d+26;
             m[cs].push_back(s);
         }
-
         vector<vector<string>> res;
         for (auto& p : m) res.push_back(p.second);
         return res;
     }
 };
+
 
 int main() {
     Solution s;

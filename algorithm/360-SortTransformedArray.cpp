@@ -34,7 +34,11 @@ public:
 };
 
 
-// Solution 2 : 2 cases : a >= 0, a < 0
+// Solution 2 : 2 cases
+//      1. a > 0, two ends in original array are bigger than center
+//      2. a < 0, center is bigger than two ends
+//              so use two pointers i, j and do a merge-sort like process. depending on sign of a, start from the beginning or end of the transformed array. 
+//      3. a == 0, it does not matter what b's sign is, the function is monotonically increasing or decreasing. you can start with either beginning or end.
 class Solution {
 public:
     vector<int> sortTransformedArray(vector<int>& nums, int a, int b, int c) {

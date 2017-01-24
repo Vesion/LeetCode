@@ -18,9 +18,9 @@ class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
         if (!root) return 0;
-        int leftNodes = countNodes(root->left);
-        if (leftNodes+1 < k) return kthSmallest(root->right, k-leftNodes-1);
-        if (leftNodes+1 > k) return kthSmallest(root->left, k);
+        int c = countNodes(root->left);
+        if (c+1 < k) return kthSmallest(root->right, k-(c+1));
+        if (c+1 > k) return kthSmallest(root->left, k);
         return root->val;
     }
 
@@ -77,7 +77,6 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
 

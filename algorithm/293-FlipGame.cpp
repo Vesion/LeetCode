@@ -7,10 +7,8 @@ using namespace std;
 class Solution {
 public:
     vector<string> generatePossibleNextMoves(string s) {
-        int n = s.size();
-        if (n < 2) return {};
         vector<string> res;
-        for (int i = 1; i < n; ++i) {
+        for (int i = 1; i < (int)s.size(); ++i) {
             if (s[i] == '+' && s[i-1] == '+') {
                 s[i] = s[i-1] = '-';
                 res.push_back(s);
@@ -21,8 +19,8 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

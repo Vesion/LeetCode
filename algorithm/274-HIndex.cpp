@@ -25,18 +25,17 @@ public:
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
-        if (citations.empty()) return 0;
         int n = citations.size();
+        // count[i] = the number of papers whose citation is i
+        // except for count[n], it is the number of papers whose citation is >= n
         vector<int> count(n+1, 0);
-        for (int c : citations) {
-            if (c > n) count[n]++;
+        for (int& c : citations) {
+            if (c >= n) count[n]++;
             else count[c]++;
         }
-
-        int total = 0;
         for (int i = n; i >= 0; --i) {
-            total += count[i];
-            if (total >= i) return i;
+            if (i < n) count[i] += count[i+1];
+            if (count[i] >= i) return i;
         }
         return 0;
     }

@@ -23,9 +23,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    vector<vector<int>> grid ={ { 0,1,0,0 },{ 1,1,1,0 },{ 0,1,0,0 },{ 1,1,0,0 } } ;
-    cout << s.islandPerimeter(grid) << endl;
     return 0;
 }

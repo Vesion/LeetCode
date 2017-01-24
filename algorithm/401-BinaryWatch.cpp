@@ -9,24 +9,21 @@ using namespace std;
 class Solution {
 public:
     vector<string> readBinaryWatch(int num) {
-        if (num > 8) return {};
         vector<string> res;
-        dfs(num, 0, 0, res);
+        dfs(0, num, 0, res);
         return res;
     }
-
-    void dfs(int num, int start, int path, vector<string>& res) {
+    
+    void dfs(int start, int num, int led, vector<string>& res) {
         if (num == 0) {
-            int minute = path & 0b111111;
-            int hour = path >> 6;
-            if (hour >= 0 && hour <= 11 && minute >= 0 && minute <= 59)
-                res.push_back(to_string(hour) + ":" + (minute < 10 ? "0" : "") + to_string(minute));
+            int hour = led & 0b1111;
+            int minute = led >> 4;
+            if (hour <= 11 && minute <= 59)
+                res.push_back(to_string(hour) + ":" + (minute < 10 ? "0" : "")+to_string(minute));
             return;
         }
-
         for (int i = start; i < 10; ++i) {
-            int mask = 1 << i;
-            dfs(num-1, i+1, path|mask, res);
+            dfs(i+1, num-1, led|(1<<i), res);
         }
     }
 };
@@ -49,9 +46,8 @@ public:
 
 
 int main() {
-    Solution s;
+    Solution_2 s;
     auto r = s.readBinaryWatch(2);
-    cout << r.size() <<endl;
     for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }

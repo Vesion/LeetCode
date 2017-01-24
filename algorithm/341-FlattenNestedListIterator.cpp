@@ -14,31 +14,31 @@ public:
 
 class NestedIterator {
 private:
-    using nit = vector<NestedInteger>::const_iterator;
-    stack<pair<nit, nit>> st;
-
+    stack<pair<vector<NestedInteger>::const_iterator, vector<NestedInteger>::const_iterator>> st;
 public:
     NestedIterator(vector<NestedInteger> &nestedList) {
-        if (!nestedList.empty()) {
-            st.push({nestedList.begin(), nestedList.end()});
-        }
+        st.push({nestedList.begin(), nestedList.end()});
     }
 
     int next() {
-        if (hasNext()) return (st.top().first++)->getInteger(); // we have skiped all empty vector in hasNext(), so here can get integer directly
-        return 0; // never
+        if (hasNext()) {
+            int res = st.top().first->getInteger();
+            st.top().first++;
+            return res;
+        }
+        return -1;
     }
 
     bool hasNext() {
         while (!st.empty()) {
-            if (st.top().first == st.top().second) // if current vector has been iterated done, pop it; this can skip empty vectors
-                st.pop();
+            if (st.top().first == st.top().second) st.pop(); // skip all empty vectors
             else {
-                auto it = st.top().first;
-                if (it->isInteger()) return true; // if it is an integer, return true directly
-                st.top().first++;
-                auto& v = it->getList();
-                st.push({v.begin(), v.end()}); // else push the vector's begin and end
+                if (st.top().first->isInteger()) return true; // until we find a integer
+                else {
+                    auto& nlist = st.top().first->getList(); // here we must use auto&, because getList() return a reference
+                    st.top().first++;
+                    st.push({nlist.begin(), nlist.end()});
+                }
             }
         }
         return false;

@@ -19,7 +19,7 @@ public:
         int res = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = i+1; j < n; ++j) {
-                if (m[i] & m[j]) continue;
+                if ((m[i]&m[j]) != 0) continue; // this two have common letters
                 res = max(res, (int)words[i].size()*(int)words[j].size());
             }
         }
@@ -29,9 +29,5 @@ public:
 
 
 int main() {
-    Solution s;
-    vector<string> w = {"a", "ab", "abc", "d", "cd", "bcd", "abcd"};
-    cout << s.maxProduct(w) << endl;
     return 0;
 }
-

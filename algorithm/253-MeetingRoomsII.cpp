@@ -17,7 +17,7 @@ public:
     int minMeetingRooms(vector<Interval>& intervals) {
         if (intervals.empty()) return 0;
         sort(intervals.begin(), intervals.end(), [](const Interval i1, const Interval i2) { return i1.start < i2.start; });
-        priority_queue<int, vector<int>, greater<int>> pq; // store each room's last end time
+        priority_queue<int, vector<int>, greater<int>> pq;  // need only interval's end time
         for (Interval& i : intervals) {
             if (!pq.empty() && i.start >= pq.top()) pq.pop();
             pq.push(i.end);

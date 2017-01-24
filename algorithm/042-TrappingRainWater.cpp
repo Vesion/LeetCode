@@ -6,21 +6,20 @@
 using namespace std;
 
 // Solution 1 : stack
-// For every bar, find how much water can be held in this level
 class Solution {
 public:
     int trap(vector<int>& height) {
+        if (height.empty()) return 0;
         stack<int> st;
         int res = 0;
         for (int i = 0; i < (int)height.size(); ) {
             if (st.empty() || height[i] <= height[st.top()]) st.push(i++);
             else {
-                int bottom = height[st.top()]; // get bottom bar height
+                int bottom = height[st.top()];
                 st.pop();
                 if (st.empty()) continue;
-                int w = i - st.top() - 1; // water area width
-                int h = min(height[i], height[st.top()]) - bottom; // water area height
-                res += w * h;
+                int width = i-st.top()-1;
+                res += (min(height[i], height[st.top()])-bottom) * width;
             }
         }
         return res;
