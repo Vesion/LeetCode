@@ -18,7 +18,5 @@ public:
 
 
 int main() {
-    Solution s;
-    cout << s.longestPalindrome("abccccdd");
     return 0;
 }

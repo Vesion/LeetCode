@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : recursively
+// Solution 1 : top-down
 class Solution {
 public:
     bool isMatch(string s, string p) {
@@ -19,7 +19,7 @@ public:
 };
 
 
-// Solution 2 : dp
+// Solution 2 : bottom-up, dp
 class Solution_dp {
 public:
     bool isMatch(string s, string p) {

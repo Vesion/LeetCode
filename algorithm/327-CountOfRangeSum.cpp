@@ -4,7 +4,31 @@
 using namespace std;
 
 
+// very similar to 315-CountOfSmallerNumbersAfterSelf
+//
+// Recall count smaller number after self where we encountered the problem
+//      count[i] = count of nums[j] - nums[i] < 0 with j > i
+//
+// Here, after we did the preprocess, we need to solve the problem
+//      count[i] = count of a <= S[j] - S[i] <= b with j > i
+
+
 // Solution 0 : naive brute-force, O(n^2) time, TLE
+class Solution_0 {
+public:
+    int countRangeSum(vector<int>& nums, int lower, int upper) {
+        int n = nums.size();
+        vector<long long> sums(n+1, 0);
+        for (int i = 1; i <= n; ++i) sums[i] = nums[i-1]+sums[i-1];
+        int res = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = i+1; j <= n; ++j) {
+                if (sums[j]-sums[i] >= lower && sums[j]-sums[i] <= upper) ++res;
+            }
+        }
+        return res;
+    }
+};
 
 
 // Solution 1 : merge sort based, O(nlgn) time, O(n) space, 44ms
@@ -48,25 +72,22 @@ public:
 
 
 // Solution 2 : BST, multiset
-// For each i, we need to find all j > i, lower <= sums[j]-sums[i] <= upper
+// For each i, we need to find all j < i, lower <= sums[i]-sums[j] <= upper
+//      sums[j] >= sums[i] - upper
+//      sums[j] <= sums[i] - lower
 class Solution_2 {
 public:
-    using ll = long long;
-
     int countRangeSum(vector<int>& nums, int lower, int upper) {
-        if (nums.empty()) return 0;
-        int n = nums.size();
-
-        vector<ll> sums(n+1, 0);
-        for (int i = 0; i < n; ++i) sums[i+1] = sums[i] + nums[i];
-
+        multiset<long long> m;
+        m.insert(0);
         int res = 0;
-        multiset<ll> ms;
-        for (int i = n; i >= 1; --i) {
-            ms.insert(sums[i]);
-            auto lo = ms.lower_bound(lower + sums[i-1]);
-            auto up = ms.upper_bound(upper + sums[i-1]);
-            res += distance(lo, up);
+        long long sum = 0;
+        for (int& num : nums) {
+            sum += num;
+            auto l = m.lower_bound(sum-upper);
+            auto r = m.upper_bound(sum-lower);
+            res += distance(l, r);
+            m.insert(sum);
         }
         return res;
     }
@@ -82,5 +103,8 @@ public:
 
 
 int main() {
+    Solution s;
+    vector<int> nums = {-2, 5, -1};
+    cout << s.countRangeSum(nums, -2, 2) << endl;
     return 0;
 }

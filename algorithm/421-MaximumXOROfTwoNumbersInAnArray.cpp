@@ -8,42 +8,42 @@ using namespace std;
 // Solution 1 : trie
 class Solution {
 private:
-    struct TrieNode { 
-        TrieNode* nexts[2]; 
-        TrieNode() { nexts[0] = nexts[1] = NULL; } // do not forget init pointers!
+    struct TrieNode {
+        TrieNode* nexts[2];
+        TrieNode () { fill_n(nexts, 2, nullptr); }
     };
     TrieNode* root;
-
+    
     void insert(int num) {
         TrieNode* cur = root;
         for (int i = 31; i >= 0; --i) {
-            int val = (num >> i) & 1;
-            if (!cur->nexts[val]) cur->nexts[val] = new TrieNode;
-            cur = cur->nexts[val];
+            int c = (num>>i)&1;
+            if (!cur->nexts[c]) cur->nexts[c] = new TrieNode();
+            cur = cur->nexts[c];
         }
     }
-
-    int query(int num) {
-        int xor_sum = 0;
+    
+    int xorQuery(int num) {
         TrieNode* cur = root;
+        int res = 0;
         for (int i = 31; i >= 0; --i) {
-            int val = (num >> i) & 1;
-            if (cur->nexts[val^1]) {
-                xor_sum |= (1 << i);
-                cur = cur->nexts[val^1]; // think about why this
-            } else
-                cur = cur->nexts[val];
+            int c = (num>>i)&1;
+            res <<= 1;
+            if (cur->nexts[!c]) {
+                res |= 1;
+                cur = cur->nexts[!c];
+            } else cur = cur->nexts[c];
         }
-        return xor_sum;
+        return res;
     }
 
 public:
     int findMaximumXOR(vector<int>& nums) {
         if (nums.empty()) return 0;
-        root = new TrieNode;
-        for (int num : nums) insert(num);
+        root = new TrieNode();
         int res = 0;
-        for (int num : nums) res = max(res, query(num));
+        for (int& num : nums) insert(num);
+        for (int& num : nums) res = max(res, xorQuery(num));
         return res;
     }
 };
@@ -55,18 +55,19 @@ public:
     int findMaximumXOR(vector<int>& nums) {
         int res = 0;
         int prefix = 0;
-        unordered_set<int> s;
         for (int i = 31; i >= 0; --i) {
-            prefix |= (1 << i);
-            s.clear();
-            for (int num : nums) s.insert(num & prefix);
-            int candidate = res | (1 << i);
+            unordered_set<int> s;
+            prefix |= (1<<i);
+            for (int& num : nums) s.insert(num&prefix);
+
+            int candidate = res | (1<<i);
+
             // if a^b = c, then a^c = b, b^c = a
             // find if there exists two numbers their xor is candidate
-            for (int p : s) {
-                if (s.count(candidate ^ p)) { 
-                    res = candidate; 
-                    break; 
+            for (int num : s) {
+                if (s.count(num^candidate)) {
+                    res = candidate;
+                    break;
                 }
             }
         }

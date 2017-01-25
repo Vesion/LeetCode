@@ -17,10 +17,9 @@ public:
      */
     int read(char *buf, int n) {
         int res = 0;
-        bool eof = false;
-        while (!eof && res < n) {
+        while (res < n) {
             int c = read4(buf);
-            if (c < 4) eof = true;
+            if (c == 0) break;
             c = min(c, n-res);
             res += c;
             buf += c;

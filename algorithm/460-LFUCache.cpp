@@ -16,44 +16,39 @@ private:
         int val, fre;
         list<int>::iterator pos;
     };
-    int capacity, count, minfre;
-    unordered_map<int, Entry> entry;
+    unordered_map<int, Entry> entries;
     unordered_map<int, list<int>> freMap;
+    int count, capacity, minfre;
 public:
     LFUCache(int capacity) {
-        this->capacity = capacity;
         count = minfre = 0;
+        this->capacity = capacity;
     }
     
     int get(int key) {
-        if (!entry.count(key)) return -1;
-        int fre = entry[key].fre;
-        freMap[fre].erase(entry[key].pos); // remove from old fre bucket
-
-        entry[key].fre = fre = fre+1; // update fre
-
-        freMap[fre].push_back(key); // put into new fre bucket
-        entry[key].pos = --freMap[fre].end(); // update position
-
-        if (freMap[minfre].empty()) minfre++; // ! check if minfre bucket is empty
-        return entry[key].val;
+        if (!entries.count(key)) return -1;
+        freMap[entries[key].fre].erase(entries[key].pos); // remove from old bucket
+        entries[key].fre++;
+        freMap[entries[key].fre].push_front(key); // put into new bucket
+        entries[key].pos = freMap[entries[key].fre].begin();
+        if (freMap[minfre].empty()) minfre++; // don't forget to update minfre
+        return entries[key].val;
     }
     
     void put(int key, int value) {
         if (capacity == 0) return;
         if (get(key) != -1) {
-            entry[key].val = value;
+            entries[key].val = value;
         } else {
-            if (count == capacity) {
-                int ek = freMap[minfre].front();
-                entry.erase(ek);
-                freMap[minfre].pop_front();
+            if (count == capacity) { // if full, remove the LFU & LRU entry
+                entries.erase(freMap[minfre].back());
+                freMap[minfre].pop_back();
                 --count;
             }
-            freMap[1].push_back(key);
-            entry[key] = {value, 1, --freMap[1].end()};
-            minfre = 1; // ! don't forget to reset minfre to 1
+            freMap[1].push_front(key);
+            entries[key] = {value, 1, freMap[1].begin()};
             ++count;
+            minfre = 1; // don't forget to update minfre
         }
     }
 };
