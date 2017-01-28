@@ -16,39 +16,36 @@ public:
         unordered_map<string, int> m;
         int n = words.size();
         for (int i = 0; i < n; ++i) {
-            string w = words[i];
-            reverse(w.begin(), w.end()); 
-            m[w] = i;
+            string r = words[i];
+            reverse(r.begin(), r.end());
+            m[r] = i;
         }
-
+        
         vector<vector<int>> res;
-        if (m.count("")) { // edge case
-            for (int i = 0; i < n; ++i) {
-                if (isPalindrome(words[i]) && m[""] != i) res.push_back({m[""], i});
-            }
-        }
-
         for (int i = 0; i < n; ++i) {
-            int len = words[i].size();
-            for (int l = 0; l < len; ++l) { // split word into left(0 ~ n-1) and right(n ~ 1) part
-                string left = words[i].substr(0, l);
-                string right = words[i].substr(l);
-                if (m.count(left) && isPalindrome(right) && m[left] != i)
-                    res.push_back({i, m[left]});
-                if (m.count(right) && isPalindrome(left) && m[right] != i)
+            for (int j = 0; j < (int)words[i].size(); ++j) {
+                string left = words[i].substr(0, j);
+                string right = words[i].substr(j);
+                if (m.count(right) && m[right] != i && isPalindrome(left)) {
                     res.push_back({m[right], i});
+                }
+                if (m.count(left) && m[left] != i && isPalindrome(right)) {
+                    res.push_back({i, m[left]});
+                    if (left.empty()) res.push_back({m[left], i}); // for corner case ["a", ""]
+                }
             }
         }
         return res;
-        
     }
-
+    
     bool isPalindrome(string& s) {
+        if (s.empty()) return true;
         int i = 0, j = s.size()-1;
         while (i <= j && s[i] == s[j]) ++i, --j;
         return i > j;
     }
 };
+
 
 int main() {
     Solution s;

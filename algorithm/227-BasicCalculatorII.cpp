@@ -44,14 +44,15 @@ public:
 class Solution_2 {
 public:
     int calculate(string s) {
-        istringstream in('+' + s + '+');
-        int res = 0, num = 0;
+        if (s.empty()) return 0;
+        istringstream in("+" + s + "+");
+        int res = 0, num = 0, sign = 1;
         char op;
         while (in >> op) {
             if (op == '+' || op == '-') {
-                res += num;
+                res += sign * num;
+                sign = op == '+' ? 1 : -1;
                 in >> num;
-                num *= (op == '+' ? 1 : -1);
             } else {
                 int right;
                 in >> right;
@@ -60,7 +61,7 @@ public:
             }
         }
         return res;
-    }    
+    }
 };
 
 

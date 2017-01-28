@@ -19,13 +19,13 @@ public:
             if (isdigit(s[i])) {
                 int num = 0;
                 while (i < (int)s.size() && isdigit(s[i])) num = num*10 + s[i++]-'0';
-                res += num*sign;
+                res += sign * num;
             } else if (s[i] == '+') {
                 sign = 1; ++i;
             } else if (s[i] == '-') {
                 sign = -1; ++i;
             } else if (s[i] == '(') {
-                res += parse(s, ++i)*sign;
+                res += sign * parse(s, ++i);
             } else if (s[i] == ')') {
                 ++i; break;
             } else ++i;

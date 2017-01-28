@@ -38,29 +38,29 @@ class Solution_2 {
 public:
     UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
         if (!node) return node;
-        unordered_map <UndirectedGraphNode*, UndirectedGraphNode*> copied;
+        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> cloned;
+        cloned[node] = new UndirectedGraphNode(node->label);
         queue<UndirectedGraphNode*> q;
-        copied[node] = new UndirectedGraphNode(node->label);
         q.push(node);
         while (!q.empty()) {
-            auto n = q.front(); q.pop();
-            for (auto & nbr : n->neighbors) {
-                if (copied.count(nbr)) {
-                    copied[n]->neighbors.push_back(copied[nbr]);
-                } else {
-                    UndirectedGraphNode* newnode = new UndirectedGraphNode(nbr->label);
-                    copied[nbr] = newnode;
-                    copied[n]->neighbors.push_back(newnode);
+            UndirectedGraphNode* t = q.front(); q.pop();
+            for (UndirectedGraphNode* nbr : t->neighbors) {
+                if (cloned.count(nbr)) {
+                    cloned[t]->neighbors.push_back(cloned[nbr]);
+                }
+                else {
+                    cloned[nbr] = new UndirectedGraphNode(nbr->label);
+                    cloned[t]->neighbors.push_back(cloned[nbr]);
                     q.push(nbr);
                 }
             }
         }
-        return copied[node];
+        return cloned[node];
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

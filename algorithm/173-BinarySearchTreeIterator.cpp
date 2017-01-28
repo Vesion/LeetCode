@@ -11,7 +11,6 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-
 // Similar to 094-BinaryTreeInorderTraversal
 class BSTIterator {
 private:
@@ -33,16 +32,13 @@ public:
             cur = cur->left;
         }
         cur = st.top(); st.pop();
-        int num = cur->val;
+        int res = cur->val;
         cur = cur->right;
-        return num;
+        return res;
     }
 };
 
+
 int main() {
-    TreeNode* root = new TreeNode(1);
-    BSTIterator it(root);
-    cout << it.next() << endl;
     return 0;
 }
-

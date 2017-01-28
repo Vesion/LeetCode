@@ -18,12 +18,12 @@ class Solution_0 {
 public:
     int countRangeSum(vector<int>& nums, int lower, int upper) {
         int n = nums.size();
-        vector<long long> sums(n+1, 0);
-        for (int i = 1; i <= n; ++i) sums[i] = nums[i-1]+sums[i-1];
         int res = 0;
         for (int i = 0; i < n; ++i) {
-            for (int j = i+1; j <= n; ++j) {
-                if (sums[j]-sums[i] >= lower && sums[j]-sums[i] <= upper) ++res;
+            long long sum = 0;
+            for (int j = i; j < n; ++j) {
+                sum += nums[j];
+                if (sum >= lower && sum <= upper) res++;
             }
         }
         return res;

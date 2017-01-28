@@ -40,19 +40,17 @@ public:
 class Solution_2 {
 public:
     string longestPalindrome(string s) {
-        if (s.empty()) return "";
+        if (s.empty()) return s;
         int n = s.size();
         vector<vector<bool>> dp(n, vector<bool>(n, false));
+        for (int i = 0; i < n; ++i) dp[i][i] = true;
         int start = 0, len = 1;
-        for (int i = 0; i < n; ++i) dp[i][i] = true; // every single character is a palindrome
-        for (int i = n-1; i >= 0; --i) {
-            for (int j = i; j < n; ++j) {
+        for (int k = 2; k <= n; ++k) {
+            for (int i = 0; i+k-1 < n; ++i) {
+                int j = i+k-1;
                 if (s[i] == s[j] && (i+1 > j-1 || dp[i+1][j-1])) {
                     dp[i][j] = true;
-                    if (j-i+1 > len) {
-                        len = j-i+1;
-                        start = i;
-                    }
+                    if (j-i+1 > len) { len = j-i+1; start = i; }
                 }
             }
         }

@@ -8,29 +8,26 @@ class Solution {
 public:
     vector<int> spiralOrder(vector<vector<int>>& matrix) {
         if (matrix.empty()) return {};
+        int left = 0, right = matrix[0].size()-1, top = 0, bottom = matrix.size()-1;
         vector<int> res;
-        int br = 0, er = matrix.size()-1; // begin row and end row
-        int bc = 0, ec = matrix[0].size()-1; // begin col and end col
-
         while (true) {
-            for (int j = bc; j <= ec; ++j) res.push_back(matrix[br][j]); // right
-            if (++br > er) break;
+            for (int j = left; j <= right; ++j) res.push_back(matrix[top][j]);
+            if (++top > bottom) break;
 
-            for (int i = br; i <= er; ++i) res.push_back(matrix[i][ec]); // down
-            if (bc > --ec) break;
+            for (int i = top; i <= bottom; ++i) res.push_back(matrix[i][right]);
+            if (left > --right) break;
 
-            for (int j = ec; j >= bc; --j) res.push_back(matrix[er][j]); // left
-            if (br > --er) break;
+            for (int j = right; j >= left; --j) res.push_back(matrix[bottom][j]);
+            if (top > --bottom) break;
 
-            for (int i = er; i >= br; --i) res.push_back(matrix[i][bc]); // up
-            if (++bc > ec) break;
+            for (int i = bottom; i >= top; --i) res.push_back(matrix[i][left]);
+            if (++left > right) break;
         }
         return res;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-
