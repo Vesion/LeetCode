@@ -6,37 +6,34 @@ using namespace std;
 
 class Vector2D {
 private:
-    vector<vector<int>>::iterator begin, end;
-    vector<int>::iterator it;
+    using vit = vector<int>::iterator;
+    vector<pair<vit, vit>> its;
+    vector<pair<vit, vit>>::iterator cur;
 
 public:
     Vector2D(vector<vector<int>>& vec2d) {
-        begin = vec2d.begin(), end = vec2d.end();
-        if (begin != end) it = begin->begin();
+        if (!vec2d.empty()) {
+            for (auto& vec : vec2d) its.push_back({vec.begin(), vec.end()});
+            cur = its.begin();
+        }
     }
 
     int next() {
-        if (hasNext()) return *it++;
-        return 0; // invalid code
+        if (hasNext()) return *(cur->first++);
+        return 0;
     }
 
     bool hasNext() {
-        while (begin != end && it == begin->end()) { // skip all empty vector
-            ++begin;
-            it = begin->begin();
+        if (its.empty()) return false;
+        while (cur != its.end()) {
+            if (cur->first == cur->second) ++cur;
+            else return true;
         }
-        return begin != end;
+        return false;
     }
 };
 
 
 int main() {
-    vector<vector<int>> v = {{}, {}, {5,6}, {}, {}, {1}};
-    Vector2D v2(v);
-    cout << v2.next() << endl;
-    cout << v2.next() << endl;
-    cout << v2.next() << endl;
-    cout << v2.hasNext() << endl;
-    cout << v2.next() << endl;
     return 0;
 }

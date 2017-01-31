@@ -4,32 +4,52 @@
 #include <string>
 using namespace std;
 
+// Solution 1 : recursive
 class Solution {
 public:
     vector<string> letterCombinations(string s) {
         if (s.empty()) return {};
         vector<string> m = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-        string path;
         vector<string> res;
-        dfs(0, s, path, res, m);
+        dfs(s, 0, m, "", res);
         return res;
     }
-
-    void dfs(int cur, string& s, string& path, vector<string>& res, vector<string>& m) {
-        if (cur == (int)s.size()) {
+    
+    void dfs(string& s, int start, vector<string>& m, string path, vector<string>& res) {
+        if (start == (int)s.size()) {
             res.push_back(path);
             return;
         }
-        for (int i = 0; i < (int)m[s[cur]-'0'].size(); ++i) {
-            path.push_back(m[s[cur]-'0'][i]);
-            dfs(cur+1, s, path, res, m);
-            path.pop_back();
-        }
+        int i = s[start]-'0';
+        if (m[i].empty()) dfs(s, start+1, m, path, res); // for case "012"
+        else for (char& c : m[i]) dfs(s, start+1, m, path+c, res);
     }
 };
 
+
+// Solution 2 : iterative
+class Solution_2 {
+public:
+    vector<string> letterCombinations(string s) {
+        if (s.empty()) return {};
+        vector<string> m = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        vector<string> res({""});
+        for (int i = 0; i < (int)s.size(); ++i) {
+            vector<string> t;
+            int d = s[i]-'0';
+            for (string& r : res) {
+                for (char& c : m[d]) t.push_back(r+c);
+            }
+            res = t;
+        }
+        return res;
+    }
+};
+
+
 int main() {
     Solution s;
+    auto r = s.letterCombinations("012");
+    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
-

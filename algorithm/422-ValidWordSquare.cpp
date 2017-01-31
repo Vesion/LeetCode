@@ -8,11 +8,13 @@ class Solution {
 public:
     bool validWordSquare(vector<string>& words) {
         if (words.empty()) return true;
-        int m = words.size();
-        for (int i = 0; i < m; ++i) {
-            int n = words[i].size();
-            for (int j = 0; j < n; ++j)
-                if (j >= m || i >= (int)words[j].size() || words[i][j] != words[j][i]) return false;
+        int n = words.size();
+        for (int i = 0; i < n; ++i) {
+            string col;
+            for (int j = 0; j < n; ++j) {
+                if (i < (int)words[j].size()) col += words[j][i];
+            }
+            if (col != words[i]) return false;
         }
         return true;
     }

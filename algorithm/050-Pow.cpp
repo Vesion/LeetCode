@@ -10,16 +10,14 @@ public:
         if (n == 0)
             return 1;
         if (n < 0) {
-            if (n == INT_MIN)
-                return myPow_topdown(x, n / 2) * myPow_topdown(x, n / 2);
+            if (n == INT_MIN) // for corner case pow(1, INT_MIN)
+                return myPow_topdown(x, n/2) * myPow_topdown(x, n/2);
             return 1 / myPow_topdown(x, -n);
         }
         if (n == 1)
             return x;
-        if (n & 1)
-            return myPow_topdown(x, n - 1) * x;
-        else
-            return myPow_topdown(x * x, n / 2);
+        if (n & 1) return myPow_topdown(x, n-1) * x;
+        else return myPow_topdown(x*x, n/2);
     }
 };
 
@@ -41,6 +39,8 @@ public:
         return res;
     }
 };
+
+
 int main() {
     Solution s;
     cout << s.myPow(-1, INT_MIN);

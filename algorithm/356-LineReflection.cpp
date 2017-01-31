@@ -43,18 +43,16 @@ public:
 class Solution {
 public:
     bool isReflected(vector<pair<int, int>>& points) {
-        if (points.empty()) return true;
         int minx = INT_MAX, maxx = INT_MIN;
         unordered_set<string> s;
         for (auto& p : points) {
-            minx = min(minx, p.first), maxx = max(maxx, p.first);
+            minx = min(minx, p.first);
+            maxx = max(maxx, p.first);
             s.insert(to_string(p.first) + " " + to_string(p.second));
         }
         int sum = minx + maxx;
-        
         for (auto& p : points) {
-            string other = to_string(sum-p.first) + " " + to_string(p.second);
-            if (!s.count(other)) return false;
+            if (!s.count(to_string(sum-p.first) + " " + to_string(p.second))) return false;
         }
         return true;
     }

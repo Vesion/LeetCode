@@ -16,11 +16,10 @@ public:
         int res = 0;
         long long ln = n;
         while (ln != 1) {
-            if ((ln&1) == 0) ln >>= 1;
-            else {
-                if (ln == 3 || ((ln>>1)&1) == 0) --ln;
-                else ++ln;
-            }
+            if (ln&1) {
+                if ((ln>>1)&1 && ln != 3) ++ln;
+                else --ln;
+            } else ln /= 2;
             ++res;
         }
         return res;
@@ -31,4 +30,3 @@ public:
 int main() {
     return 0;
 }
-

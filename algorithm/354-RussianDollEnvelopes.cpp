@@ -64,25 +64,19 @@ public:
 class Solution {
 public:
     int maxEnvelopes(vector<pair<int, int>>& envelopes) {
-        if (envelopes.empty()) return 0;
-
         // Note: sort with width first, when widths equal, the one with greater height goes first
-        sort(envelopes.begin(), envelopes.end(),
-                [](const pair<int, int>& e1, const pair<int, int>& e2) { 
-                    if (e1.first < e2.first) return true; 
-                    if (e1.first == e2.first) return e1.second > e2.second;
-                    return false;
-                }); 
-
-        vector<int> dp;
+        sort(envelopes.begin(), envelopes.end(), [](const pair<int,int>& e1, const pair<int,int>& e2) {
+            if (e1.first == e2.first) return e1.second > e2.second;
+            return e1.first < e2.first;
+        });
+        
+        vector<int> lis;
         for (auto& e : envelopes) {
-            auto it = lower_bound(dp.begin(), dp.end(), e.second);
-            if (it == dp.end())
-                dp.push_back(e.second);
-            else
-                *it = e.second;
+            auto it = lower_bound(lis.begin(), lis.end(), e.second);
+            if (it == lis.end()) lis.push_back(e.second);
+            else *it = e.second;
         }
-        return dp.size();
+        return lis.size();
     }
 };
 
@@ -93,4 +87,3 @@ int main() {
     cout << s.maxEnvelopes(e) <<endl;
     return 0;
 }
-

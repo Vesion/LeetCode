@@ -47,9 +47,9 @@ public:
     }
 };
 
+
 int main() {
     Solution s;
     cout << s.isMatch("abbabaabaaababbabbbaaaaba","a*******b");
     return 0;
 }
-

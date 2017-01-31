@@ -17,26 +17,30 @@ class Solution {
 public:
     vector<int> closestKValues(TreeNode* root, double target, int k) {
         vector<int> res;
-        inorder(root, target, res, k);
+        inorder(root, target, k, res);
         return res;
     }
-
-    void inorder(TreeNode* root, double target, vector<int>& res, int k) {
+    
+    void inorder(TreeNode* root, double target, int k, vector<int>& res) {
         if (root) {
-            inorder(root->left, target, res, k);
-            if ((int)res.size() == k) {
-                if (fabs(root->val-target) < fabs(res.front()-target)) res.erase(res.begin());
-                else return; // if current node is further, it's successors are no neeed to consider
+            inorder(root->left, target, k, res);
+
+            if ((int)res.size() < k) res.push_back(root->val);
+            else {
+               if (!res.empty() && fabs(root->val-target) < fabs(res.front()-target)) {
+                   res.erase(res.begin());
+                   res.push_back(root->val);
+               } else return;
             }
-            res.push_back(root->val);
-            inorder(root->right, target, res, k);
+
+            inorder(root->right, target, k, res);
         }
     }
 };
 
 
 // Solution 2 : use stack to maintain predecessors and successors, O(k*logn)
-// https://discuss.leetcode.com/topic/23151/o-logn-java-solution-with-two-stacks-following-hint/13
+// First find the closest node to target, then find node's k-1 predecessor/successor nodes
 
 
 
