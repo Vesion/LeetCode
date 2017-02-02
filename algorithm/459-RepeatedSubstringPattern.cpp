@@ -37,6 +37,7 @@ public:
             if (str[i] == str[j]) ++j;
             prefix[i] = j;
         }
+        // the repeated pattern is s[0...n-prefix[n-1]]
         return prefix[n-1] && (n % (n-prefix[n-1]) == 0);
     }
 };

@@ -9,19 +9,17 @@ using namespace std;
 class Solution {
 public:
     int kthSmallest(vector<vector<int>>& matrix, int k) {
-        int m = matrix.size(), n = matrix[0].size();
-        auto comp = [&](const pair<int,int>& p1, const pair<int,int>& p2) { 
-            return matrix[p1.first][p1.second] > matrix[p2.first][p2.second]; };
-        priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(comp)> q(comp);
-        q.push({0, 0});
-        int res;
-        while (k-- && !q.empty()) {
-            auto t = q.top(); q.pop();
-            res = matrix[t.first][t.second];
-            if (t.second+1 < n)
-                q.push({t.first, t.second+1});
-            if (t.second == 0 && t.first+1 < m)
-                q.push({t.first+1, t.second});
+        if (matrix.empty()) return 0;
+        int n = matrix.size();
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        pq.push({matrix[0][0], 0});
+        int res = 0;
+        while (!pq.empty() && k--) {
+            res = pq.top().first;
+            int i = pq.top().second/n, j = pq.top().second%n;
+            pq.pop();
+            if (j+1 < n) pq.push({matrix[i][j+1], i*n+(j+1)});
+            if (j == 0 && i+1 < n) pq.push({matrix[i+1][j], (i+1)*n+j});
         }
         return res;
     }

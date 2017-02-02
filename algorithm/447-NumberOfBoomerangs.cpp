@@ -11,19 +11,20 @@ public:
     int numberOfBoomerangs(vector<pair<int, int>>& points) {
         int n = points.size();
         int res = 0;
-        unordered_map<int, int> m;
         for (int i = 0; i < n; ++i) {
-            m.clear();
+            unordered_map<int, int> m;
             for (int j = 0; j < n; ++j) {
-                if (i == j) continue;
-                int d = (points[i].first-points[j].first)*(points[i].first-points[j].first) + (points[i].second-points[j].second)*(points[i].second-points[j].second);
+                int x0 = points[i].first, y0 = points[i].second;
+                int x1 = points[j].first, y1 = points[j].second;
+                int d = (x0-x1)*(x0-x1) + (y0-y1)*(y0-y1);
                 m[d]++;
             }
-            for (auto& p : m) if (p.second >= 2) res += p.second * (p.second-1);
+            for (auto& p : m) res += p.second * (p.second-1);
         }
         return res;
     }
 };
+
 
 int main() {
     Solution s;
@@ -31,4 +32,3 @@ int main() {
     cout <<s.numberOfBoomerangs(p) << endl;
     return 0;
 }
-

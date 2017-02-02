@@ -7,24 +7,20 @@ using namespace std;
 class Solution {
 public:
     vector<int> getModifiedArray(int length, vector<vector<int>>& updates) {
-        if (length == 0) return {};
-        vector<int> res(length, 0);
+        vector<int> nums(length, 0);
         for (auto& u : updates) {
-            int start = u[0], end = u[1];
-            int val = u[2];
-
-            res[start] += val; // range start
-            if (end+1 < length) res[end+1] -= val; // range end
+            nums[u[0]] += u[2]; // range start
+            if (u[1]+1 < length) nums[u[1]+1] -= u[2]; // range end
         }
-
-        int sum = 0;
+        int inc = 0;
         for (int i = 0; i < length; ++i) {
-            sum += res[i];
-            res[i] = sum;
+            inc += nums[i];
+            nums[i] = inc;
         }
-        return res;
+        return nums;
     }
 };
+
 
 int main() {
     Solution s;

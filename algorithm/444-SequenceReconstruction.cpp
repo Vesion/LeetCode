@@ -17,14 +17,12 @@ public:
 
         int n = org.size();
         vector<unordered_set<int>> graph(n+1);
-        vector<int> indegrees(n+1, 0);
-
+        vector<int> indegrees(n+1, -1);
         for (auto& seq : seqs) {
-            if (seq.empty()) continue;
-            if (seq[0] < 1 || seq[0] > n) return false;
-            for (int i = 1; i < (int)seq.size(); ++i) {
-                if (seq[i] >= 1 && seq[i] <= n) graph[seq[i-1]].insert(seq[i]);
-                else return false;
+            for (int i = 0; i < (int)seq.size(); ++i) {
+                if (seq[i] < 1 || seq[i] > n) return false;
+                indegrees[seq[i]] = 0; // flag we have node seq[i]
+                if (i > 0) graph[seq[i-1]].insert(seq[i]);
             }
         }
         for (auto& s : graph) for (auto& node : s) indegrees[node]++;
@@ -37,11 +35,7 @@ public:
             if (q.size() > 1) return false;
             int t = q.front(); q.pop();
             if (i == n || t != org[i++]) return false;
-            for (int nbr : graph[t]) {
-                if (--indegrees[nbr] == 0) {
-                    q.push(nbr);
-                }
-            }
+            for (int nbr : graph[t]) if (--indegrees[nbr] == 0) q.push(nbr);
         }
         return i == n;
     }
@@ -75,8 +69,8 @@ public:
 
 int main() {
     Solution s;
-    vector<int> org = {1, 2, 3};
-    vector<vector<int>> seqs = {{1,2}, {1,3}, {2,3} };
+    vector<int> org = {1, 2, 3, 4};
+    vector<vector<int>> seqs = {{1,3}, {2,4}, {1,2},{2,3},{3,4} };
     cout << s.sequenceReconstruction(org, seqs) << endl;
     return 0;
 }

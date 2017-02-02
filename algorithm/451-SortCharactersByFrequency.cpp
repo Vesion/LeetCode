@@ -5,7 +5,6 @@
 #include <queue> 
 using namespace std;
 
-
 // Solution 1 : heap, O(nlogn)
 class Solution_1 {
 public:
@@ -25,6 +24,7 @@ public:
         return res;
     }
 };
+
 
 // Solution 2 : sort with frequency, O(nlogn)
 class Solution_2 {
@@ -46,13 +46,13 @@ class Solution {
 public:
     string frequencySort(string s) {
         vector<int> m(128, 0);
-        for (char c : s) m[c]++;
+        for (char& c : s) m[c]++;
         
         int n = s.size();
-        vector<string> buckets(n+1, "");
-        for (int i = 0; i < 128; ++i) buckets[m[i]] += string(m[i], i);
-
-        string res = "";
+        vector<string> buckets(n+1);
+        for (int c = 0; c < 128; ++c) buckets[m[c]] += string(m[c], (char)c);
+        
+        string res;
         for (int i = n; i >= 0; --i) res += buckets[i];
         return res;
     }

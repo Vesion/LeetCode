@@ -45,7 +45,6 @@ public:
 };
 
 
-
 int main() {
     Solution s;
     vector<int> p = {8,5,4,6,12,7,20};

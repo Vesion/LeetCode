@@ -9,30 +9,30 @@ using namespace std;
 class Solution {
 public:
     vector<int> findMinHeightTrees(int n, vector<pair<int, int>>& edges) {
-        if ((int)edges.size() != n-1) return {}; // it's not a tree
-        if (n == 1) return {0}; // single node, it's the root
-        vector<vector<int>> graph(n);
+        if (n == 1) return {0};
+        vector<vector<int>> graph(n, vector<int>());
+        vector<int> indegrees(n, 0);
         for (auto& e : edges) {
             graph[e.first].push_back(e.second);
             graph[e.second].push_back(e.first);
+            indegrees[e.first]++;
+            indegrees[e.second]++;
         }
-        vector<int> indegrees(n, 0);
-        for (auto& nodes : graph) {
-            for (int& node : nodes) indegrees[node]++;
-        }
-        
-        vector<int> cur, next;
-        for (int i = 0; i < n; ++i) if (indegrees[i] == 1) cur.push_back(i);
-        while (!cur.empty()) {
-            for (int& node : cur) {
-                for (int& nbr : graph[node]) {
-                    if (--indegrees[nbr] == 1) next.push_back(nbr);
-                }
+        queue<int> q;
+        for (int i = 0; i < n; ++i) if (indegrees[i] == 1) q.push(i);
+
+        vector<int> res;
+        while (!q.empty()) {
+            int len = q.size();
+            vector<int> leaves;
+            while (len--) {
+                int t = q.front(); q.pop();
+                leaves.push_back(t);
+                for (int& nbr : graph[t]) if (--indegrees[nbr] == 1) q.push(nbr);
             }
-            if (!next.empty()) { cur = next; next.clear(); }
-            else break;
+            res = leaves;
         }
-        return cur;
+        return res;
     }
 };
 

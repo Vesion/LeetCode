@@ -14,21 +14,23 @@ class Solution {
 public:
     vector<string> binaryTreePaths(TreeNode* root) {
         vector<string> res;
-        if (root) dfs(root, "", res);
+        dfs(root, "", res);
         return res;
     }
     
     void dfs(TreeNode* root, string path, vector<string>& res) {
+        if (!root) return;
+        path += (path.empty() ? "" : "->") + to_string(root->val);
         if (!root->left && !root->right) {
-            res.push_back(path + to_string(root->val));
+            res.push_back(path);
             return;
         }
-        if (root->left) dfs(root->left, path + to_string(root->val) + "->", res);
-        if (root->right) dfs(root->right, path + to_string(root->val) + "->", res);
+        if (root->left) dfs(root->left, path, res);
+        if (root->right) dfs(root->right, path, res);
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }

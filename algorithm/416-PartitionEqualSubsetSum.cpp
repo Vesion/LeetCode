@@ -6,22 +6,24 @@
 #include <bitset> 
 using namespace std;
 
-// Solution 1 : dp, similar to 'complete knapsack'
+// The famous 'Subset Sum Problem'
+
+// Solution 1 : standard dp
+// This solution can not only solve 'if it can' problem, but 'how many solutions' problem
 class Solution {
 public:
     bool canPartition(vector<int>& nums) {
         int sum = accumulate(nums.begin(), nums.end(), 0);
         if (sum&1) return false;
-        sum >>= 1;
-
-        vector<int> dp(sum+1, INT_MIN);
-        dp[0] = 0;
-        for (int i = 0; i < (int)nums.size(); ++i) {
-            for (int j = sum; j >= nums[i]; --j) {
-                dp[j] = max(dp[j], dp[j-nums[i]]+1);
+        sum /= 2;
+        vector<int> dp(sum+1, 0); // dp[i] = the number of subsets whose sum is i
+        dp[0] = 1;
+        for (int& num : nums) {
+            for (int i = sum; i >= num; --i) {
+                dp[i] += dp[i-num];
             }
         }
-        return dp[sum] > 0;
+        return dp[sum];
     }
 };
 

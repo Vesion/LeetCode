@@ -29,21 +29,24 @@ public:
     string smallestGoodBase(string n) {
         ull N = (ull)stoll(n);
         ull x = 1;
-        for (int d = 62; d >= 2; --d) {
-            if ((x << d) > N) continue;
-            ull res = bs(N, d);
-            if (res) return to_string(res);
+        for (int d = 63; d >= 1; --d) {
+            if ((x<<d) <= N) {
+                ull res = bs(N, d);
+                if (res) return to_string(res);
+            }
         }
         return to_string(N-1);
     }
     
     ull bs(ull N, int d) {
-        ull left = 2, right = pow(N,1.0/d);
+        ull left = 2, right = pow(N, 1.0/d);
         while (left <= right) {
             ull mid = left + (right-left)/2;
-            ull sum = 1, cur = 1;
+            ull sum = 1, k = mid;
+            // check if mid^0 + ... + mid^d ?= N
             for (int i = 1; i <= d; ++i) {
-                sum += (cur *= mid);
+                sum += k;
+                k *= mid;
             }
             if (sum == N) return mid;
             if (sum < N) left = mid+1;

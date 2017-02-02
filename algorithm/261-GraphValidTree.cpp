@@ -69,10 +69,8 @@ public:
         if ((int)edges.size() != n-1) return false;
         vector<int> root(n);
         iota(root.begin(), root.end(), 0);
-
         for (auto& e : edges) {
-            int ri = findRoot(e.first, root);
-            int rj = findRoot(e.second, root);
+            int ri = findRoot(e.first, root), rj = findRoot(e.second, root);
             if (ri == rj) return false;
             root[ri] = rj;
         }

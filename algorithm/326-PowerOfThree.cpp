@@ -3,8 +3,6 @@
 #include <cmath>
 using namespace std;
 
-// trivial
-
 // Solution 1 : recursive
 class Solution_1 {
 public:
@@ -23,8 +21,6 @@ public:
     }
 };
 
-
-// mathematical
 
 // Solution 3 : maximum integer of power 3
 // NOTE : this works only when the base is prime. (cannot use this to check power of 2, 4, ...)
@@ -46,8 +42,6 @@ public:
     }
 };
 
-
-// others
 
 // Solution 5 : check table, all of possible : [1, 3, ..., 387420489, 1162261467]
 class Solution_5 {

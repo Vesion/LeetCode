@@ -10,20 +10,18 @@ int guess(int num);
 class Solution {
 public:
     int guessNumber(int n) {
-        int left = 1, right = n, mid;
+        int left = 1, right = n;
         while (left <= right) {
-            mid = left + (right-left)/2;
-            int res = guess(mid);
-            if (res == 0) break;
-            if (res == 1) left = mid+1;
+            int mid = left + (right-left)/2;
+            if (guess(mid) == 0) return mid;
+            if (guess(mid) == 1) left = mid+1;
             else right = mid-1;
         }
-        return mid;
+        return left;
     }
 };
 
+
 int main() {
-    Solution s;
-    cout << s.guessNumber(10) << endl;
     return 0;
 }

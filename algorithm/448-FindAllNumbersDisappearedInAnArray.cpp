@@ -23,5 +23,8 @@ public:
 
 int main() {
     Solution s;
+    vector<int> nums = {4,3,2,7,8,2,3,1};
+    auto r = s.findDisappearedNumbers(nums);
+    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }

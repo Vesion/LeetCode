@@ -4,56 +4,49 @@
 #include <string>
 using namespace std;
 
-class TrieNode {
-public:
-    bool isEnd;
-    TrieNode* next[26];
-    TrieNode() : isEnd(false) { fill_n(next, 26, nullptr); } // must memset here!
-};
-
 class Trie {
+private:
+    struct TrieNode {
+        bool isEnd;
+        TrieNode* nexts[26];
+        TrieNode() { isEnd = false; fill_n(nexts, 26, nullptr); }
+    };
+    TrieNode* root;
+    
 public:
     Trie() {
         root = new TrieNode();
     }
-
+    
     void insert(string word) {
         TrieNode* cur = root;
-        for (char c : word) {
-            if (!cur->next[c-'a']) cur->next[c-'a'] = new TrieNode();
-            cur = cur->next[c-'a'];
+        for (char& c : word) {
+            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
+            cur = cur->nexts[c-'a'];
         }
         cur->isEnd = true;
     }
-
+    
     bool search(string word) {
         TrieNode* cur = root;
-        for (char c : word) {
-            if (!cur->next[c-'a']) return false;
-            cur = cur->next[c-'a'];
+        for (char& c : word) {
+            if (!cur->nexts[c-'a']) return false;
+            cur = cur->nexts[c-'a'];
         }
         return cur->isEnd;
     }
-
+    
     bool startsWith(string prefix) {
         TrieNode* cur = root;
-        for (char c : prefix) {
-            if (!cur->next[c-'a']) return false;
-            cur = cur->next[c-'a'];
+        for (char& c : prefix) {
+            if (!cur->nexts[c-'a']) return false;
+            cur = cur->nexts[c-'a'];
         }
         return true;
     }
-
-private:
-    TrieNode* root;
 };
 
 
 int main() {
-    Trie t;
-    t.insert("helloworld");
-    cout << t.search("helloworld") << endl;
-    cout << t.startsWith("hello") << endl;
     return 0;
 }
-

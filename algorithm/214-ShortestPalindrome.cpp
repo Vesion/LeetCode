@@ -14,27 +14,26 @@ using namespace std;
 class Solution {
 public:
     string shortestPalindrome(string s) {
+        if (s.empty()) return s;
         int n = s.size();
-        if (n < 2) return s;
-
         string rs = s;
         reverse(rs.begin(), rs.end());
         string t = s + "#" + rs; // why use '#' to split them, think about case "aaaa"
+
         int m = t.size();
         vector<int> prefix(m, 0);
-
         int j = 0;
         for (int i = 1; i < m; ++i) {
             while (j > 0 && t[i] != t[j]) j = prefix[j-1];
             if (t[i] == t[j]) ++j;
             prefix[i] = j;
         }
+
         return rs.substr(0, n-prefix[m-1]) + s;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-
