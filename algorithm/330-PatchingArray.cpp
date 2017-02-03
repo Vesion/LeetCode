@@ -5,18 +5,17 @@
 using namespace std;
 
 // greedy
-// https://discuss.leetcode.com/topic/45320/c-8ms-greedy-solution-with-explanation
 class Solution {
 public:
     int minPatches(vector<int>& nums, int n) {
-        long long maxNum = 0;
+        long long sum = 0;
         int i = 0;
         int res = 0;
-        while (maxNum < n) {
-            if (i < (int)nums.size() && nums[i] <= maxNum+1) {
-                maxNum += nums[i++];
+        while (sum < n) {
+            if (i < (int)nums.size() && nums[i] <= sum+1) { // next number in nums is in range
+                sum += nums[i++]; // add a number in nums
             } else {
-                maxNum += maxNum+1;
+                sum += sum+1; // patch a new number 'sum+1'
                 ++res;
             }
         }
@@ -24,8 +23,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

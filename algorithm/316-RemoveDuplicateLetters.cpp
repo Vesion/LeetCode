@@ -12,16 +12,16 @@ public:
         vector<int> m(128, 0);
         for (char& c : s) m[c]++;
         string res;
-        vector<int> inStack(128, false);
+        vector<bool> inres(128, false);
         for (char& c : s) {
-            m[c]--;
-            if (inStack[c]) continue;
-            while (!res.empty() && c < res.back() && m[res.back()] > 0) {
-                inStack[res.back()] = false;
+            --m[c];
+            if (inres[c]) continue;
+            while (!res.empty() && c < res.back() && m[res.back()] >= 1) {
+                inres[res.back()] = false;
                 res.pop_back();
             }
             res.push_back(c);
-            inStack[c] = true;
+            inres[c] = true;
         }
         return res;
     }

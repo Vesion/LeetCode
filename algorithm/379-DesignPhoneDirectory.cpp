@@ -3,38 +3,40 @@
 #include <vector>
 #include <string>
 #include <list> 
-#include <unordered_map> 
+#include <numeric> 
 using namespace std;
 
-// Although 'List' is in problem tag, but list solution gets TLE!
+// unordered_set and list both get TLE!
 // So, we use array indexing to simulate list.
 
 class PhoneDirectory {
 private:
-    vector<int> pool;
+    vector<int> nums;
     vector<bool> used;
-    int index, upper;
-
+    int cur, upper;
+    
 public:
-    PhoneDirectory(int maxNumbers) : pool(maxNumbers), used(maxNumbers, false), index(0), upper(maxNumbers) {
-        for (int i = 0; i < maxNumbers; ++i) pool[i] = i;
+    PhoneDirectory(int maxNumbers) {
+        cur = 0, upper = maxNumbers;
+        used.resize(maxNumbers, false);
+        nums.resize(maxNumbers);
+        iota(nums.begin(), nums.end(), 0);
     }
-
+    
     int get() {
-        if (index >= upper) return -1;
-        int res = pool[index++];
+        if (cur == upper) return -1;
+        int res = nums[cur++];
         used[res] = true;
         return res;
     }
-
+    
     bool check(int number) {
-        if (number < 0 || number >= upper) return false;
-        return !used[number];
+        return number >= 0 && number < upper && !used[number];
     }
-
+    
     void release(int number) {
         if (number < 0 || number >= upper || !used[number]) return;
-        pool[--index] = number;
+        nums[--cur] = number;
         used[number] = false;
     }
 };
