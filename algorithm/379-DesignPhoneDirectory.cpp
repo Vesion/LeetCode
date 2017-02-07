@@ -13,19 +13,19 @@ class PhoneDirectory {
 private:
     vector<int> nums;
     vector<bool> used;
-    int cur, upper;
+    int index, upper;
     
 public:
     PhoneDirectory(int maxNumbers) {
-        cur = 0, upper = maxNumbers;
+        index = 0, upper = maxNumbers;
         used.resize(maxNumbers, false);
         nums.resize(maxNumbers);
         iota(nums.begin(), nums.end(), 0);
     }
     
     int get() {
-        if (cur == upper) return -1;
-        int res = nums[cur++];
+        if (index == upper) return -1;
+        int res = nums[index++];
         used[res] = true;
         return res;
     }
@@ -35,8 +35,8 @@ public:
     }
     
     void release(int number) {
-        if (number < 0 || number >= upper || !used[number]) return;
-        nums[--cur] = number;
+        if (check(number)) return;
+        nums[--index] = number;
         used[number] = false;
     }
 };

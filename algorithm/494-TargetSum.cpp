@@ -6,7 +6,7 @@
 #include <numeric> 
 using namespace std;
 
-// Solution 1 : trivial dfs
+// Solution 1 : trivial backtracking
 class Solution_1 {
 public:
     int findTargetSumWays(vector<int>& nums, int S) {
@@ -47,7 +47,7 @@ public:
 
 
 // Solution 3 : dp, convert it to 'Subset Sum Problem' (like 416-PartitionEqualSubsetSum)
-// tricky, need to preprocess
+// need to preprocess
 //
 // Firstly, the 'subset sum problem' is given a positive array, find all subsets of it whose sum is a given target
 // How to convert our problem to subset sum problem?
@@ -58,7 +58,7 @@ public:
 //      P - N = S
 //      P + P = S + P + N = S + sum
 //          P = (S + sum) / 2
-// We are done! After the conversion, our new target S is (S + sum) / 2, and it's a real subset sum problem!
+// We are done! After the conversion, our new target S is (S + sum) / 2, and it's a subset sum problem!
 //
 class Solution {
 public:

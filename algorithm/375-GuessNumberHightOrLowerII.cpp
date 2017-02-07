@@ -24,20 +24,18 @@ using namespace std;
 class Solution_1 {
 public:
     int getMoneyAmount(int n) {
-        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
-        return win(1, n, dp);
+        vector<vector<int>> m(n+1, vector<int>(n+1, 0));
+        return dp(1, n, m);
     }
 
-    int win(int start, int end, vector<vector<int>>& dp) {
-        if (start == end) return 0;
-        if (start+1 == end) return start; // e.g. [1,2], we only need 1 money
-        if (dp[start][end]) return dp[start][end];
+    int dp(int start, int end, vector<vector<int>>& m) {
+        if (start >= end) return 0;
+        if (m[start][end]) return m[start][end];
         int res = INT_MAX;
-        for (int i = start+1; i <= end-1; ++i) {
-            int t = i + max(win(start, i-1, dp), win(i+1, end, dp));
-            res = min(res, t);
+        for (int i = start; i <= end; ++i) {
+            res = min(res, i + max(dp(start, i-1, m), dp(i+1, end, m)));
         }
-        dp[start][end] = res;
+        m[start][end] = res;
         return res;
     }
 };
@@ -48,16 +46,13 @@ class Solution {
 public:
     int getMoneyAmount(int n) {
         vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
-        for (int l = 2; l <= n; ++l) {
-            for (int i = 1; i+l-1 <= n; ++i) {
-                int j = i+l-1;
-                if (i+1 == j) dp[i][j] = i;
-                else {
-                    dp[i][j] = INT_MAX;
-                    for (int k = i+1; k <= j-1; ++k) {
-                        int local = max(dp[i][k-1], dp[k+1][j]) + k;
-                        dp[i][j] = min(dp[i][j], local);
-                    }
+        for (int len = 2; len <= n; ++len) {
+            for (int i = 1; i+len-1 <= n; ++i) {
+                int j = i+len-1;
+                dp[i][j] = INT_MAX;
+                for (int k = i; k <= j; ++k) {
+                    dp[i][j] = min(dp[i][j], k + max(i <= k-1 ? dp[i][k-1] : 0, 
+                                                     k+1 <= j ? dp[k+1][j] : 0));
                 }
             }
         }

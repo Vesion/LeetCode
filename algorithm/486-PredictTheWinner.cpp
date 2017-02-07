@@ -51,20 +51,24 @@ public:
 //      dp[i][j] = max( nums[i] - dp[i+1][j], nums[j] - dp[i][j-1] )
 
 
-// Solution 2 : top-down dp
+// Solution 2 : top-down dp + memo
 // https://discuss.leetcode.com/topic/76312/java-1-line-recursion-solution
 class Solution_2 {
 public:
     bool PredictTheWinner(vector<int>& nums) {
-        return diff(nums, 0, nums.size()-1) >= 0;
+        int n = nums.size();
+        vector<vector<int>> m(n, vector<int>(n, -1));
+        return diff(nums, 0, n-1, m) >= 0;
     }
-
+    
     // plus gain in this turn, minus opponent's gain in next turn
     // choose the max selection (optimal)
-    int diff(vector<int>& nums, int left, int right) {
+    int diff(vector<int>& nums, int left, int right, vector<vector<int>>& m) {
         if (left == right) return nums[left];
-        return max(nums[left] - diff(nums, left+1, right), 
-                nums[right] - diff(nums, left, right-1));
+        if (m[left][right] != -1) return m[left][right];
+        int res = max(nums[left]-diff(nums, left+1, right, m), nums[right]-diff(nums, left, right-1, m));
+        m[left][right] = res;
+        return res;
     }
 };
 

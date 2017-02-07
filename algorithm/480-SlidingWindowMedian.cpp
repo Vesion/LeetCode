@@ -70,6 +70,8 @@ public:
             if (*mid > nums[i]) --mid;
             
             if (*mid >= nums[i-k]) ++mid;
+            // bst.erase(nums[i-k]) is wrong, because it will erase all numbers equal to nums[i-k]
+            // we should erase only one number, so find it first
             bst.erase(bst.lower_bound(nums[i-k]));
             
             res.push_back(((double)*mid + *next(mid, k%2-1)) / 2);

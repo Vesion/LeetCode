@@ -35,8 +35,8 @@ public:
         while (res < n) {
             if (p == 0) len = read4(cache); // we need to call read4 to fill cache
             if (len == 0) break; // read4 return 0, it means file has been read over
-            if (p < len) buf[res++] = cache[p++]; // if pointer hasn't reach end, fill buf using cache
-            else p = 0; // else, it means cache has been read over, reset cache's pointer
+            while (res < n && p < len) buf[res++] = cache[p++]; // fill buf using cache
+            if (p == len) p = 0; // if cache has been read over, reset cache's pointer
         }
         return res;
     }
