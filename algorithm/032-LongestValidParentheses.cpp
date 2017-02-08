@@ -5,9 +5,8 @@
 #include <stack> 
 using namespace std;
 
-
 // Solution 1 : stack
-class Solution {
+class Solution_1 {
 public:
     int longestValidParentheses(string s) {
         if (s.empty()) return 0;
@@ -31,7 +30,7 @@ public:
 
 
 // Solution 2 : dp
-class Solution_2 {
+class Solution {
 public:
     int longestValidParentheses(string s) {
         if (s.empty()) return 0;
@@ -53,6 +52,7 @@ public:
         return res;
     }
 };
+
 
 int main() {
     Solution s;
