@@ -9,28 +9,31 @@ using namespace std;
 class Solution {
 public:
     int lengthLongestPath(string input) {
-        int i = 0, n = input.size();
+        if (input.empty()) return 0;
         stack<int> st;
         int res = 0;
+        int i = 0, n = input.size();
         while (i < n) {
-            while (input[i] == '\n') ++i;
-
+            if (input[i] == '\n') { ++i; continue; }
+            
             int level = 0;
-            while (i < n && input[i] == '\t') { ++level; ++i; } // count tabs as level
-            while ((int)st.size() > level) st.pop(); // pop larger level directories to find its parent directory
+            while (i < n && input[i] == '\t') { ++i; ++level; }
+            
+            int len = 0;
+            while ((int)st.size() > level) st.pop();
+            len = st.empty() ? 0 : st.top()+1;
 
-            int len = st.empty() ? 0 : st.top()+1; // get its parent's length, +1 to count '/'
             bool isfile = false;
-            while (i < n && input[i] != '\n') { // count its length
+            while (i < n && input[i] != '\n') {
                 if (input[i++] == '.') isfile = true;
                 ++len;
             }
-
+            
             if (isfile) res = max(res, len);
             else st.push(len);
         }
         return res;
-    }  
+    }
 };
 
 

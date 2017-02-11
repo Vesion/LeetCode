@@ -8,23 +8,15 @@ using namespace std;
 class Solution_1 {
 public:
     string getHint(string secret, string guess) {
-        vector<int> count(10, 0);
-        int n = secret.size();
+        vector<int> s(10, 0), g(10, 0);
         int A = 0, B = 0;
-        for (int i = 0; i < n; ++i) {
-            ++count[secret[i]-'0'];
-            if (secret[i] == guess[i]) {
-                ++A;
-                --count[secret[i]-'0'];
-            }
+        for (int i = 0; i < (int)secret.size(); ++i) {
+            if (secret[i] == guess[i]) ++A;
+            else ++s[secret[i]-'0'], ++g[guess[i]-'0'];
         }
-        for (int i = 0; i < n; ++i) {
-            if (secret[i] != guess[i] && count[guess[i]-'0']) {
-                ++B;
-                --count[guess[i]-'0'];
-            }
-        }
-        return to_string(A) + 'A' + to_string(B) + 'B';
+        for (int i = 0; i < 10; ++i)
+            B += min(s[i], g[i]);
+        return to_string(A) + "A" + to_string(B) + "B";
     }
 };
 
@@ -46,6 +38,7 @@ public:
         return to_string(A) + 'A' + to_string(B) + 'B';
     }
 };
+
 
 int main() {
     return 0;

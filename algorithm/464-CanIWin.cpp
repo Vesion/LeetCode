@@ -9,28 +9,26 @@ using namespace std;
 // dfs + memo, similar to 294-FlipGameII
 class Solution {
 public:
-    bool canIWin(int maxChoosableInteger, int desiredTotal) {
-        if (maxChoosableInteger * (maxChoosableInteger + 1) / 2 < desiredTotal) return false;
-        if (desiredTotal <= maxChoosableInteger) return true;
+    bool canIWin(int n, int target) {
+        if (n*(n+1)/2 < target) return false;
+        if (target <= n) return true;
         int used = 0;
-        vector<int> m(1<<maxChoosableInteger, -1);
-        return win(desiredTotal, maxChoosableInteger, used, m);
+        vector<int> memo(1<<n, -1);
+        return win(n, target, used, memo);
     }
 
-    bool win(int desiredTotal, int maxChoosableInteger, int& used, vector<int>& m) {
-        if (desiredTotal <= 0) return false;
-        if (m[used] != -1) return m[used];
+    bool win(int n, int target, int& used, vector<int>& memo) {
+        if (target <= 0) return false;
+        if (memo[used] != -1) return memo[used];
         bool res = false;
-        for (int i = 0; i < maxChoosableInteger; ++i) { // try all possible numbers
-            int mask = 1 << i;
-            if (!(used & mask)) {
-                used |= mask;
-                res = !win(desiredTotal-i-1, maxChoosableInteger, used, m);
-                used ^= mask;
-                if (res) break;
-            }
+        for (int i = 0; i < n; ++i) {
+            if (used & (1 << i)) continue;
+            used |= (1 << i);
+            res = !win(n, target-i-1, used, memo);
+            used ^= (1 << i);
+            if (res) break;
         }
-        m[used] = res;
+        memo[used] = res;
         return res;
     }
 };

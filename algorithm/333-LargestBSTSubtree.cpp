@@ -29,18 +29,20 @@ public:
         bool left_is = isBST(root->left, left_lower, left_upper, left_num);
         bool right_is = isBST(root->right, right_lower, right_upper, right_num);
 
-        if (left_is && right_is) {
-            if ((!root->left || left_upper < root->val) && (!root->right || root->val < right_lower)) {
-                res = left_num + right_num + 1;
-                lower = root->left ? left_lower : root->val;
-                upper = root->right ? right_lower : root->val;
-                return true;
-            }
+        if (left_is && right_is 
+                && (!root->left || left_upper < root->val) 
+                && (!root->right || root->val < right_lower)) {
+            res = left_num + right_num + 1;
+            lower = root->left ? left_lower : root->val;
+            upper = root->right ? right_lower : root->val;
+            return true;
+        } else {
+            res = max(left_num, right_num);
+            return false;
         }
-        res = max(left_num, right_num);
-        return false;
     }
 };
+
 
 int main() {
     Solution s;
