@@ -7,18 +7,17 @@ using namespace std;
 class Solution {
 public:
     bool isSubsequence(string s, string t) {
-        if (s.empty()) return true;
-        if (t.empty()) return false;
-        int i = 0;
-        for (int j = 0; j < (int)t.size(); ++j) {
-            if (s[i] == t[j]) ++i;
+        int m = s.size(), n = t.size();
+        int i = 0, j = 0;
+        while (i < m && j < n) {
+            if (t[j++] == s[i]) ++i;
         }
-        return i == (int)s.size();
+        return i == m;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 

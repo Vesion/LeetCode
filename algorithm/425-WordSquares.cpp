@@ -32,19 +32,17 @@ private:
     }
     
     void query(string& s, int start, TrieNode* cur, string path, vector<string>& res) {
-        if (!cur) return;
+        if (cur == nullptr) return;
         if (cur->isEnd) {
             res.push_back(path);
             return;
         }
         if (start < (int)s.size()) {
             char c = s[start];
-            if (cur->nexts[c-'a'] == nullptr) return;
             query(s, start+1, cur->nexts[c-'a'], path+c, res);
         } else {
             for (int i = 0; i < 26; ++i) {
-                if (cur->nexts[i] != nullptr)
-                    query(s, start+1, cur->nexts[i], path+string(1, 'a'+i), res);
+                query(s, start+1, cur->nexts[i], path+(char)('a'+i), res);
             }
         }
     }

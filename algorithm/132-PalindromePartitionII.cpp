@@ -7,24 +7,22 @@ using namespace std;
 class Solution {
 public:
     int minCut(string s) {
-        if (s.empty()) return {};
+        if (s.empty()) return 0;
         int n = s.size();
         vector<vector<bool>> dp(n, vector<bool>(n, false));
-        vector<int> cuts(n, 0); // cuts[i] means the min cuts of s[i...n-1] 
+        vector<int> cuts(n, 0); // cuts[i] means the min cuts of s[0,i]
 
-        for (int i = 0; i < n; ++i) dp[i][i] = true;
-        for (int i = n-1; i >= 0; --i) {
-            cuts[i] = n-i-1; // init, cut every character
-            for (int j = i; j < n; ++j) {
+        for (int j = 1; j < n; ++j) {
+            cuts[j] = j;
+            for (int i = j; i >= 0; --i) {
                 if (s[i] == s[j] && (i+1 > j-1 || dp[i+1][j-1])) {
                     dp[i][j] = true;
-                    if (j == n-1) cuts[i] = 0; // s[i...n-1] is a palindrome, so no cuts
-                    else cuts[i] = min(cuts[i], cuts[j+1]+1);  // s[i...j] is a palindrome, so cuts[i] = cuts[j+1] plus this one
+                    if (i == 0) cuts[j] = 0;
+                    else cuts[j] = min(cuts[j], cuts[i-1]+1);
                 }
             }
         }
-
-        return cuts[0];
+        return cuts[n-1];
     }
 };
 

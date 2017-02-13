@@ -49,11 +49,11 @@ public:
         int res = 0, num = 0, sign = 1;
         char op;
         while (in >> op) {
-            if (op == '+' || op == '-') {
+            if (op == '+' || op == '-') { // if + or -, update res
                 res += sign * num;
                 sign = op == '+' ? 1 : -1;
                 in >> num;
-            } else {
+            } else { // if *, update num
                 int right;
                 in >> right;
                 if (op == '*') num *= right;

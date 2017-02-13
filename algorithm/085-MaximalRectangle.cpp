@@ -4,44 +4,57 @@
 #include <string>
 using namespace std;
 
+// Solution 1 : extend the stack solution in 'Largest Rectangle in Histogram' to 2D
+// O(n^2) time
+
+
+// Solution 2 : DP, O(n^2) time
+//      height[i] is the number of successive '1's above plus the current one
+//      left[i] & right[i] is value of left & right means the boundaries of the rectangle which contains the current point with a height of value height.
+//      e.g.
+//              0 0 1 1 1 0
+//              0 0 1 1 1 0
+//                    ^
+//                    height[i] = 2, left[i] = 2, right[i] = 5, area = (5-2)*2 = 6
+//
 class Solution {
 public:
     int maximalRectangle(vector<vector<char>>& matrix) {
         if (matrix.empty()) return 0;
         int m = matrix.size(), n = matrix[0].size();
-        vector<int> h(n, 0);
-        vector<int> l(n, 0); // max left bound in current height
-        vector<int> r(n, n); // min right bound in current height
-        // in each row, when arrive i, we have h[i] and [ l[i], r[i] ), area = h[i] * (r[i]-l[i])
-        int res = 0;
-
+        vector<int> height(n, 0), left(n, 0), right(n, n);
+        int result = 0;
+        
         for (int i = 0; i < m; ++i) {
-            int left = 0, right = n;
+            int cur_left = 0, cur_right = n; 
             for (int j = 0; j < n; ++j) {
-                if (matrix[i][j] == '1') {
-                    h[j]++;
-                    l[j] = max(l[j], left); // max between pre row and current row
-                } else {
-                    left = j+1;
-                    h[j] = 0; l[j] = 0; r[j] = n;
+                if (matrix[i][j] == '1') height[j]++;
+                else height[j] = 0;
+            }
+            for (int j = 0; j < n; ++j) {
+                if (matrix[i][j] == '1') left[j] = max(left[j], cur_left);
+                else {
+                    left[j] = 0;
+                    cur_left = j+1;
                 }
             }
-
             for (int j = n-1; j >= 0; --j) {
-                if (matrix[i][j] == '1') {
-                    r[j] = min(r[j], right); // min between pre row and current row
-                    res = max(res, h[j] * (r[j]-l[j]));
-                } else {
-                    right = j;
+                if (matrix[i][j] == '1') right[j] = min(right[j], cur_right);
+                else {
+                    right[j] = n;
+                    cur_right = j;
                 }
+            }
+            for (int j = 0; j < n; ++j) {
+                result = max(result, (right[j]-left[j])*height[j]);
             }
         }
-        return res;
+
+        return result;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

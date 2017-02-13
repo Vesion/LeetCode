@@ -7,36 +7,32 @@
 using namespace std;
 
 // Sliding Window
-// but here we need to consider one word as a unit
+// similar to 438-FindAllAnagramsInAString, maintain a fixed-size window, but here we need to consider one word as a unit
 class Solution {
 public:
     vector<int> findSubstring(string s, vector<string>& words) {
-        if (s.empty() || words.empty()) return {};
-        unordered_map<string, int> m;
-        for (string& w : words) m[w]++;
+        unordered_map<string, int> dict;
+        for (string& w : words) dict[w]++;
+        int wlen = words[0].size();
+        int n = s.size(), m = words.size()*wlen;
 
         vector<int> res;
-        int wlen = words[0].size();
-        for (int i = 0; i < wlen; ++i) { // trick
-            // below is same with common sliding window algorithm
-            unordered_map<string, int> f;
-            int start = i, count = 0;
-            for (int j = i; j <= (int)s.size()-wlen; j += wlen) {
-                string w = s.substr(j, wlen);
-                if (m.count(w)) {
-                    f[w]++;
-                    count++;
-                    while (f[w] > m[w]) {
-                        f[s.substr(start, wlen)]--;
-                        --count;
-                        start += wlen;
-                    }
-                    if (count == (int)words.size())
-                        res.push_back(start);
-                } else {
-                    f.clear();
-                    count = 0;
-                    start = j+wlen;
+        for (int start = 0; start < wlen; ++start) {
+            unordered_map<string, int> f = dict;
+            int c = words.size();
+            int i = start, j = start;
+            while (j+wlen <= n) {
+                // extend window
+                if (f[s.substr(j, wlen)]-- > 0) --c;
+                j += wlen;
+
+                // include all words in dict
+                if (c == 0) res.push_back(i);
+
+                // if size reaches m, fix it
+                if (j-i == m) {
+                    if (f[s.substr(i, wlen)]++ >= 0) ++c;
+                    i += wlen;
                 }
             }
         }
@@ -46,7 +42,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
-

@@ -68,7 +68,7 @@ public:
     bool canBreak(string& word, unordered_set<string>& dict) {
         if (word.empty() || dict.empty()) return false;
         int n = word.size();
-        vector<bool> dp(n+1, false);
+        vector<bool> dp(n+1, false); // dp[i] means word[0:i) can be broken
         dp[0] = true;
         for (int i = 1; i <= n; ++i) {
             for (int j = 0; j < i; ++j) {

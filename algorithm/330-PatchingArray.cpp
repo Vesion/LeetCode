@@ -25,5 +25,8 @@ public:
 
 
 int main() {
+    Solution s;
+    vector<int> nums = {1, 2};
+    cout << s.minPatches(nums, 16) << endl;
     return 0;
 }

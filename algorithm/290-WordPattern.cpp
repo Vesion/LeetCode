@@ -4,7 +4,6 @@
 #include <sstream>
 using namespace std;
 
-
 // Similar to 205-IsomorphicStrings
 class Solution {
 public:
@@ -13,7 +12,7 @@ public:
         unordered_map<string, int> m2;
         istringstream in(str);
         string w; 
-        for (int i = 0; i < pattern.size(); ++i) {
+        for (int i = 0; i < (int)pattern.size(); ++i) {
             if (in.eof()) return false;
             in >> w;
             char c = pattern[i];
@@ -24,6 +23,7 @@ public:
         return true;
     }
 };
+
 
 int main() {
     return 0;

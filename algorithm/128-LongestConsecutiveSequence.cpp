@@ -37,7 +37,7 @@ public:
         
         unordered_map<int, int> m; // { num : id }
         for (int i = 0; i < n; ++i) {
-            if (m.count(nums[i])) continue;
+            if (m.count(nums[i])) continue; // guarantee each number counted only once
             m[nums[i]] = i;
             if (m.count(nums[i]-1)) unionSet(i, m[nums[i]-1]);
             if (m.count(nums[i]+1)) unionSet(i, m[nums[i]+1]);
@@ -46,7 +46,7 @@ public:
     }
     
     vector<int> root;   // root of this set
-    vector<int> length; // size of this set
+    vector<int> length; // size/rank of this set
     
     int findRoot(int i) {
         if (root[i] != i) root[i] = findRoot(root[i]);

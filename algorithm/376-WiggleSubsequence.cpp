@@ -24,7 +24,7 @@ public:
 };
 
 
-// Solution 2 : greedy
+// Solution 2 : greedy, skillful
 // https://discuss.leetcode.com/topic/51946/very-simple-java-solution-with-detail-explanation
 // Maintain a longest wiggle sequence, for each num, reset it to min when down, or max when up.
 class Solution {

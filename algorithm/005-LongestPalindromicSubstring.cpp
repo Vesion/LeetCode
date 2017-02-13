@@ -44,17 +44,16 @@ public:
         int n = s.size();
         vector<vector<bool>> dp(n, vector<bool>(n, false));
         for (int i = 0; i < n; ++i) dp[i][i] = true;
-        int start = 0, len = 1;
-        for (int k = 2; k <= n; ++k) {
-            for (int i = 0; i+k-1 < n; ++i) {
-                int j = i+k-1;
-                if (s[i] == s[j] && (i+1 > j-1 || dp[i+1][j-1])) {
-                    dp[i][j] = true;
-                    if (j-i+1 > len) { len = j-i+1; start = i; }
-                }
+        int start = 0, maxlen = 1;
+        for (int len = 2; len <= n; ++len) {
+            for (int i = 0; i+len-1 < n; ++i) {
+                int j = i+len-1;
+                if (i+1 == j) dp[i][j] = (s[i] == s[j]);
+                else dp[i][j] = (s[i] == s[j]) && dp[i+1][j-1];
+                if (dp[i][j] && len > maxlen) start = i, maxlen = len;
             }
         }
-        return s.substr(start, len);
+        return s.substr(start, maxlen);
     }
 };
 

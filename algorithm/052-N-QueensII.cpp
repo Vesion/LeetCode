@@ -7,28 +7,23 @@ using namespace std;
 class Solution {
 public:
     int totalNQueens(int n) {
-        int res = 0;
-        dfs(0, 0, 0, (1<<n)-1, res);
-        return res;
+        return helper(0, 0, 0, (1<<n)-1);
     }
-
-    void dfs(int row, int ld, int rd, int board, int& res) {
-        if (row == board) {
-            ++res;
-            return;
-        }
+    
+    int helper(int row, int ld, int rd, int board) {
+        if (row == board) return 1;
+        int res = 0;
         int valid = board & ~(row|ld|rd);
         while (valid) {
             int pos = valid & -valid;
-            dfs(row|pos, (ld|pos)<<1, (rd|pos)>>1, board, res);
+            res += helper(row|pos, (ld|pos)<<1, (rd|pos)>>1, board);
             valid -= pos;
         }
-
+        return res;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-
