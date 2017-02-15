@@ -24,7 +24,7 @@ public:
         if (!head) return head;
         if (copied.count(head)) return copied[head];
         RandomListNode* newhead = new RandomListNode(head->label);
-        copied[head] = newhead;
+        copied[head] = newhead; // set copied before go forward
         newhead->next = dfs(head->next, copied);
         newhead->random = dfs(head->random, copied);
         return newhead;
@@ -37,28 +37,27 @@ public:
 class Solution_2 {
 public:
     RandomListNode *copyRandomList(RandomListNode *head) {
-        if (!head) return head;
-
-        // set next pointers
+        if (!head) return NULL;
         for (RandomListNode* cur = head; cur; ) {
             RandomListNode* copied = new RandomListNode(cur->label);
             copied->next = cur->next;
             cur->next = copied;
             cur = copied->next;
         }
-
-        // set random pointers
+        
         for (RandomListNode* cur = head; cur; ) {
-            if (cur->random) cur->next->random = cur->random->next;
+            RandomListNode* copied = cur->next;
+            if (cur->random) // be careful with NULL random
+                copied->random = cur->random->next;
             cur = cur->next->next;
         }
-
-        // break up
-        RandomListNode dummy(-1);
-        for (RandomListNode *cur = head, *newcur = &dummy; cur; ) {
-            newcur->next = cur->next;
-            newcur = newcur->next;
-            cur->next = cur->next->next;
+        
+        RandomListNode dummy(0);
+        RandomListNode* p = &dummy;
+        for (RandomListNode* cur = head; cur; ) {
+            p->next = cur->next;
+            p = p->next;
+            cur->next = p->next;
             cur = cur->next;
         }
         return dummy.next;

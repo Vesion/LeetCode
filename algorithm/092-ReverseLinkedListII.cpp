@@ -16,24 +16,26 @@ public:
         if (!head || !head->next || m == n) return head;
         int l = n-m+1;
         ListNode dummy(0); dummy.next = head;
-        ListNode *break1 = &dummy;
-        while (--m) break1 = break1->next;
-        ListNode* break2 = break1->next;
+        ListNode *p = &dummy;
+        while (--m) p = p->next;
+        ListNode* tail = p->next;
 
-        ListNode *pre = NULL, *cur = break1->next;
+        ListNode* cur = p->next;
+        ListNode *pre = NULL;
         while (l--) {
             ListNode* next = cur->next;
             cur->next = pre;
             pre = cur;
             cur = next;
         }
-        break1->next = pre;
-        break2->next = cur;
+
+        p->next = pre;
+        tail->next = cur;
         return dummy.next;
     }
 };
 
+
 int main() {
     return 0;
 }
-

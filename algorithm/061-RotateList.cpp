@@ -21,16 +21,14 @@ public:
         if (k == 0) return head;
 
         p->next = head; // connect to a cycle
-        for (int i = 0; i < len-k; ++i)
-            p = p->next;
+        for (int i = 0; i < len-k; ++i) p = p->next;
         head = p->next;
         p->next = NULL; // break the cycle
         return head;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

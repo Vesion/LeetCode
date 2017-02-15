@@ -15,15 +15,15 @@ class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
         if (!head || !head->next) return head;
-        ListNode *r = head, *p = head->next;
-        while (p) {
-            if (p->val != r->val) {
-                r->next = p;
-                r = r->next;
+        ListNode *p1 = head, *p2 = head;
+        while (p2) {
+            if (p1->val != p2->val) {
+                p1->next = p2;
+                p1 = p1->next;
             }
-            p = p->next;
+            p2 = p2->next;
         }
-        r->next = NULL; // should free memory to delete nodes here
+        p1->next = NULL;
         return head;
     }
 };
@@ -41,7 +41,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
-

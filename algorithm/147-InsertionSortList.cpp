@@ -17,27 +17,26 @@ public:
         ListNode dummy(0); dummy.next = head;
         ListNode *pre = head, *cur = head->next;
         while (cur) {
-            if (cur->val >= pre->val) {
+            if (cur->val >= pre->val) { // skip all increasing sequence
                 pre = cur;
                 cur = cur->next;
             } else {
-                pre->next = cur->next; // break cur node
-                for (ListNode* p1 = &dummy, *p2 = dummy.next; p1 != pre; p1 = p2, p2 = p2->next) { // find the insertion position
-                    if (p2->val > cur->val) {
-                        p1->next = cur;
-                        cur->next = p2;
-                        break;
-                    }
-                }
+                pre->next = cur->next;
+                ListNode* p = &dummy;
+                while (cur->val >= p->next->val) p = p->next; // find the insertion position
+                cur->next = p->next;
+                p->next = cur;
                 cur = pre->next;
+                
             }
         }
         return dummy.next;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
+
 

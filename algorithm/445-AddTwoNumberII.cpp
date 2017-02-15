@@ -19,26 +19,23 @@ struct ListNode {
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        if (!l1) return l2;
+        if (!l2) return l1;
         stack<int> s1, s2;
-        while (l1) {
-            s1.push(l1->val);
-            l1 = l1->next;
-        }
-        while (l2) {
-            s2.push(l2->val);
-            l2 = l2->next;
-        }
-
-        ListNode* head;
+        for (ListNode* p = l1; p; p = p->next) s1.push(p->val);
+        for (ListNode* p = l2; p; p = p->next) s2.push(p->val);
+        
+        ListNode* cur = NULL;
         int carry = 0;
-        for (head = NULL; !s1.empty() || !s2.empty() || carry; carry /= 10) {
+        while (!s1.empty() || !s2.empty() || carry) {
             if (!s1.empty()) { carry += s1.top(); s1.pop(); }
             if (!s2.empty()) { carry += s2.top(); s2.pop(); }
-            ListNode* p = new ListNode(carry%10);
-            p->next = head;
-            head = p;
+            ListNode* pre = new ListNode(carry%10);
+            pre->next = cur;
+            cur = pre;
+            carry /=10;
         }
-        return head;
+        return cur;
     }
 };
 
@@ -86,7 +83,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
-

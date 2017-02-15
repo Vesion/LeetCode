@@ -14,17 +14,17 @@ class Solution {
 public:
     bool isPalindrome(ListNode* head) {
         if (!head) return true;
-        ListNode *fast = head, *slow = head;
+        ListNode *slow = head, *fast = head;
         while (fast->next && fast->next->next) {
-            fast = fast->next->next;
             slow = slow->next;
+            fast = fast->next->next;
         }
-        ListNode* mid = slow->next;
-        mid = reverse(mid);
-        while (mid) {
-            if (head->val != mid->val) return false;
+        ListNode* second = slow->next; // regardless of even or odd length
+        second = reverse(second);
+        while (second) { // because second half may be one node shorter than first half
+            if (head->val != second->val) return false;
             head = head->next;
-            mid = mid->next;
+            second = second->next;
         }
         return true;
     }
@@ -38,7 +38,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }

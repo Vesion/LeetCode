@@ -15,14 +15,13 @@ struct ListNode {
 class Solution_1 {
 public:
     void deleteNode(ListNode* node) {
-        ListNode* pre;
-        while (node && node->next) {
+        ListNode* pre = NULL;
+        while (node->next) {
             node->val = node->next->val;
             pre = node;
             node = node->next;
         }
-        pre->next = NULL;
-        delete node;
+        if (pre) pre->next = NULL;
     }
 };
 
@@ -31,6 +30,7 @@ public:
 class Solution {
 public:
     void deleteNode(ListNode* node) {
+        if (!node) return;
         ListNode* tmp = node->next;
         *node = *(node->next);
         delete tmp;
@@ -39,6 +39,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }

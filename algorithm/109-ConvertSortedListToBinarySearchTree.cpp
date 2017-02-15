@@ -19,29 +19,29 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* sortedListToBST(ListNode* head) {
+        if (!head) return NULL;
         int len = 0;
         for (ListNode* p = head; p; p = p->next) ++len;
-        return build(head, 0, len);
+        return convert(head, 0, len);
     }
-
-    TreeNode* build(ListNode*& head, int start, int end) {
+    
+    // inorder traversal, the head argument must be reference so that we can solve in one pass
+    TreeNode* convert(ListNode*& head, int start, int end) {
         if (start == end) return NULL;
         int mid = start + (end-start)/2;
-        TreeNode* left = build(head, start, mid);
+        TreeNode* left = convert(head, start, mid);
+
         TreeNode* root = new TreeNode(head->val);
-        root->left = left;
         head = head->next;
-        root->right = build(head, mid+1, end);
+
+        TreeNode* right = convert(head, mid+1, end);
+        root->left = left;
+        root->right = right;
         return root;
     }
 };
 
+
 int main() {
-    Solution s;
-    ListNode* head = new ListNode(3);
-    head->next = new ListNode(1);
-    TreeNode* root = s.sortedListToBST(head);
-    cout << root->val << " " << root->left->val << endl;
     return 0;
 }
-

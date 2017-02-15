@@ -13,23 +13,21 @@ struct ListNode {
 class Solution {
 public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
-        if (n == 0) return head;
-        ListNode dummy(0);
-        dummy.next = head;
-        ListNode* p1 = head;
-        while(n--) p1 = p1->next;
-        ListNode* p2 = &dummy;
-        while (p1) {
-            p2 = p2->next;
-            p1 = p1->next;
+        if (!head || n <= 0) return head;
+        ListNode dummy(0); dummy.next = head;
+        ListNode* fast = &dummy;
+        while (n--) fast = fast->next;
+        ListNode* slow = &dummy;
+        while (fast->next) {
+            slow = slow->next;
+            fast = fast->next;
         }
-        p2->next = p2->next->next;
+        slow->next = slow->next->next;
         return dummy.next;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

@@ -13,28 +13,25 @@ struct ListNode {
 class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
-        if (!head || !head->next) return head;
+        if (!head) return head;
         ListNode dummy(0); dummy.next = head;
-        ListNode* r = &dummy;
-        ListNode* p = head;
-        while (p) {
-            if (p->next && p->val == p->next->val) { // if find duplicates, skip them
-                int v = p->val;
-                while (p && p->val == v) p = p->next;
+        ListNode *p1 = &dummy, *p2 = head;
+        while (p2) {
+            if (p2->next && p2->val == p2->next->val) { // if find duplicates, skip all of them
+                int val = p2->val;
+                while (p2 && p2->val == val) p2 = p2->next;
                 continue;
-            } else {
-                r->next = p;
-                r = r->next;
-                p = p->next;
             }
+            p1->next = p2;
+            p1 = p1->next;
+            p2 = p2->next;
         }
-        r->next = NULL;
+        p1->next = NULL;
         return dummy.next;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

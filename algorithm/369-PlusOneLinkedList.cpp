@@ -12,7 +12,7 @@ struct ListNode {
 };
 
 // Solution 1 : stack, iterative
-class Solution {
+class Solution_1 {
 public:
     ListNode* plusOne(ListNode* head) {
         stack<ListNode*> st;
@@ -36,22 +36,20 @@ public:
 
 
 // Solution 2 : recursive
-class Solution_2 {
+class Solution {
 public:
     ListNode* plusOne(ListNode* head) {
-        int carry = dfs(head);
+        int carry = helper(head);
         if (carry) {
             ListNode* newhead = new ListNode(carry);
             newhead->next = head;
             return newhead;
-        }
-        else return head;
+        } else return head;
     }
 
-    int dfs(ListNode* head) {
+    int helper(ListNode* head) {
         if (!head) return 1;
-        int carry = dfs(head->next);
-        if (carry == 0) return 0;
+        int carry = helper(head->next);
         carry += head->val;
         head->val = carry%10;
         return carry/10;

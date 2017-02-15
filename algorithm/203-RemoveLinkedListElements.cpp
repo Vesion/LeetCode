@@ -10,25 +10,24 @@ struct ListNode {
     ListNode(int val) : val(val), next(NULL) {}
 };
 
-// Solution 1.1 : trivial
+// Solution 1 : iterative
 class Solution_1 {
 public:
     ListNode* removeElements(ListNode* head, int val) {
         if (!head) return head;
         ListNode dummy(0); dummy.next = head;
-        ListNode *pre = &dummy, *cur = head;
-        while (cur) {
-            if (cur->val == val) pre->next = cur->next;
-            else pre = cur;
-            cur = cur->next;
+        ListNode* p = &dummy;
+        while (p && p->next) {
+            if (p->next->val == val) p->next = p->next->next;
+            else p = p->next;
         }
         return dummy.next;
     }
 };
 
 
-// Solution 1.2 : recursive
-class Solution_12 {
+// Solution 2 : recursive
+class Solution_2 {
 public:
     ListNode* removeElements(ListNode* head, int val) {
         if (!head) return head;
@@ -38,7 +37,7 @@ public:
 };
 
 
-// Solution 2 : two-level pointers
+// Solution 3 : two-level pointers
 class Solution {
 public:
     ListNode* removeElements(ListNode* head, int val) {
@@ -54,7 +53,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
-

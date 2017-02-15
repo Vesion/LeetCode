@@ -12,7 +12,7 @@ struct ListNode {
 
 
 // Solution 1 : iterative
-class Solution {
+class Solution_1 {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
         if (!head || k <= 1) return head;
@@ -49,33 +49,32 @@ public:
 
 
 // Solution 2 : recursive
-class Solution_2 {
+class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode* cur = head;
-        for (int i = 0; i < k; ++i) {
-            if (!cur) return head;
-            cur = cur->next;
+        if (!head || k == 1) return head;
+        ListNode *p = head;
+        int ck = k;
+        while (ck--) {
+            if (!p) return head;
+            p = p->next;
         }
-        ListNode* new_head = reverse(head, cur);
-        head->next = reverseKGroup(cur, k);
-        return new_head;
+        ListNode* newhead = reverse(head, k);
+        head->next = reverseKGroup(p, k);
+        return newhead;
     }
 
-    ListNode* reverse(ListNode* begin, ListNode* end) {
-        ListNode* pre = end;
-        while (begin != end) {
-            ListNode* tmp = begin->next;
-            begin->next = pre;
-            pre = begin;
-            begin = tmp;
-        }
-        return pre;
+    ListNode* reverse(ListNode* head, int k) {
+        if (k == 1) return head;
+        ListNode* newhead = reverse(head->next, k-1);
+        head->next->next = head;
+        head->next = NULL;
+        return newhead;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
 
