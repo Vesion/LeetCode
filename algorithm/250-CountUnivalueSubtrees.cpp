@@ -12,28 +12,27 @@ struct TreeNode {
 
 class Solution {
 public:
-    int res = 0;
-
     int countUnivalSubtrees(TreeNode* root) {
-        isUnival(root);
+        int res = 0;
+        isUnival(root, res);
         return res;
     }
-
-    bool isUnival(TreeNode* root) {
+    
+    bool isUnival(TreeNode* root, int& res) {
         if (!root) return true;
-        bool left = isUnival(root->left), right = isUnival(root->right);
+        bool left = isUnival(root->left, res);
+        bool right = isUnival(root->right, res);
         if (left && right) {
             if (root->left && root->val != root->left->val) return false;
             if (root->right && root->val != root->right->val) return false;
             ++res;
             return true;
-
         }
         return false;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }

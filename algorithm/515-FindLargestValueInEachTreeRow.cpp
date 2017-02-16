@@ -13,25 +13,21 @@ struct TreeNode {
 
 class Solution {
 public:
-    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+    vector<int> largestValues(TreeNode* root) {
         if (!root) return {};
-        vector<vector<int>> res;
-        bool left = true;
         queue<TreeNode*> q;
         q.push(root);
+        vector<int> res;
         while (!q.empty()) {
             int len = q.size();
-            vector<int> level(len);
-            int i = left ? 0 : len-1;
+            int max_value = INT_MIN;
             while (len--) {
                 TreeNode* t = q.front(); q.pop();
-                if (left) level[i++] = t->val;
-                else level[i--] = t->val;
+                max_value = max(max_value, t->val);
                 if (t->left) q.push(t->left);
                 if (t->right) q.push(t->right);
             }
-            left = !left;
-            res.push_back(level);
+            res.push_back(max_value);
         }
         return res;
     }

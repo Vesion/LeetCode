@@ -16,25 +16,22 @@ struct TreeNode {
 class Solution {
 public:
     vector<int> closestKValues(TreeNode* root, double target, int k) {
-        vector<int> res;
+        deque<int> res;
         inorder(root, target, k, res);
-        return res;
+        return vector<int>(res.begin(), res.end());
     }
     
-    void inorder(TreeNode* root, double target, int k, vector<int>& res) {
-        if (root) {
-            inorder(root->left, target, k, res);
-
-            if ((int)res.size() < k) res.push_back(root->val);
-            else {
-               if (!res.empty() && fabs(root->val-target) < fabs(res.front()-target)) {
-                   res.erase(res.begin());
-                   res.push_back(root->val);
-               } else return;
-            }
-
-            inorder(root->right, target, k, res);
+    void inorder(TreeNode* root, double target, int k, deque<int>& res) {
+        if (!root) return;
+        inorder(root->left, target, k, res);
+        if ((int)res.size() < k) res.push_back(root->val);
+        else {
+            if (fabs(root->val-target) < fabs(res.front()-target)) {
+                res.pop_front();
+                res.push_back(root->val);
+            } else return;
         }
+        inorder(root->right, target, k, res);
     }
 };
 
@@ -45,8 +42,5 @@ public:
 
 
 int main() {
-    Solution s;
-    TreeNode* root = new TreeNode(1);
-    s.closestKValues(root, 0.00, 1);
     return 0;
 }

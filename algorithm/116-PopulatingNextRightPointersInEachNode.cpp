@@ -10,19 +10,19 @@ struct TreeLinkNode {
     TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
 };
 
+// Because this is a perfect tree, just go through the whole tree, for each node, set its left and right child's next pointer
+
 // Solution 1 : recursive
 class Solution {
 public:
     void connect(TreeLinkNode *root) {
-        dfs(root, NULL);
-    }
-
-    void dfs(TreeLinkNode* root, TreeLinkNode* sibling) {
         if (!root) return;
-        root->next = sibling;
-        dfs(root->left, root->right);
-        if (sibling) dfs(root->right, sibling->left);
-        else dfs(root->right, NULL);
+        if (root->left) {
+            root->left->next = root->right;
+            root->right->next = root->next ? root->next->left : NULL;
+        }
+        connect(root->left);
+        connect(root->right);
     }
 };
 
@@ -46,7 +46,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }
-

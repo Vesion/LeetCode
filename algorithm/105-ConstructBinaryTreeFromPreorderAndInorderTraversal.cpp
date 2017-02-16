@@ -15,21 +15,19 @@ public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         return build(preorder, 0, preorder.size(), inorder, 0, inorder.size());
     }
-
-    TreeNode* build(vector<int>& preorder, int ps, int pe, vector<int>& inorder, int is, int ie) {
-        if (ps == pe || is == ie) return NULL;
-        TreeNode* root = new TreeNode(preorder[ps]);
-        int ir = is;
-        while (ir != ie && inorder[ir] != preorder[ps]) ++ir;
-        int len = ir - is;
-        root->left = build(preorder, ps+1, ps+len+1, inorder, is, ir);
-        root->right = build(preorder, ps+len+1, pe, inorder, ir+1, ie);
+    
+    TreeNode* build(vector<int>& preorder, int pstart, int pend, vector<int>& inorder, int istart, int iend) {
+        if (pstart >= pend || istart >= iend) return NULL;
+        int imid = istart;
+        while (imid < iend && inorder[imid] != preorder[pstart]) ++imid;
+        TreeNode* root = new TreeNode(preorder[pstart]);
+        root->left = build(preorder, pstart+1, pstart+1+imid-istart, inorder, istart, imid);
+        root->right = build(preorder, pstart+1+imid-istart, pend, inorder, imid+1, iend);
         return root;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

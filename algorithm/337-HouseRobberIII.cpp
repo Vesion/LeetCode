@@ -11,20 +11,20 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-
-// bottom up
+// recursive postorder
 class Solution {
 public:
     int rob(TreeNode* root) {
-        auto res = dfs(root);
+        auto res = postorder(root);
         return max(res[0], res[1]);
     }
     
-    vector<int> dfs(TreeNode* root) {
+    vector<int> postorder(TreeNode* root) {
         if (!root) return {0, 0};
-        auto left = dfs(root->left), right = dfs(root->right);
+        auto left = postorder(root->left);
+        auto right = postorder(root->right);
         int rob = max(left[0], left[1]) + max(right[0], right[1]);
-        int notrob = root->val + left[0] + right[0];
+        int notrob = root->val+left[0] + right[0];
         return {rob, notrob};
     }
 };
@@ -33,4 +33,3 @@ public:
 int main() {
     return 0;
 }
-

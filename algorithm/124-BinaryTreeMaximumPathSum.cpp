@@ -10,30 +10,28 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
+// similar to 053-MaximumSumSubarray, but here is a binary tree
 class Solution {
 public:
     int maxPathSum(TreeNode* root) {
         int res = INT_MIN;
-        dfs(root, res);
+        postorder(root, res);
         return res;
     }
 
-    int dfs(TreeNode* root, int& res) {
+    int postorder(TreeNode* root, int& res) {
         if (!root) return 0;
-        // get path sum from left child and right child respectively
-        // ensure them no smaller than 0, because the path can start from any node (not necessarily leaf node)
-        int left = max(0, dfs(root->left, res));
-        int right = max(0, dfs(root->right, res));
+        // get path sum from left and right subtrees
+        // if left(right) subtree's sum < 0, we don't neet it any more
+        int left = max(0, postorder(root->left, res));
+        int right = max(0, postorder(root->right, res));
         res = max(res, left+right+root->val);
         return root->val + max(left, right);
     }
 };
 
+
 int main() {
-    Solution s;
-    TreeNode* root = new TreeNode(2);
-    root->left = new TreeNode(-1);
-    cout << s.maxPathSum(root) << endl;;
     return 0;
 }
 

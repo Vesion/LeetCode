@@ -12,7 +12,7 @@ struct TreeNode {
 };
 
 
-// Solution 1 : count number of nodes, O(nlogn)
+// Solution 1 : count number of nodes, O((logn)^2)
 // If we can modify the node's structure, we can add a 'number of nodes' field, then it will cost O(logn) time.
 class Solution {
 public:
@@ -31,7 +31,7 @@ public:
 };
 
 
-// Solution 2.1 : inorder traversal, recursive
+// Solution 2.1 : inorder traversal, recursive, O(n)
 class Solution_21 {
 public:
     int kthSmallest(TreeNode* root, int k) {
@@ -54,7 +54,7 @@ public:
 };
 
 
-// Solution 2.3 : inorder traversal, iterative
+// Solution 2.3 : inorder traversal, iterative, O(n)
 class Solution_22 {
 public:
     int kthSmallest(TreeNode* root, int k) {
@@ -79,4 +79,3 @@ public:
 int main() {
     return 0;
 }
-

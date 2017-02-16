@@ -10,9 +10,34 @@ struct ListNode {
     ListNode(int val) : val(val), next(NULL) {}
 };
 
+// Solution 1 : recursive
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if (!head || k == 1) return head;
+        ListNode *p = head;
+        int ck = k;
+        while (ck--) {
+            if (!p) return head;
+            p = p->next;
+        }
+        ListNode* newhead = reverse(head, k);
+        head->next = reverseKGroup(p, k);
+        return newhead;
+    }
 
-// Solution 1 : iterative
-class Solution_1 {
+    ListNode* reverse(ListNode* head, int k) {
+        if (k == 1) return head;
+        ListNode* newhead = reverse(head->next, k-1);
+        head->next->next = head;
+        head->next = NULL;
+        return newhead;
+    }
+};
+
+
+// Solution 2 : iterative
+class Solution_2 {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
         if (!head || k <= 1) return head;
@@ -44,32 +69,6 @@ public:
             front = next_front;
         }
         return dummy.next;
-    }
-};
-
-
-// Solution 2 : recursive
-class Solution {
-public:
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        if (!head || k == 1) return head;
-        ListNode *p = head;
-        int ck = k;
-        while (ck--) {
-            if (!p) return head;
-            p = p->next;
-        }
-        ListNode* newhead = reverse(head, k);
-        head->next = reverseKGroup(p, k);
-        return newhead;
-    }
-
-    ListNode* reverse(ListNode* head, int k) {
-        if (k == 1) return head;
-        ListNode* newhead = reverse(head->next, k-1);
-        head->next->next = head;
-        head->next = NULL;
-        return newhead;
     }
 };
 

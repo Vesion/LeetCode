@@ -39,19 +39,18 @@ public:
 class Solution_2 {
 public:
     bool isValidBST(TreeNode* root) {
-        return dfs(root, LONG_MAX, LONG_MIN);
+        return isValid(root, LONG_MIN, LONG_MAX);
     }
-
-    bool dfs(TreeNode* root, long long upper, long long lower) {
+    
+    bool isValid(TreeNode* root, long long lower, long long upper) {
         if (!root) return true;
-        if (root->val <= lower || root->val >= upper) return false;
-        return dfs(root->left, root->val, lower) && dfs(root->right, upper, root->val);
+        return root->val > lower && root->val < upper 
+            && isValid(root->left, lower, root->val) 
+            && isValid(root->right, root->val, upper);
     }
 };
 
 
 int main() {
-    Solution s;
     return 0;
 }
-

@@ -13,19 +13,21 @@ struct TreeNode {
 class Solution {
 public:
     int sumNumbers(TreeNode* root) {
-        return dfs(root, 0);
+        int res = 0;
+        dfs(root, 0, res);
+        return res;
     }
-
-    int dfs(TreeNode* root, int cur) {
-        if (!root) return 0;
-        if (!root->left && !root->right)
-            return cur*10 + root->val;
-        return dfs(root->left, cur*10+root->val) + dfs(root->right, cur*10+root->val);
+    
+    void dfs(TreeNode* root, int num, int& res) {
+        if (!root) return;
+        num = num*10 + root->val;
+        if (!root->left && !root->right) res += num;
+        if (root->left) dfs(root->left, num, res);
+        if (root->right) dfs(root->right, num, res);
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

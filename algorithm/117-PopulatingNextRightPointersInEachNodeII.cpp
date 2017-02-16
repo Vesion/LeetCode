@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <queue> 
 using namespace std;
 
 struct TreeLinkNode {
@@ -10,23 +11,44 @@ struct TreeLinkNode {
     TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
 };
 
+// Solution 1 : level order traversal, O(logn) space
+class Solution_1 {
+public:
+    void connect(TreeLinkNode *root) {
+        if (!root) return;
+        queue<TreeLinkNode*> q;
+        q.push(root);
+        while (!q.empty()) {
+            int len = q.size();
+            TreeLinkNode* pre = NULL;
+            while (len--) {
+                TreeLinkNode* t = q.front(); q.pop();
+                if (pre) pre->next = t;
+                pre = t;
+                if (t->left) q.push(t->left);
+                if (t->right) q.push(t->right);
+            }
+        }
+    }
+};
+
+
+// Solution 2 : O(1) space
 class Solution {
 public:
     void connect(TreeLinkNode *root) {
         while (root) {
-            TreeLinkNode* cur = root; // current node in current level
-
-            TreeLinkNode* prev = NULL; // record the pre node in next level
-            TreeLinkNode* first = NULL; // find the first node in next level
+            TreeLinkNode *pre = NULL, *cur = root;
+            TreeLinkNode* first = NULL;
             while (cur) {
                 if (!first) first = cur->left ? cur->left : cur->right;
                 if (cur->left) {
-                    if (prev) prev->next = cur->left;
-                    prev = cur->left;
+                    if (pre) pre->next = cur->left;
+                    pre = cur->left;
                 }
                 if (cur->right) {
-                    if (prev) prev->next = cur->right;
-                    prev = cur->right;
+                    if (pre) pre->next = cur->right;
+                    pre = cur->right;
                 }
                 cur = cur->next;
             }
@@ -35,8 +57,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

@@ -11,28 +11,11 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-// Solution 1 : common iterative
+// The O(nlogn) solution is trivial
+
+
+// Solution 1 : recursive postorder, O(n)
 class Solution {
-public:
-    void flatten(TreeNode* root) {
-        if (!root) return;
-        TreeNode* cur = root;
-        while (cur) {
-            if (cur->left) {
-                TreeNode* next = cur->left;
-                while (next->right) next = next->right;
-                next->right = cur->right;
-                cur->right = cur->left;
-                cur->left = NULL;
-            }
-            cur = cur->right;
-        }
-    }
-};
-
-
-// Solution 2.1 : bottom-up preorder, recursive
-class Solution_21 {
 public:
     void flatten(TreeNode* root) {
         TreeNode* pre = NULL; // the pre is the 'next node in preorder traversal'
@@ -50,8 +33,8 @@ public:
 };
 
 
-// Solution 2.2 : preorder, stack
-class Solution_22 {
+// Solution 2 : preorder, stack, O(n)
+class Solution_2 {
 public:
     void flatten(TreeNode* root) {
         if (!root) return;
@@ -68,8 +51,7 @@ public:
     }   
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

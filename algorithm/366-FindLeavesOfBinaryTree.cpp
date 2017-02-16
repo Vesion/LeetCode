@@ -13,29 +13,28 @@ struct TreeNode {
 };
 
 
-// Solution 1 : bottom up dfs, O(n)
+// Solution 1 : postorder, O(n)
 class Solution {
 public:
     vector<vector<int>> findLeaves(TreeNode* root) {
         vector<vector<int>> res;
-        dfs(root, res);
+        postorder(root, res);
         return res;
     }
-
-    int dfs(TreeNode* root, vector<vector<int>>& res) {
+    
+    int postorder(TreeNode* root, vector<vector<int>>& res) {
         if (!root) return -1;
-        int height = max(dfs(root->left, res), dfs(root->right, res)) + 1;
-        if (height >= (int)res.size())
-            res.push_back({root->val});
-        else
-            res[height].push_back(root->val);
-        return height;
+        int left = postorder(root->left, res);
+        int right = postorder(root->right, res);
+        int level = max(left, right) + 1;
+        if (level == (int)res.size()) res.push_back({root->val});
+        else res[level].push_back(root->val);
+        return level;
     }
 };
 
 
-// Solution 2 : convert it into graph, BFS, O(n)
-// 脑子抽了，以为跟310-MinimumHeightTrees类似...
+// Solution 2 : convert it into graph, BFS, verbose, O(n)
 class Solution_2 {
 public:
     unordered_map<TreeNode*, unordered_set<TreeNode*>> graph;
@@ -80,17 +79,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->left = new TreeNode(4);
-    root->left->right = new TreeNode(5);
-    auto r = s.findLeaves(root);
-    for (auto& i : r) {
-        for (auto& j : i) { cout << j << " "; }
-        cout << endl;
-    }
     return 0;
 }

@@ -23,10 +23,12 @@ class Solution {
 public:
     TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
         if (!root || !p) return NULL;
-        TreeNode *cur = root, *pre = NULL;
+        TreeNode *pre = NULL, *cur = root;
         while (cur) {
-            if (cur->val > p->val) { pre = cur; cur = cur->left; }
-            else cur = cur->right;
+            if (cur->val > p->val) {
+                pre = cur;
+                cur = cur->left;
+            } else cur = cur->right;
         }
         return pre;
     }

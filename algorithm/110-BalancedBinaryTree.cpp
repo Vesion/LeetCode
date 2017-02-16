@@ -10,7 +10,7 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-// bottom-up, O(n)
+// bottom-up, compare depths between two subtrees, O(n)
 class Solution {
 public:
     bool isBalanced(TreeNode* root) {
@@ -26,8 +26,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

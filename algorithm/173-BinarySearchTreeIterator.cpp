@@ -11,7 +11,7 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
-// Similar to 094-BinaryTreeInorderTraversal
+// Inorder traversal with stack
 class BSTIterator {
 private:
     stack<TreeNode*> st;

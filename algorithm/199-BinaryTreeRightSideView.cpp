@@ -17,15 +17,15 @@ class Solution {
 public:
     vector<int> rightSideView(TreeNode* root) {
         vector<int> res;
-        preorder(root, 1, res);
+        preorder(root, 0, res);
         return res;
     }
-
-    void preorder(TreeNode* root, int level, vector<int>& res) {
+    
+    void preorder(TreeNode* root, int depth, vector<int>& res) {
         if (!root) return;
-        if (level > (int)res.size()) res.push_back(root->val);
-        preorder(root->right, level+1, res);
-        preorder(root->left, level+1, res);
+        if (depth == (int)res.size()) res.push_back(root->val);
+        preorder(root->right, depth+1, res);
+        preorder(root->left, depth+1, res);
     }
 };
 
@@ -53,8 +53,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

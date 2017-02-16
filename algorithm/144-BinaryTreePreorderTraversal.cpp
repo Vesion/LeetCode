@@ -39,8 +39,7 @@ public:
         stack<TreeNode*> st;
         st.push(root);
         while (!st.empty()) {
-            TreeNode* t = st.top();
-            st.pop();
+            TreeNode* t = st.top(); st.pop();
             res.push_back(t->val);
             if (t->right) st.push(t->right);
             if (t->left) st.push(t->left);
@@ -49,8 +48,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

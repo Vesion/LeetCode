@@ -10,6 +10,30 @@ struct TreeNode {
     TreeNode(int val) : val(val), left(NULL), right(NULL) {}
 };
 
+// Solution 1 : postorder
+class Solution_1 {
+public:
+    int longestConsecutive(TreeNode* root) {
+        int res = 0;
+        postorder(root, res);
+        return res;
+    }
+    
+    int postorder(TreeNode* root, int& res) {
+        if (!root) return 0;
+        int left = postorder(root->left, res), right = postorder(root->right, res);
+        if (!root->left || root->val != root->left->val-1) left = 1;
+        else ++left;
+        if (!root->right || root->val != root->right->val-1) right = 1;
+        else ++right;
+        int len = max(left, right);
+        res = max(res, len);
+        return len;
+    }
+};
+
+
+// Solution 2 :preorder
 class Solution {
 public:
     int longestConsecutive(TreeNode* root) {
@@ -28,10 +52,7 @@ public:
     } 
 };
 
+
 int main() {
-    Solution s;
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    cout << s.longestConsecutive(root) << endl;
     return 0;
 }

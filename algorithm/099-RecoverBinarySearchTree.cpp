@@ -25,8 +25,8 @@ public:
                 cur = cur->left;
             } else {
                 cur = st.top(); st.pop();
-                if (pre && cur->val < pre->val) { // be careful with the [0, 1] corner case
-                    if (!e1) e1 = pre;
+                if (pre && cur->val < pre->val) {
+                    if (!e1) e1 = pre; // be careful with the [0, 1] corner case
                     e2 = cur;
                 }
                 pre = cur;

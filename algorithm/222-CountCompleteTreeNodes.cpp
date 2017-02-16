@@ -13,30 +13,29 @@ struct TreeNode {
 // All O(n) solutions will get TLE
 
 
-// Solution 1 : check if it is a perfect tree recursively, O((logn)^2)
+// Solution 1 : divide and conquer 1, O((logn)^2)
 class Solution {
 public:
     int countNodes(TreeNode* root) {
-        int left_height = 0, right_height = 0;
-        for (TreeNode* p = root; p; p = p->left) ++left_height; // height of path along left
-        for (TreeNode* p = root; p; p = p->right) ++right_height; // height of path along right
-        if (left_height == right_height) return (1<<left_height) - 1; // it's a perfect tree
+        int lh = 0, rh = 0;
+        for (TreeNode* p = root; p; p = p->left) ++lh;
+        for (TreeNode* p = root; p; p = p->right) ++rh;
+        if (lh == rh) return (1<<lh) - 1;
         return countNodes(root->left) + countNodes(root->right) + 1;
     }
 };
 
 
-// Solution 2 : divide and conquer with max height, O((logn)^2)
+// Solution 2 : divide and conquer 2, O((logn)^2)
 class Solution_2 {
 public:
     int countNodes(TreeNode* root) {
         if (!root) return 0;
-        int max_height = 0, right_max_height = 0;
-        for (TreeNode* p = root; p; p = p->left) ++max_height; // max height, e.g. height of path along left
-        for (TreeNode* p = root->right; p; p = p->left) ++right_max_height; // max height of right subtree
-        if (max_height == right_max_height+1) return 1 + (1<<(max_height-1))-1 + countNodes(root->right); // left subtree is a perfect tree
-        else return 1 + countNodes(root->left) + (1<<(max_height-2))-1; // right subtree is a perfect tree
-        //                 here use max_height-2, because right_max_height-1 might be negative
+        int h = 0, rh = 0;
+        for (TreeNode* p = root; p; p = p->left) ++h;
+        for (TreeNode* p = root->right; p; p = p->left) ++rh;
+        if (h == rh+1) return 1 + (1<<rh)-1 + countNodes(root->right);
+        else return 1 + countNodes(root->left) + (1<<rh)-1;
     }
 };
 
@@ -71,4 +70,3 @@ public:
 int main() {
     return 0;
 }
-

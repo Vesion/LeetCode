@@ -13,18 +13,20 @@ struct TreeNode {
 class Solution {
 public:
     int sumOfLeftLeaves(TreeNode* root) {
-        return dfs(root, false);
+        return preorder(root, false);
     }
-
-    int dfs(TreeNode* root, bool left) {
+    
+    int preorder(TreeNode* root, bool left) {
         if (!root) return 0;
-        if (!root->left && !root->right && left) return root->val;
-        return dfs(root->left, true) + dfs(root->right, false);
+        if (!root->left && !root->right) {
+            if (left) return root->val;
+            else return 0;
+        }
+        return preorder(root->left, true) + preorder(root->right, false);
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-
