@@ -14,6 +14,8 @@ public:
         return res;
     }
     
+    // will generate a perfect binary tree
+    // so dfs() will be called 2^(n+1)-1 times
     void dfs(vector<int>& nums, int start, vector<int>& path, vector<vector<int>>& res) {
         if (start == (int)nums.size()) {
             res.push_back(path);
@@ -27,7 +29,7 @@ public:
 };
 
 
-// Solution 2 : backtracking, 2^n = 1 + 2^0 + 2^1 + 2^2 + ... + 2^(n-1)
+// Solution 2 : backtracking, combination
 class Solution_2 {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
@@ -37,6 +39,8 @@ public:
         return res;
     }
     
+    // 2^n = 1 + 2^0 + 2^1 + 2^2 + ... + 2^(n-1)
+    // dfs() will be called 2^n times
     void dfs(vector<int>& nums, int start, vector<int>& path, vector<vector<int>>& res) {
         res.push_back(path);
         for (int i = start; i < (int)nums.size(); ++i) {

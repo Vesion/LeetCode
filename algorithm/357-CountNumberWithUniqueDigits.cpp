@@ -8,19 +8,18 @@ using namespace std;
 class Solution_1 {
 public:
     int countNumbersWithUniqueDigits(int n) {
-        int res = 0, used = 0;
-        for (int i = 1; i <= 9; ++i) dfs(i, 0, n, used, res);
+        if (n == 0) return 1;
+        int res = 0;
+        for (int i = 1; i <= 9; ++i) res += dfs(i, 1, n, 1<<i);
         return res+1;
     }
     
-    void dfs(int cur, int len, int n, int& used, int& res) {
-        if (len == n) return;
-        ++res;
-        used |= (1 << cur);
-        for (int i = 0; i <= 9; ++i) {
-            if (!(used & (1<<i))) dfs(i, len+1, n, used, res);
-        }
-        used ^= (1 << cur);
+    int dfs(int cur, int len, int n, int used) {
+        if (len > n) return 0;
+        int res = 1;
+        for (int i = 0; i <= 9; ++i) 
+            if (!(used & (1<<i))) res += dfs(cur, len+1, n, used|(1<<i));
+        return res;
     }
 };
 

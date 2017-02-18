@@ -10,18 +10,18 @@ public:
     vector<vector<int>> combine(int n, int k) {
         vector<vector<int>> res;
         vector<int> path;
-        dfs(1, n, k, path, res);
+        dfs(n, 1, k, path, res);
         return res;
     }
-
-    void dfs(int cur, int n, int k, vector<int>& path, vector<vector<int>>& res) {
+    
+    void dfs(int n, int start, int k, vector<int>& path, vector<vector<int>>& res) {
         if ((int)path.size() == k) {
             res.push_back(path);
             return;
         }
-        for (int i = cur; i <= n; ++i) {
+        for (int i = start; i <= n; ++i) {
             path.push_back(i);
-            dfs(i+1, n, k, path, res);
+            dfs(n, i+1, k, path, res);
             path.pop_back();
         }
     }
@@ -37,9 +37,9 @@ public:
             for (int i = 1; i <= k; ++i) path.push_back(i);
             return vector<vector<int>>({path});
         }
-        auto left = combine(n-1, k-1);
+        auto left = combine(n-1, k-1); // number n is selected
         for (auto& path : left) path.push_back(n);
-        auto right = combine(n-1, k);
+        auto right = combine(n-1, k); // number n is not selected
         left.insert(left.end(), right.begin(), right.end());
         return left;
     }

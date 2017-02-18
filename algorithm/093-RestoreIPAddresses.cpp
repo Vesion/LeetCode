@@ -7,32 +7,36 @@ using namespace std;
 class Solution {
 public:
     vector<string> restoreIpAddresses(string s) {
-        if (s.size() < 4 || s.size() > 12) return {};
         vector<string> res;
         vector<string> path;
-        dfs(s, 0, "", 0, res);
+        dfs(s, 0, path, res);
         return res;
     }
-
-    void dfs(string& s, int cur, string path, int points, vector<string>& res) {
-        if (points > 4 || cur > (int)s.size()) return;
-        if (points == 4 && cur == (int)s.size()) {
-            res.push_back(path);
+    
+    void dfs(string&s, int start, vector<string>& path, vector<string>& res) {
+        if (path.size() == 4) {
+            if (start == (int)s.size()) {
+                string r = path[0];
+                for (int i = 1; i < 4; ++i) r += "." + path[i];
+                res.push_back(r);
+            }
             return;
         }
-        for (int l = 1; l <= 3; ++l) {
-            if (cur+l > (int)s.size()) break;
-            string sub = s.substr(cur, l);
-            if ((sub.size() > 1 && sub[0] == '0') || (stoi(sub) > 255)) continue;
-            dfs(s, cur+l, path + sub + (points == 3 ? "" : "."), points+1, res);
+        for (int i = start; i < (int)s.size(); ++i) {
+            if (i > start && s[start] == '0') return; // prefix 0 is invalid
+            string num = s.substr(start, i-start+1);
+            if (stoi(num) > 255) return;
+            path.push_back(num);
+            dfs(s, i+1, path, res);
+            path.pop_back();
         }
     }
 };
 
+
 int main() {
     Solution s;
-    auto r = s.restoreIpAddresses("1111");
+    auto r = s.restoreIpAddresses("10111");
     for (auto& e : r) cout << e << endl; cout << endl; 
     return 0;
 }
-

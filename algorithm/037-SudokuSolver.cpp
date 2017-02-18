@@ -4,47 +4,40 @@
 #include <string>
 using namespace std;
 
-// common backtracking solution
+// Solution 1 : trivial backtracking
 class Solution {
 public:
     void solveSudoku(vector<vector<char>>& board) {
-        dfs(board);
+        dfs(board, 0);
     }
-
-    bool dfs(vector<vector<char>>& board) {
-        for (int i = 0; i < 9; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                if (board[i][j] == '.') {
-                    for (int k = 0; k < 9; ++k) { // choose a number from 1...9
-                        board[i][j] = '1' + k;
-                        if (valid(board, i, j) && dfs(board)) return true;
-                        board[i][j] = '.';
-                    }
-                    return false;
-                }
-            }
+    
+    bool dfs(vector<vector<char>>& board, int pos) {
+        if (pos == 81) return true;
+        int row = pos/9, col = pos%9;
+        if (board[row][col] != '.') return dfs(board, pos+1);
+        for (char c = '1'; c <= '9'; ++c) {
+            board[row][col] = c;
+            if (valid(board, row, col) && dfs(board, pos+1)) return true;
+            board[row][col] = '.';
         }
-        return true;
+        return false;
     }
 
     bool valid(vector<vector<char>>& board, int row, int col) {
-        for (int i = 0; i < 9; ++i) {
-            if (i != row && board[i][col] == board[row][col]) return false; // check row
-            if (i != col && board[row][i] == board[row][col]) return false; // check col
-            int si = 3*(row/3) + i/3, sj = 3*(col/3) + i%3;
-            if (si != row && sj != col && board[si][sj] == board[row][col]) return false; // check square
-        }
+        for (int i = 0; i < 9; ++i) if (i != row && board[i][col] == board[row][col]) return false;
+        for (int j = 0; j < 9; ++j) if (j != col && board[row][j] == board[row][col]) return false;
+        for (int i = 3*(row/3); i < 3*(row/3)+3; ++i)
+            for (int j = 3*(col/3); j < 3*(col/3)+3; ++j)
+                if (i != row && j != col && board[i][j] == board[row][col]) return false;
         return true;
     }
 };
 
 
-
 // Here is a much faster solution
 // https://discuss.leetcode.com/topic/7195/sharing-my-2ms-c-solution-with-comments-and-explanations
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

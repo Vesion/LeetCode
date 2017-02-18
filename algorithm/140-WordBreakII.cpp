@@ -12,20 +12,20 @@ public:
         if (s.empty() || wordDict.empty()) return {};
         unordered_set<string> dict(wordDict.begin(), wordDict.end());
         int n = s.size();
-        vector<bool> canBreak(n+1, false);
+        vector<bool> canbreak(n+1, false);
+        canbreak[0] = true;
         vector<vector<bool>> dp(n, vector<bool>(n, false));
-        
-        canBreak[0] = true;
-        for (int j = 1; j <= n; ++j) {
-            for (int i = j-1; i >= 0; --i) {
-                if (canBreak[i] && dict.count(s.substr(i, j-i))) {
-                    canBreak[j] = true;
-                    dp[i][j-1] = true;
+        for (int j = 0; j < n; ++j) {
+            for (int i = j; i >= 0; --i) {
+                if (canbreak[i] && dict.count(s.substr(i, j-i+1))) {
+                    canbreak[j+1] = true;
+                    dp[i][j] = true;
                 }
             }
         }
+        if (!canbreak[n]) return {};
         vector<string> res;
-        if (canBreak[n]) dfs(s, 0, dp, "", res);
+        dfs(s, 0, dp, "", res);
         return res;
     }
     
@@ -36,12 +36,17 @@ public:
             return;
         }
         for (int i = start; i < (int)s.size(); ++i) {
-            if (dp[start][i]) dfs(s, i+1, dp, path+s.substr(start, i-start+1)+" ", res);
+            if (dp[start][i]) dfs(s, i+1, dp, path + s.substr(start, i-start+1) + " ", res);
         }
     }
 };
 
 
 int main() {
+    Solution s;
+    vector<string> d = { "cat","cats","and","sand","dog" };
+    string w = "catsanddog";
+    auto r = s.wordBreak(w, d);
+    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }

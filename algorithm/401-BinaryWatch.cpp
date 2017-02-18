@@ -10,21 +10,19 @@ class Solution {
 public:
     vector<string> readBinaryWatch(int num) {
         vector<string> res;
-        dfs(0, num, 0, res);
+        dfs(num, 0, 0, res);
         return res;
     }
     
-    void dfs(int start, int num, int led, vector<string>& res) {
+    void dfs(int num, int start, int board, vector<string>& res) {
         if (num == 0) {
-            int hour = led & 0b1111;
-            int minute = led >> 4;
-            if (hour <= 11 && minute <= 59)
-                res.push_back(to_string(hour) + ":" + (minute < 10 ? "0" : "")+to_string(minute));
+            int minute = board & 0b111111;
+            int hour = board >> 6;
+            if (minute < 60 && hour < 12) res.push_back(to_string(hour) + ":" + (minute < 10 ? "0" : "") + to_string(minute));
             return;
         }
-        for (int i = start; i < 10; ++i) {
-            dfs(i+1, num-1, led|(1<<i), res);
-        }
+        
+        for (int i = start; i < 10; ++i) dfs(num-1, i+1, board|(1<<i), res);
     }
 };
 
@@ -46,8 +44,8 @@ public:
 
 
 int main() {
-    Solution_2 s;
-    auto r = s.readBinaryWatch(2);
+    Solution s;
+    auto r = s.readBinaryWatch(6);
     for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }

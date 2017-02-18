@@ -6,29 +6,27 @@
 #include <deque> 
 using namespace std;
 
-// dfs + memo, similar to 294-FlipGameII
+// backtracking + memo, similar to 294-FlipGameII
 class Solution {
 public:
     bool canIWin(int n, int target) {
-        if (n*(n+1)/2 < target) return false;
+        if (n*(1+n)/2 < target) return false;
         if (target <= n) return true;
-        int used = 0;
-        vector<int> memo(1<<n, -1);
-        return win(n, target, used, memo);
+        vector<int> m(1<<n, -1);
+        return win(n, target, 0, m);
     }
-
-    bool win(int n, int target, int& used, vector<int>& memo) {
+    
+    bool win(int n, int target, int used, vector<int>& m) {
         if (target <= 0) return false;
-        if (memo[used] != -1) return memo[used];
+        if (m[used] != -1) return m[used];
         bool res = false;
         for (int i = 0; i < n; ++i) {
-            if (used & (1 << i)) continue;
-            used |= (1 << i);
-            res = !win(n, target-i-1, used, memo);
-            used ^= (1 << i);
-            if (res) break;
+            if (!(used & (1<<i))) {
+                res |= !win(n, target-i-1, used|(1<<i), m);
+                if (res) break;
+            }
         }
-        memo[used] = res;
+        m[used] = res;
         return res;
     }
 };

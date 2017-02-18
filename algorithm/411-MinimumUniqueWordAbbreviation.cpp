@@ -4,57 +4,7 @@
 #include <string>
 using namespace std;
 
-// The core idea is to combine 320-GeneralizedAbbreviation and 408-ValidWordAbbreviation.
-
 // The plain solution is very slow, because each time it gets a abbreviation, it will validate it in O(m*k*n), m is size of dictionary, k is average length of all words, n is length of target, it is O(2^n * m*k*n)
-class Solution_0 {
-public:
-    string res;
-    int resLen = INT_MAX;
-
-    string minAbbreviation(string target, vector<string>& dictionary) {
-        if (target.empty()) return target;
-        dfs(target, 0, 0, "", 0, dictionary);
-        return res;
-    }
-
-    void dfs(string& target, int start, int num, string path, int len, vector<string>& dictionary) {
-        if (start == (int)target.size()) {
-            if (num) { path += to_string(num); ++len; }
-            for (string& word : dictionary) if (word.size() == target.size() && isAbbr(word, path)) return;
-            if (len < resLen) {
-                res = path;
-                resLen = len;
-            }
-            return;
-        }
-
-        dfs(target, start+1, num+1, path, len, dictionary);
-
-        if (num) { path += to_string(num); ++len; }
-        dfs(target, start+1, 0, path+target[start], len+1, dictionary);
-    }
-
-    bool isAbbr(string& word, string& abbr) {
-        if (word.empty() && abbr.empty()) return true;
-        int m = word.size(), n = abbr.size();
-        if (m < n) return false;
-        int i = 0, j = 0;
-        while (j < n) {
-            if (isalpha(abbr[j])) {
-                if (word[i++] != abbr[j++]) return false;
-            } else {
-                if (abbr[j] == '0') return false;
-                int num = 0;
-                while (j < n && isdigit(abbr[j])) num = num*10 + (abbr[j++]-'0');
-                i += num;
-            }
-        }
-        return i == m;
-    }
-};
-
-
 
 // Solution 1 : bitmap + dfs, skillful
 // https://discuss.leetcode.com/topic/61457/c-bit-manipulation-dfs-solution
@@ -142,4 +92,3 @@ int main() {
     cout <<s.minAbbreviation("apple", d) <<endl;;
     return 0;
 }
-

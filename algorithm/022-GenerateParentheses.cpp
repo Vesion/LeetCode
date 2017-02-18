@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : Catalan recursively
+// Solution 1 : Catalan recursive
 class Solution {
 public:
     vector<string> generateParenthesis(int n) {
@@ -20,8 +20,30 @@ public:
 };
 
 
-// Solution 2 : generate one by one
+// Solution 2 : Catalan iterative
 class Solution_2 {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<vector<string>> dp;
+        dp.push_back({""});
+        for (int i = 1; i <= n; ++i) {
+            vector<string> r;
+            for (int j = 0; j < i; ++j) {
+                for (string& left : dp[j]) {
+                    for (string& right : dp[i-1-j]) {
+                        r.push_back("(" + left + ")" + right);
+                    }
+                }
+            }
+            dp.push_back(r);
+        }
+        return dp.back();
+    }
+};
+
+
+// Solution 3 : generate one by one
+class Solution_3 {
 public:
     vector<string> generateParenthesis(int n) {
         vector<string> res;

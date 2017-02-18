@@ -8,77 +8,69 @@ using namespace std;
 class Solution {
 private:
     struct TrieNode {
-        TrieNode* nexts[26];
         bool isEnd;
-        TrieNode() { isEnd = false, fill_n(nexts, 26, nullptr); }
+        TrieNode* nexts[26];
+        TrieNode() { isEnd = false; fill_n(nexts, 26, nullptr); }
     };
-    
     TrieNode* root;
-
+    
     void insert(string& word) {
         TrieNode* cur = root;
         for (char& c : word) {
-            if (cur->nexts[c-'a'] == nullptr)
-                cur->nexts[c-'a'] = new TrieNode();
+            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
             cur = cur->nexts[c-'a'];
         }
         cur->isEnd = true;
     }
     
-    vector<string> queryWithPrefix(string& prefix) {
+    vector<string> search(string prefix) {
         vector<string> res;
-        query(prefix, 0, root, "", res);
+        search(prefix, 0, root, "", res);
         return res;
     }
     
-    void query(string& s, int start, TrieNode* cur, string path, vector<string>& res) {
-        if (cur == nullptr) return;
+    void search(string& prefix, int start, TrieNode* cur, string path, vector<string>& res) {
         if (cur->isEnd) {
             res.push_back(path);
             return;
         }
-        if (start < (int)s.size()) {
-            char c = s[start];
-            query(s, start+1, cur->nexts[c-'a'], path+c, res);
+        if (start >= (int)prefix.size()) {
+            for (char c = 'a'; c <= 'z'; ++c) 
+                if (cur->nexts[c-'a']) search(prefix, start+1, cur->nexts[c-'a'], path+c, res);
         } else {
-            for (int i = 0; i < 26; ++i) {
-                query(s, start+1, cur->nexts[i], path+(char)('a'+i), res);
-            }
+            char c = prefix[start];
+            if (cur->nexts[c-'a']) search(prefix, start+1, cur->nexts[c-'a'], path+c, res);
         }
     }
 
 public:
     vector<vector<string>> wordSquares(vector<string>& words) {
         if (words.empty()) return {};
-
         root = new TrieNode();
-        for (string& word: words) insert(word);
-        
+        for (string& word : words) insert(word);
+
+        int n = words[0].size();
         vector<vector<string>> res;
-        for (string& word : words) { // try every word as first row
+        for (string& word : words) {
             vector<string> path({word});
-            dfs(word, 1, path, res);
+            dfs(1, n, path, res);
         }
         return res;
     }
     
-    void dfs(string& s, int start, vector<string>& path, vector<vector<string>>& res) {
-        if (start == (int)s.size()) {
+    void dfs(int row, int n, vector<string>& path, vector<vector<string>>& res) {
+        if (row == n) {
             res.push_back(path);
             return;
         }
-
         string prefix;
-        for (string& word : path) prefix += word[start];
-        auto r = queryWithPrefix(prefix);
-        if (r.empty()) return;
-
-        for (string& word : r) {
+        for (string& word : path) prefix += word[row];
+        auto words = search(prefix);
+        for (string& word : words) {
             path.push_back(word);
-            dfs(s, start+1, path, res);
+            dfs(row+1, n, path, res);
             path.pop_back();
         }
-        
     }
 };
 

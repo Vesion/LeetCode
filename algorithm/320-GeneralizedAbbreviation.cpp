@@ -5,28 +5,24 @@
 using namespace std;
 
 // similar to generate all subsets
-// generate path, abbreviate current character or not
 
 // Solution 1 : backtracking
 class Solution {
 public:
     vector<string> generateAbbreviations(string word) {
-        if (word.empty()) return {""};
         vector<string> res;
         dfs(word, 0, 0, "", res);
         return res;
     }
     
-    void dfs(string& word, int start, int abbr, string path, vector<string>& res) {
-        if (start == (int)word.size()) {
+    void dfs(string& s, int start, int abbr, string path, vector<string>& res) {
+        if (start == (int)s.size()) {
             if (abbr) path += to_string(abbr);
             res.push_back(path);
             return;
         }
-        dfs(word, start+1, abbr+1, path, res); // abbreviate this char
-
-        if (abbr) path += to_string(abbr);
-        dfs(word, start+1, 0, path + word[start], res); // don't abbreviate this char
+        dfs(s, start+1, abbr+1, path, res); // abbreviate it
+        dfs(s, start+1, 0, path + (abbr ? to_string(abbr) : "") + s[start], res); // not abbreviate it
     }
 };
 
@@ -61,4 +57,3 @@ public:
 int main() {
     return 0;
 }
-

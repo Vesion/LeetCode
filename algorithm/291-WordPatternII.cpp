@@ -7,46 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    unordered_map<char, string> m1;
-    unordered_map<string, char> m2;
-    int m, n;
-
     bool wordPatternMatch(string pattern, string str) {
-        m1.clear(), m2.clear();
-        m = pattern.size(), n = str.size();
-        return dfs(pattern, 0, str, 0);
-    } 
-
-    bool dfs(string& pattern, int pcur, string& str, int scur) {
-        if (m-pcur > n-scur) return false; // prune
-        if (pcur == m && scur == n) return true;
-        if (pcur == m || scur == n) return false;
-
-        char c = pattern[pcur];
-        if (m1.count(c)) {
-            string s = m1[c];
-            if (str.substr(scur, s.size()) != s) return false;
-            else return dfs(pattern, pcur+1, str, scur+s.size());
+        unordered_map<char, string> p_dict;
+        unordered_map<string, char> s_dict;
+        return dfs(pattern, 0, str, 0, p_dict, s_dict);
+    }
+    
+    bool dfs(string& p, int p_start, string& s, int s_start, unordered_map<char, string>& p_dict, unordered_map<string, char>& s_dict) {
+        if (p.size()-p_start > s.size()-s_start) return false; // very aggressive prune
+        if (s_start > (int)s.size()) return false;
+        if (p_start == (int)p.size()) return s_start == (int)s.size();
+        char c = p[p_start];
+        if (p_dict.count(c)) {
+            string w = p_dict[c];
+            if (s.substr(s_start, w.size()) != w) return false;
+            else return dfs(p, p_start+1, s, s_start+w.size(), p_dict, s_dict);
         } else {
-            for (int i = scur; i < n; ++i) {
-                string s = str.substr(scur, i-scur+1);
-                if (m2.count(s)) continue;
-                m1[c] = s;
-                m2[s] = c;
-                if (dfs(pattern, pcur+1, str, scur+s.size())) return true;
-                m1.erase(c);
-                m2.erase(s);
+            for (int i = s_start; i < (int)s.size(); ++i) {
+                string w = s.substr(s_start, i-s_start+1);
+                if (s_dict.count(w)) continue;
+                p_dict[c] = w; s_dict[w] = c;
+                if (dfs(p, p_start+1, s, i+1, p_dict, s_dict)) return true;
+                p_dict.erase(c); s_dict.erase(w);
             }
+            return false;
         }
-        return false;
     }
 };
 
+
 int main() {
     Solution s;
-    cout << s.wordPatternMatch("abab", "redblueredblue") << endl;
-    cout << s.wordPatternMatch("aaaa", "asdasdasdasd") << endl;
-    cout << s.wordPatternMatch("aabb", "xyzabcxzyabc") << endl;
-    cout << s.wordPatternMatch("aabb", "cdcdcdcd") << endl;
+    cout << s.wordPatternMatch("aa", "ab") << endl;
     return 0;
 }
+

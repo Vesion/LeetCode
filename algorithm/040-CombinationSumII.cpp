@@ -4,34 +4,34 @@
 #include <string>
 using namespace std;
 
+// Note the difference from 039
 class Solution {
 public:
     vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        if (candidates.empty()) return {};
         sort(candidates.begin(), candidates.end());
-        vector<vector<int>> res;
         vector<int> path;
-        dfs(candidates, target, 0, res, path);
+        vector<vector<int>> res;
+        dfs(candidates, 0, target, path, res);
         return res;
     }
-
-    void dfs(vector<int>& candidates, int remain, int start, vector<vector<int>>& res, vector<int>& path) {
-        if (remain == 0) {
+    
+    void dfs(vector<int>& candidates, int start, int target, vector<int>& path, vector<vector<int>>& res) {
+        if (target == 0) {
             res.push_back(path);
             return;
         }
-        int pre = -1;
         for (int i = start; i < (int)candidates.size(); ++i) {
-            if (candidates[i] > remain) return;
-            if (candidates[i] == pre) continue;
+            if (target-candidates[i] < 0) return;
+            if (i > start && candidates[i] == candidates[i-1]) continue; // avoid duplicates
             path.push_back(candidates[i]);
-            dfs(candidates, remain-candidates[i], i+1, res, path);
+            dfs(candidates, i+1, target-candidates[i], path, res); // each number can only be used once
             path.pop_back();
-            pre = candidates[i];
         }
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
