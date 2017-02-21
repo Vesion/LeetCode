@@ -16,13 +16,13 @@ public:
             sum += nums[i];
             int t = sum - k;
             if (sums.count(t)) res = max(res, i-sums[t]);
-            sums.insert({sum, i});
+            sums.insert({sum, i}); // here cannot use sums[sum] = i, think about it
         }
         return res;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
