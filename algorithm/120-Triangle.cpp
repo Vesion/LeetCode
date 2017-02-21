@@ -4,22 +4,22 @@
 #include <string>
 using namespace std;
 
+// dp, O(n^2) time, O(n) space
 class Solution {
 public:
     int minimumTotal(vector<vector<int>>& triangle) {
-        if (triangle.empty()) return 0;
         int n = triangle.size();
+        vector<int> dp = triangle.back(); // init with the last row
         for (int i = n-2; i >= 0; --i) {
-            for (int j = 0; j < (int)triangle[i].size(); ++j) {
-                triangle[i][j] += min(triangle[i+1][j], triangle[i+1][j+1]);
+            for (int j = 0; j <= i; ++j) {
+                dp[j] = min(dp[j], dp[j+1]) + triangle[i][j];
             }
         }
-        return triangle[0][0];
+        return dp[0];
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

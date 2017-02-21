@@ -2,7 +2,6 @@
 #include <vector>
 using namespace std;
 
-
 class NumMatrix {
 private:
     vector<vector<int>> sums;

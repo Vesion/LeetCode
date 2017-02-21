@@ -5,9 +5,40 @@
 #include <unordered_set> 
 using namespace std;
 
+// Solution 1 : dp, similar to 139-WordBreak
+class Solution {
+public:
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        sort(words.begin(), words.end(), [](const string s1, const string s2) { return s1.size() < s2.size(); }); // sort with length
+        unordered_set<string> dict;
+        vector<string> res;
+        for (string& w : words) {
+            if (canBreak(w, dict)) res.push_back(w); // words in dict are shorter than current one
+            dict.insert(w);
+        }
+        return res;
+    }
+    
+    bool canBreak(string& word, unordered_set<string>& dict) {
+        if (word.empty() || dict.empty()) return false;
+        int n = word.size();
+        vector<bool> dp(n+1, false); // dp[i] means word[0:i) can be broken
+        dp[0] = true;
+        for (int j = 0; j < n; ++j) {
+            for (int i = j; i >= 0; --i) {
+                if (dp[i] && dict.count(word.substr(i, j-i+1))) {
+                    dp[j+1] = true;
+                    break; // we only care about if it can be broken, so we can stop here
+                }
+            }
+        }
+        return dp[n];
+    }
+};
 
-// Solution 1 : Trie + DFS, get MLE for the last test case
-class Solution_1 {
+
+// Solution 2 : Trie + DFS, get MLE for the last test case
+class Solution_2 {
 private:
     struct TrieNode {
         bool isEnd;
@@ -47,38 +78,6 @@ public:
         for (string& w : words) 
             if (concatenate(w, 0, root, 0)) res.push_back(w);
         return res;
-    }
-};
-
-
-// Solution 2 : dp, similar to 139-WordBreak
-class Solution {
-public:
-    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
-        sort(words.begin(), words.end(), [](const string s1, const string s2) { return s1.size() < s2.size(); }); // sort with length
-        unordered_set<string> dict;
-        vector<string> res;
-        for (string& w : words) {
-            if (canBreak(w, dict)) res.push_back(w); // words in dict are shorter than current one
-            dict.insert(w);
-        }
-        return res;
-    }
-    
-    bool canBreak(string& word, unordered_set<string>& dict) {
-        if (word.empty() || dict.empty()) return false;
-        int n = word.size();
-        vector<bool> dp(n+1, false); // dp[i] means word[0:i) can be broken
-        dp[0] = true;
-        for (int i = 1; i <= n; ++i) {
-            for (int j = 0; j < i; ++j) {
-                if (dp[j] && dict.count(word.substr(j, i-j))) {
-                    dp[i] = true;
-                    break; // we only care about if it can be broken, so we can stop here
-                }
-            }
-        }
-        return dp[n];
     }
 };
 

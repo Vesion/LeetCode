@@ -22,24 +22,23 @@ class Solution_1 {
 public:
     int depthSumInverse(vector<NestedInteger>& nestedList) {
         if (nestedList.empty()) return 0;
-        int height = getHeight(nestedList);
-        return dfs(nestedList, height);
+        int maxDepth = getMaxDepth(nestedList);
+        return dfs(nestedList, maxDepth);
     }
 
-    int getHeight(vector<NestedInteger> nestedList) {
-        int height = 1;
+    int getMaxDepth(vector<NestedInteger> nestedList) {
+        int depth = 1;
         for (NestedInteger& ni : nestedList) {
-            if (!ni.isInteger())
-                height = max(height, getHeight(ni.getList())+1);
+            if (!ni.isInteger()) depth = max(depth, getMaxDepth(ni.getList())+1);
         }
-        return height;
+        return depth;
     }
 
-    int dfs(vector<NestedInteger> nestedList, int height) {
+    int dfs(const vector<NestedInteger>& nestedList, int depth) {
         int res = 0;
-        for (NestedInteger& ni : nestedList) {
-            if (ni.isInteger()) res += ni.getInteger()*height;
-            else res += dfs(ni.getList(), height-1);
+        for (auto& e : nestedList) {
+            if (e.isInteger()) res += e.getInteger() * depth;
+            else res += dfs(e.getList(), depth-1);
         }
         return res;
     }

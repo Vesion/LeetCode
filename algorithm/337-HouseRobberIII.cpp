@@ -23,8 +23,8 @@ public:
         if (!root) return {0, 0};
         auto left = postorder(root->left);
         auto right = postorder(root->right);
-        int rob = max(left[0], left[1]) + max(right[0], right[1]);
-        int notrob = root->val+left[0] + right[0];
+        int notrob = max(left[0], left[1]) + max(right[0], right[1]);
+        int rob = root->val + left[0] + right[0];
         return {rob, notrob};
     }
 };

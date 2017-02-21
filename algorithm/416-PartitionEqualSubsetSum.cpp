@@ -8,7 +8,7 @@ using namespace std;
 
 // The famous 'Subset Sum Problem'
 
-// Solution 1 : standard dp
+// Solution 1 : dp, similar to '01-knapsack'
 // This solution can not only solve 'if it can' problem, but 'how many solutions' problem
 class Solution {
 public:
@@ -16,11 +16,11 @@ public:
         int sum = accumulate(nums.begin(), nums.end(), 0);
         if (sum&1) return false;
         sum /= 2;
-        vector<int> dp(sum+1, 0); // dp[i] = the number of subsets whose sum is i
-        dp[0] = 1;
+        vector<bool> dp(sum+1, false);
+        dp[0] = true;
         for (int& num : nums) {
-            for (int i = sum; i >= num; --i) {
-                dp[i] += dp[i-num];
+            for (int j = sum; j >= num; --j) {
+                dp[j] = dp[j] | dp[j-num];
             }
         }
         return dp[sum];

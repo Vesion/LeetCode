@@ -22,7 +22,9 @@ public:
     int maximalRectangle(vector<vector<char>>& matrix) {
         if (matrix.empty()) return 0;
         int m = matrix.size(), n = matrix[0].size();
-        vector<int> height(n, 0), left(n, 0), right(n, n);
+        vector<int> height(n, 0), // the number of consecutive '1's vertically
+                    left(n, 0),   // left bounder of current rectangle
+                    right(n, n);  // right bounder of current rectangle
         int result = 0;
         
         for (int i = 0; i < m; ++i) {
@@ -35,14 +37,14 @@ public:
                 if (matrix[i][j] == '1') left[j] = max(left[j], cur_left);
                 else {
                     left[j] = 0;
-                    cur_left = j+1;
+                    cur_left = j+1; // [left, right)
                 }
             }
             for (int j = n-1; j >= 0; --j) {
                 if (matrix[i][j] == '1') right[j] = min(right[j], cur_right);
                 else {
                     right[j] = n;
-                    cur_right = j;
+                    cur_right = j; // [left, right)
                 }
             }
             for (int j = 0; j < n; ++j) {

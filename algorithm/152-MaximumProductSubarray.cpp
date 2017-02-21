@@ -2,23 +2,23 @@
 #include <vector>
 using namespace std;
 
+// similar to 053-MaximumSumSubarray
+// but here we need to maintain 'max product' and 'min product'
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
-        if (nums.empty()) return 0;
-        int n = nums.size();
-        int result = nums[0];
-        vector<int> dpmax(n, 0), dpmin(n, 0);
-        dpmax[0] = dpmin[0] = nums[0];
-
-        for (int i = 1; i < n; ++i) {
-            dpmax[i] = max(max(dpmax[i-1]*nums[i], dpmin[i-1]*nums[i]), nums[i]);
-            dpmin[i] = min(min(dpmax[i-1]*nums[i], dpmin[i-1]*nums[i]), nums[i]);
-            result = max(result, dpmax[i]);
+        int res = INT_MIN;
+        int maxp = 1, minp = 1;
+        for (int& num : nums) {
+            int tmaxp = maxp, tminp = minp;
+            maxp = max(num, max(tmaxp*num, tminp*num));
+            minp = min(num, min(tmaxp*num, tminp*num));
+            res = max(res, maxp);
         }
-        return result;
+        return res;
     }
 };
+
 
 int main() {
     return 0;

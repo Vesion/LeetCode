@@ -2,29 +2,14 @@
 #include <vector>
 using namespace std;
 
-
-// DP, O(n)
-
-// Solution 2 : dp, 121ms
-class Solution_1 {
-public:
-    vector<int> countBits(int num) {
-        vector<int> result(num+1, 0);
-        for (int i = 1; i <= num; ++i)
-            result[i] = result[i&(i-1)] + 1; // drops the lowest set(1) bit
-        return result;
-    }
-};
-
-
-// Solution 2 v2 : dp, 120ms
+// Solution 2 : dp, O(n)
 class Solution {
 public:
     vector<int> countBits(int num) {
-        vector<int> result(num+1, 0);
-        for (int i = 1; i <= num; ++i)
-            result[i] = result[i>>1] + (i&1); // drops the lowest(0 or 1) bit
-        return result;
+        vector<int> res(num+1, 0);
+        res[1] = 1;
+        for (int i = 2; i <= num; ++i) res[i] = (i&1) + res[i>>1];
+        return res;
     }
 };
 

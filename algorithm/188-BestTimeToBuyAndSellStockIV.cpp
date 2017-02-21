@@ -6,7 +6,7 @@ using namespace std;
 
 // Similar to 'Max Sum of K Subarrays'
 //
-// dp[i, j] represents the max profit at day j with at most j transactions
+// dp[i][j] represents the max profit at day j with at most j transactions
 // so, at day j, we have two choices:
 //      1. do nothing, dp[i][j] = dp[i][j-1]
 //      2. sell stock with prices[j], this means before day j we have i-1 transactions, also means we bought stock before day j, say we bought stock at day jj, 

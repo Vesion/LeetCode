@@ -24,7 +24,7 @@ public:
 };
 
 
-// Solution 2 : math
+// Solution 2 : dp, or math
 // Let  f(k) = count of numbers with unique digits with length equals k.
 //      f(1) = 10
 //      f(2) = 9*9 
@@ -33,12 +33,13 @@ class Solution {
 public:
     int countNumbersWithUniqueDigits(int n) {
         if (n == 0) return 1;
-        if (n == 1) return 10;
         int res = 10;
-        for (int i = 2; i <= n; ++i) {
-            int c = 9;
-            for (int j = 9; j >= 11-i; --j) c *= j;
-            res += c;
+        int num = 9,   // number of valid intergers in current length
+            digit = 9; // number of unique digits we can use
+        for (int l = 2; l <= n; ++l) {
+            if (digit == 0) break;
+            num *= digit--;
+            res += num;
         }
         return res;
     }
@@ -46,7 +47,5 @@ public:
 
 
 int main() {
-    Solution s;
-    cout << s.countNumbersWithUniqueDigits(3) <<endl;
     return 0;
 }

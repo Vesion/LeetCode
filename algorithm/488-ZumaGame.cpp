@@ -19,16 +19,15 @@ public:
         if (board.empty()) return 0;
         int res = INT_MAX;
         for (int i = 0; i < (int)board.size(); ++i) {
-            if (i > 0 && board[i] == board[i-1]) continue;
-            if (m[board[i]] > 0) {
-                m[board[i]]--;
-                string cb = board;
-                cb.insert(i, string(1, board[i]));
-                eliminate(cb);
-                int t = dfs(cb, m);
-                if (t < INT_MAX) res = min(res, t+1);
-                m[board[i]]++;
-            }
+            if (i > 0 && board[i] == board[i-1]) continue; // avoid duplicate cases
+            if (m[board[i]] == 0) continue;
+            m[board[i]]--;
+            string cb = board;
+            cb.insert(i, string(1, board[i]));
+            eliminate(cb);
+            int t = dfs(cb, m);
+            if (t < INT_MAX) res = min(res, t+1);
+            m[board[i]]++;
         }
         return res;
     }

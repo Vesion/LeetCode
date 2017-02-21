@@ -25,14 +25,14 @@ public:
 
     int dfs(vector<vector<int>>& matrix, int i, int j, vector<vector<int>>& memo) {
         if (memo[i][j]) return memo[i][j];
-        int len = 1;
+        int res = 1;
         for (int d = 0; d < 4; ++d) {
             int ni = i+go[d][0], nj = j+go[d][1];
             if (ni < 0 || ni >= m || nj < 0 || nj >= n || matrix[ni][nj] <= matrix[i][j]) continue;
-            len = max(len, dfs(matrix, ni, nj, memo)+1);
+            res = max(res, dfs(matrix, ni, nj, memo)+1);
         }
-        memo[i][j] = len;
-        return len;
+        memo[i][j] = res;
+        return res;
     }
 };
 
@@ -40,4 +40,3 @@ public:
 int main() {
     return 0;
 }
-

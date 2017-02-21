@@ -10,26 +10,27 @@ using namespace std;
 class Solution {
 public:
     int splitArray(vector<int>& nums, int m) {
-        int left = 0, right = 0;
-        for (int num : nums) {
-            left = max(left, num);
-            right += num;
+        int lower = 0, upper = 0;
+        for (int& num : nums) {
+            lower = max(lower, num);
+            upper += num;
         }
-        while (left <= right) {
-            int mid = left + (right-left)/2;
-            if (canSplit(nums, m, mid)) right = mid-1;
-            else left = mid+1;
+        while (lower <= upper) {
+            int mid = lower + (upper-lower)/2;
+            if (canSplit(nums, m, mid)) upper = mid-1; // we want to get a minimal result
+            else lower = mid+1;
         }
-        return left;
+        return lower;
     }
-
+    
     // check if nums can be split into m subarrays with largest one's sum no greater than upper
     // or, given upper sum, check if it can be split into no more than m subarrays
-    bool canSplit(vector<int>& nums, int m, int upper) {
-        int sum = 0, count = 1;
-        for (int num : nums) {
+    bool canSplit(vector<int>& nums, int m, int target) {
+        int count = 1;
+        int sum = 0;
+        for (int& num : nums) {
             sum += num;
-            if (sum > upper) {
+            if (sum > target) {
                 ++count;
                 sum = num;
             }
@@ -43,7 +44,7 @@ public:
 // but this one is more general, numbers can be negative here.
 //
 // dp[s][i] is the solution for splitting nums[0...i] into s subarrays
-//      dp[s][i] = min( max(dp[s-1][j], nums[j+1] + ... + nums[i]) ), s-1 <= j <= i-1
+//      dp[s][i] = min( max(dp[s-1][j], nums[j+1] + ... + nums[i]) ), s-2 <= j <= i-1
 //
 // our target is dp[m][n-1]
 class Solution_2 {
@@ -71,8 +72,10 @@ public:
 
 
 int main() {
-    Solution_2 s2;
     vector<int> nums = {1,5,6,7,8,19,32,0,3};
+    Solution s;
+    cout << s.splitArray(nums, 2) <<endl;
+    Solution_2 s2;
     cout << s2.splitArray(nums, 2) <<endl;
     return 0;
 }

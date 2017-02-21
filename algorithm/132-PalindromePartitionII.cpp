@@ -7,7 +7,6 @@ using namespace std;
 class Solution {
 public:
     int minCut(string s) {
-        if (s.empty()) return 0;
         int n = s.size();
         vector<vector<bool>> dp(n, vector<bool>(n, false));
         vector<int> cuts(n, 0); // cuts[i] means the min cuts of s[0,i]
@@ -32,4 +31,3 @@ int main() {
     cout << s.minCut("ababababababababababababcbabababababababababababa") <<endl;
     return 0;
 }
-

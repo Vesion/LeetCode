@@ -10,13 +10,13 @@ using namespace std;
 // s2 : |****|#########|       s2 : |#########|****|
 
 
-// Solution 1 : recursive
+// Solution 1 : top-down, divide and conquer
 class Solution {
 public:
     bool isScramble(string s1, string s2) {
         if (s1 == s2) return true;
+        int n = s1.size();
         vector<int> count(128, 0);
-        int n= s1.size();
         for (int i = 0; i < n; ++i) {
             count[s1[i]]++;
             count[s2[i]]--;
@@ -32,25 +32,25 @@ public:
 };
 
 
-// Solution 2 : dp, O(n^4) time
+// Solution 2 : bottom-up dp, O(n^4)
 // dp[l][i][j] = true, means s1[i...i+l-1] is a scramble of s2[j...j+l-1]
 class Solution_2 {
 public:
     bool isScramble(string s1, string s2) {
+        if (s1.size() != s2.size()) return false;
         int n = s1.size();
-        bool dp[n+1][n][n];
-
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < n; ++j)
-                dp[1][i][j] = (s1[i] == s2[j]);
+        int dp[n+1][n][n];
+        for (int i = 0; i < n; ++i) 
+            for (int j = 0; j < n; ++j) 
+                dp[1][i][j] = s1[i] == s2[j];
 
         for (int l = 2; l <= n; ++l) {
             for (int i = 0; i <= n-l; ++i) {
                 for (int j = 0; j <= n-l; ++j) {
                     dp[l][i][j] = false;
-                    for (int k = 1; k < l && !dp[l][i][j]; ++k) {
-                        dp[l][i][j] |= (dp[k][i][j] && dp[l-k][i+k][j+k]);
-                        dp[l][i][j] |= (dp[k][i+l-k][j] && dp[l-k][i][j+k]);
+                    for (int k = 1; k <= l-1; ++k) {
+                        dp[l][i][j] |= dp[k][i][j] && dp[l-k][i+k][j+k];
+                        dp[l][i][j] |= dp[k][i][j+l-k] && dp[l-k][i+k][j];
                     }
                 }
             }
@@ -62,6 +62,7 @@ public:
 
 int main() {
     Solution s;
+    cout << s.isScramble("a", "a") << endl;
     return 0;
 }
 

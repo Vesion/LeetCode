@@ -8,7 +8,6 @@ class Solution {
 public:
     int numberOfArithmeticSlices(vector<int>& A) {
         int n = A.size();
-        if (n < 3) return 0;
         vector<int> dp(n, 0);
         int res = 0;
         for (int i = 2; i < n; ++i) {
@@ -22,8 +21,5 @@ public:
 
 
 int main() {
-    Solution s;
-    vector<int> A = {1, 2, 3, 4, 5};
-    cout << s.numberOfArithmeticSlices(A) <<endl;
     return 0;
 }

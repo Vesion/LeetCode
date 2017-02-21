@@ -37,4 +37,3 @@ int main() {
     cout << s.canIWin(11, 25) << endl;
     return 0;
 }
-

@@ -51,8 +51,7 @@ public:
                 int j = i+len-1;
                 dp[i][j] = INT_MAX;
                 for (int k = i; k <= j; ++k) {
-                    dp[i][j] = min(dp[i][j], k + max(i <= k-1 ? dp[i][k-1] : 0, 
-                                                     k+1 <= j ? dp[k+1][j] : 0));
+                    dp[i][j] = min(dp[i][j], max(i > k-1 ? 0 : dp[i][k-1], k+1 > j ? 0 : dp[k+1][j]) + k);
                 }
             }
         }
@@ -64,4 +63,3 @@ public:
 int main() {
     return 0;
 }
-

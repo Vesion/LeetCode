@@ -10,22 +10,21 @@ public:
         int n = nums.size();
         if (n == 0) return 0;
         if (n == 1) return nums[0];
-        return max(dp(nums, 0, n-1), dp(nums, 1, n));
+        return max(rob(nums, 0, n-1), rob(nums, 1, n));
     }
-
-    int dp(vector<int>& nums, int start, int end) {
-        int notrob = 0, rob = 0;
+    
+    int rob(vector<int>& nums, int start, int end) {
+        int rob = 0, notrob = 0;
         for (int i = start; i < end; ++i) {
-            int tmp = notrob;
-            notrob = max(notrob, rob);
-            rob = tmp + nums[i];
+            int t = notrob;
+            notrob = max(rob, notrob);
+            rob = t + nums[i];
         }
-        return max(notrob, rob);
+        return max(rob, notrob);
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

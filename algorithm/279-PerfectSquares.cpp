@@ -6,7 +6,6 @@
 #include <queue> 
 using namespace std;
 
-
 // Solution 1 : DP, O(n*sqrt(n))
 class Solution_1 {
 public:

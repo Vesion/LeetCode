@@ -23,7 +23,7 @@ public:
                 dp[i][d]++;
                 if (dp[j].count(d)) { // in case of MLE
                     dp[i][d] += dp[j][d];
-                    res += dp[j][d];
+                    res += dp[j][d]; // now arithmetic subsequences of dp[j[d] must longer than 2 (because i)
                 }
             }
         }

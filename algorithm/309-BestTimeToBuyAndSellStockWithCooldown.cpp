@@ -7,7 +7,7 @@ using namespace std;
 // A hard dp problem :(
 // https://discuss.leetcode.com/topic/30431/easiest-java-solution-with-explanations
 
-// buy[i] means reach ith day, the last operation is buy (not neccessarily buy right on ith day)
+// buy[i] means the max profits when reach ith day, the last operation is buy (not neccessarily buy right on ith day)
 //      buy[i] = max(buy[i-1], sell[i-2] - prices[i]);   // buy in day-i, or not
 // sell[i] ditto
 //      sell[i] = max(sell[i-1], buy[i-1] + prices[i]);  // sell in day-i, or not

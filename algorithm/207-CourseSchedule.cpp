@@ -37,25 +37,24 @@ public:
 // Solution 2 : DFS
 class Solution_2 {
 public:
-    bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
-        if (numCourses == 0 || prerequisites.empty()) return true;
-
-        vector<vector<int>> graph(numCourses);
-        for (auto& p : prerequisites) graph[p.first].push_back(p.second);
-
-        vector<bool> visited(numCourses, false), onpath(numCourses, false);
-        for (int i = 0; i < numCourses; ++i) {
-            if (!visited[i] && hasCycle(graph, i, visited, onpath)) return false;
-        }
+    bool canFinish(int n, vector<pair<int, int>>& edges) {
+        if (n == 0 || edges.empty()) return true;
+        vector<vector<int>> graph(n);
+        for (auto& e : edges) graph[e.second].push_back(e.first);
+        
+        vector<bool> visited(n, false);
+        vector<bool> onpath(n, false);
+        for (int i = 0; i < n; ++i) 
+            if (hasCycle(graph, i, visited, onpath)) return false;
         return true;
     }
-
+    
     bool hasCycle(vector<vector<int>>& graph, int cur, vector<bool>& visited, vector<bool>& onpath) {
         if (visited[cur]) return false;
-        visited[cur] = true;
-        onpath[cur] = true; // mark the node in current visiting path
-        for (int nbr : graph[cur])
+        visited[cur] = onpath[cur] = true;
+        for (int& nbr : graph[cur]) {
             if (onpath[nbr] || hasCycle(graph, nbr, visited, onpath)) return true;
+        }
         onpath[cur] = false;
         return false;
     }

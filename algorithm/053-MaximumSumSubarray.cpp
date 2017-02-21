@@ -7,11 +7,10 @@ using namespace std;
 class Solution {
 public:
     int maxSubArray(vector<int>& nums) {
-        int res = INT_MIN;
-        int dp = 0;
-        for (int num : nums) {
-            dp = max(dp+num, num);
-            res = max(res, dp);
+        int res = INT_MIN, sum = 0;
+        for (int& num : nums) {
+            sum = max(sum+num, num);
+            res = max(res, sum);
         }
         return res;
     }

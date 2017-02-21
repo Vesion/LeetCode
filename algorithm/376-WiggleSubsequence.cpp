@@ -31,20 +31,16 @@ class Solution {
 public:
     int wiggleMaxLength(vector<int>& nums) {
         if (nums.empty()) return 0;
-        int up = 1, down = 1;
+        int inc = 1, dec = 1;
         for (int i = 1; i < (int)nums.size(); ++i) {
-            if (nums[i] > nums[i-1]) up = down+1;
-            else if (nums[i] < nums[i-1]) down = up+1;
+            if (nums[i] > nums[i-1]) inc = dec+1;
+            else if (nums[i] < nums[i-1]) dec = inc+1;
         }
-        return max(up, down);
+        return max(inc, dec);
     }
 };
 
 
 int main() {
-    Solution s;
-    vector<int> nums = {0,0};
-    cout << s.wiggleMaxLength(nums) << endl;
     return 0;
 }
-

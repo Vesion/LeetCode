@@ -17,22 +17,23 @@ public:
         queue<pair<int,int>> q;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (grid[i][j] == '0') continue;
+                if (grid[i][j] != '1') continue;
                 res++;
                 q.push({i, j});
-                grid[i][j] = '0';
+                grid[i][j] = '2';
                 while (!q.empty()) {
                     int x = q.front().first, y = q.front().second;
                     q.pop();
                     for (int d = 0; d < 4; ++d) {
                         int nx = x + go[d][0], ny = y + go[d][1];
-                        if (nx < 0 || nx >= m || ny < 0 || ny >= n || grid[nx][ny] == '0') continue;
-                        grid[nx][ny] = '0'; // update before enque, in case repeat visit
+                        if (nx < 0 || nx >= m || ny < 0 || ny >= n || grid[nx][ny] != '1') continue;
+                        grid[nx][ny] = '2'; // update before enque, in case repeat visit
                         q.push({nx, ny});
                     }
                 }
             }
         }
+        // we should recover all '2' to '1' before return
         return res;
     }
 };
@@ -42,27 +43,30 @@ public:
 class Solution_2 {
 public:
     int m, n;
-    int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
-
+    int go[4][2] = {{0,1}, {0,-1}, {1,0}, {-1,0}};
+    
     int numIslands(vector<vector<char>>& grid) {
         if (grid.empty()) return 0;
         m = grid.size(), n = grid[0].size();
         int res = 0;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (grid[i][j] == '0') continue;
+                if (grid[i][j] != '1') continue;
                 ++res;
                 dfs(grid, i, j);
             }
         }
+        // we should recover all '2' to '1' before return
         return res;
     }
-
-    void dfs(vector<vector<char>>& grid, int x, int y) {
-        if (x < 0 || x >= m || y < 0 || y >= n || grid[x][y] == '0') return;
-        grid[x][y] = '0';
-        for (int d = 0; d < 4; ++d)
-            dfs(grid, x + go[d][0], y + go[d][1]);
+    
+    void dfs(vector<vector<char>>& grid, int i, int j) {
+        grid[i][j] = '2';
+        for (int d = 0; d < 4; ++d) {
+            int ni = i+go[d][0], nj = j+go[d][1];
+            if (ni < 0 || ni >= m || nj < 0 || nj >= n || grid[ni][nj] != '1') continue;
+            dfs(grid, ni, nj);
+        }
     }
 };
 
