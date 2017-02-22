@@ -12,7 +12,7 @@ struct TreeNode {
 };
 
 
-// Solution 1 : count number of nodes, O((logn)^2)
+// Solution 1 : count number of nodes, O(nlogn)
 // If we can modify the node's structure, we can add a 'number of nodes' field, then it will cost O(logn) time.
 class Solution {
 public:

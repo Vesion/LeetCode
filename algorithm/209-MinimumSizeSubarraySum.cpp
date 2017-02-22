@@ -41,13 +41,12 @@ public:
     }
 
     int upper_bound(vector<int>& sums, int left, int right, int target) {
-        int l = left, r = right;
-        while (l < r) {
-            int m = l + ((r - l) >> 1);
-            if (sums[m] <= target) l = m + 1;
-            else r = m;
+        while (left < right) {
+            int m = left + (right-left)/2;
+            if (sums[m] <= target) left = m + 1;
+            else right = m;
         }
-        return sums[r] > target ? r : -1;
+        return sums[right] > target ? right : -1;
     }
 };
 
@@ -58,4 +57,3 @@ int main() {
     cout << s.minSubArrayLen(11, n) << endl;
     return 0;
 }
-

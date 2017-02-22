@@ -14,9 +14,9 @@ private:
     };
     TrieNode* root;
     
-    void insert(string& word) {
+    void insert(string& w) {
         TrieNode* cur = root;
-        for (char& c : word) {
+        for (char& c : w) {
             if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
             cur = cur->nexts[c-'a'];
         }
@@ -34,25 +34,24 @@ private:
             res.push_back(path);
             return;
         }
-        if (start >= (int)prefix.size()) {
-            for (char c = 'a'; c <= 'z'; ++c) 
-                if (cur->nexts[c-'a']) search(prefix, start+1, cur->nexts[c-'a'], path+c, res);
-        } else {
+        if (start < (int)prefix.size()) {
             char c = prefix[start];
             if (cur->nexts[c-'a']) search(prefix, start+1, cur->nexts[c-'a'], path+c, res);
+        } else {
+            for (char c = 'a'; c <= 'z'; ++c) 
+                if (cur->nexts[c-'a']) search(prefix, start+1, cur->nexts[c-'a'], path+c, res);
         }
     }
-
 public:
     vector<vector<string>> wordSquares(vector<string>& words) {
         if (words.empty()) return {};
         root = new TrieNode();
-        for (string& word : words) insert(word);
+        for (string& w : words) insert(w);
 
         int n = words[0].size();
         vector<vector<string>> res;
-        for (string& word : words) {
-            vector<string> path({word});
+        for (string& w : words) {
+            vector<string> path({w});
             dfs(1, n, path, res);
         }
         return res;
@@ -64,10 +63,10 @@ public:
             return;
         }
         string prefix;
-        for (string& word : path) prefix += word[row];
+        for (string& w : path) prefix += w[row];
         auto words = search(prefix);
-        for (string& word : words) {
-            path.push_back(word);
+        for (string& w : words) {
+            path.push_back(w);
             dfs(row+1, n, path, res);
             path.pop_back();
         }

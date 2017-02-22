@@ -47,6 +47,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }

@@ -15,11 +15,11 @@ public:
         for (int i = 0; i < (int)height.size(); ) {
             if (st.empty() || height[i] <= height[st.top()]) st.push(i++);
             else {
-                int bottom = height[st.top()];
+                int low = height[st.top()];
                 st.pop();
                 if (st.empty()) continue;
-                int width = i-st.top()-1;
-                res += (min(height[i], height[st.top()])-bottom) * width;
+                int high = min(height[i], height[st.top()]); // the bar is decided by the lower one of left and right
+                res += (high-low) * (i-st.top()-1);
             }
         }
         return res;

@@ -4,16 +4,15 @@
 #include <string>
 using namespace std;
 
+// the classical 'three way partition' problem
 class Solution {
 public:
     void sortColors(vector<int>& nums) {
-        if (nums.empty()) return;
-        int n = nums.size();
-        int i = 0, i0 = 0, i2 = n-1;
-        while (i <= i2) {
-            if (nums[i] == 0) swap(nums[i0++], nums[i++]);
-            else if (nums[i] == 2) swap(nums[i2--], nums[i]); // keep i staying here, in case of 0 comes from back end
-            else ++i;
+        int i = 0, j = nums.size()-1, k = 0;
+        while (k <= j) {
+            if (nums[k] == 0) swap(nums[i++], nums[k++]);
+            else if (nums[k] == 2) swap(nums[j--], nums[k]); // keep k staying here, in case of 0 comes from back end
+            else ++k;
         }
     }
 };
@@ -22,4 +21,3 @@ public:
 int main() {
     return 0;
 }
-

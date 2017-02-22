@@ -38,6 +38,8 @@ public:
         return to_string(N-1);
     }
     
+    // note : here d is not the length of base-k format, instead it is the length-1
+    // i.e. we here check if there exists a k, that k^0 + k^1 + ... + k^d ?= N
     ull bs(ull N, int d) {
         ull left = 2, right = pow(N, 1.0/d);
         while (left <= right) {

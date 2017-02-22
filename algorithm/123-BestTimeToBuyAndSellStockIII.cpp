@@ -4,7 +4,6 @@
 #include <string>
 using namespace std;
 
-
 // Similar to 'Max 2 subarrys sum'
 class Solution {
 public:

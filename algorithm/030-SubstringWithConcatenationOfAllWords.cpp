@@ -29,7 +29,7 @@ public:
                 // include all words in dict
                 if (c == 0) res.push_back(i);
 
-                // if size reaches m, fix it
+                // if size reaches m, fix the window size
                 if (j-i == m) {
                     if (f[s.substr(i, wlen)]++ >= 0) ++c;
                     i += wlen;

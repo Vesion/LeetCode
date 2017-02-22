@@ -7,13 +7,13 @@ using namespace std;
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
-        const int d = 2; // for general case, duplicates are allowed at most d times
-        if (nums.size() < d) return nums.size();
-        int k = d;
-        for (int i = d; i < (int)nums.size(); ++i) {
-            if (nums[i] != nums[k-d]) nums[k++] = nums[i];
+        int k = 2;
+        if ((int)nums.size() < k) return nums.size();
+        int r = k;
+        for (int i = k; i < (int)nums.size(); ++i) {
+            if (nums[i] != nums[r-k]) nums[r++] = nums[i];
         }
-        return k;
+        return r;
     }
 };
 

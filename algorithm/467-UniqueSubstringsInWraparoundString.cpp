@@ -22,7 +22,5 @@ public:
 
 
 int main() {
-    Solution s;
-    cout << s.findSubstringInWraproundString("zab") <<endl;
     return 0;
 }

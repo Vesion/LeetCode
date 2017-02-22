@@ -43,18 +43,14 @@ class Solution {
 public:
     vector<int> sortTransformedArray(vector<int>& nums, int a, int b, int c) {
         int n = nums.size();
-        if (n <= 1) return nums;
-
-        auto quadratic = [=](const int x) { return a*x*x + b*x + c; };
-        int i = 0, j = n-1;
         vector<int> res(n);
-        int k = a >= 0 ? n-1 : 0;
 
+        auto f = [&a, &b, &c](const int& x) { return a*x*x + b*x + c; };
+        int i = 0, j = n-1;
+        int k = a >= 0 ? n-1 : 0;
         while (i <= j) {
-            if (a >= 0)
-                res[k--] = quadratic(nums[i]) >= quadratic(nums[j]) ? quadratic(nums[i++]) : quadratic(nums[j--]);
-            else
-                res[k++] = quadratic(nums[i]) >= quadratic(nums[j]) ? quadratic(nums[j--]) : quadratic(nums[i++]);
+            if (a >= 0) res[k--] = f(nums[i]) >= f(nums[j]) ? f(nums[i++]) : f(nums[j--]);
+            else res[k++] = f(nums[i]) <= f(nums[j]) ? f(nums[i++]) : f(nums[j--]);
         }
         return res;
     }

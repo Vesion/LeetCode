@@ -4,6 +4,7 @@
 #include <string>
 using namespace std;
 
+// allow duplicates
 class Solution {
 public:
     int findMin(vector<int>& nums) {
@@ -20,10 +21,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    vector<int> nums = {1};
-    cout << s.findMin(nums) << endl;
     return 0;
 }
-

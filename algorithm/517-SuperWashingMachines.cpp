@@ -21,7 +21,7 @@ public:
         for (int i = 0; i < n; ++i) {
             int left = i*target - sums[i];
             int right = (n-i-1)*target - (sums[n]-sums[i+1]);
-            if (left > 0 && right > 0)
+            if (left > 0 && right > 0) // two sides both lack dresses
                 res = max(res, abs(left) + abs(right));
             else
                 res = max(res, max(abs(left), abs(right)));

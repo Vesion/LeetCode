@@ -8,18 +8,16 @@ class Solution {
 public:
     int threeSumSmaller(vector<int>& nums, int target) {
         int n = nums.size();
-        if (n < 3) return 0;
+        sort(nums.begin(), nums.end()); // think about why we can sort it
         int res = 0;
-        sort(nums.begin(), nums.end());
         for (int i = 0; i+2 < n; ++i) {
             int t = target-nums[i];
             int j = i+1, k = n-1;
             while (j < k) {
-                if (nums[j]+nums[k] < t) { 
-                    res += k-j; // because nums are sorted, all k-j pairs {j, p} (j < p <= k) are all valid
-                    ++j; 
-                }
-                else --k;
+                if (nums[j]+nums[k] < t) {
+                    res += k-j; // all pairs in [j, k] (j < k) are valid
+                    ++j;
+                } else --k;
             }
         }
         return res;

@@ -16,7 +16,7 @@ public:
             if (mid > x / mid) right = mid-1;
             else left = mid+1;
         }
-        return right;
+        return right; // why return right rather than left, bacause sqrt round down
     }
 };
 

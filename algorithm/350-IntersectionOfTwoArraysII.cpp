@@ -2,20 +2,20 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
+#include <unordered_map> 
 using namespace std;
 
-// Solution 1 : unordered_multiset (or unordered_map to count)
+// Solution 1 : hash table 
 class Solution {
 public:
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
-        unordered_multiset<int> s(nums1.begin(), nums1.end());
+        unordered_map<int,int> m;
+        for (int& num : nums1) m[num]++;
         vector<int> res;
-        for (int num : nums2) {
-            auto it = s.find(num);
-            if (it != s.end()) {
+        for (int& num : nums2) {
+            if (m.count(num) && m[num] > 0) {
                 res.push_back(num);
-                s.erase(it);
+                m[num]--;
             }
         }
         return res;
@@ -23,12 +23,28 @@ public:
 };
 
 
+// Solution 2 : sort
+class Solution_2 {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+        vector<int> res;
+        int n1 = nums1.size(), n2 = nums2.size();
+        int i = 0, j = 0;
+        while (i < n1 && j < n2) {
+            if (nums1[i] == nums2[j]) {
+                res.push_back(nums1[i]);
+                ++i; ++j;
+            }
+            else if (nums1[i] < nums2[j]) ++i;
+            else ++j;
+        }
+        return res;
+    }
+};
+
+
 int main() {
-    Solution s;
-    vector<int> n1 = {1,1,2,2,3,3,3};
-    vector<int> n2 = {3,3,2,1,1,1};
-    auto r = s.intersect(n1, n2);
-    for (auto& e : r) cout << e << " "; cout << endl; 
     return 0;
 }
-

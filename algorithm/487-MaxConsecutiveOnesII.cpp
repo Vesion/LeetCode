@@ -24,6 +24,7 @@ public:
     }
 };
 
+
 // solution above is just for the plain array, but in the follow-up, we will recieve data stream
 // thus we cannot store all numbers in memory, so we need to record k most recent indexes of zeroes
 class Solution_for_followup {
