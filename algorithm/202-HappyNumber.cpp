@@ -31,14 +31,15 @@ public:
 class Solution {
 public:
     bool isHappy(int n) {
-        int slow = n, fast = next(n);
-        while (slow != fast) {
+        int slow = n, fast = n;
+        while (true) {
             slow = next(slow);
             fast = next(next(fast));
+            if (slow == fast) break;
         }
         return slow == 1;
     }
-
+    
     int next(int n) {
         int sum = 0;
         while (n) {
@@ -49,9 +50,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    cout << s.isHappy(17) << endl;
     return 0;
 }
-

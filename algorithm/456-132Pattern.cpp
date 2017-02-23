@@ -42,18 +42,18 @@ public:
 
 
 // Solution 2 : stack, one pass, O(n)
-// Scan from back to front, use a stack to store largest numbers, s3 to store second largest number
-// we ensure numbers in stack is larger than s3
-// once we find a number is smaller than s3, we find a 132 pattern (s1 is current number, s2 is any one in stack, s3 is s3)
+// Scan from back to front, use a stack to store largest numbers, a2 to store second largest number
+// we ensure numbers in stack is larger than a2
+// once we find a number is smaller than a2, we find a 132 pattern (a1 is current number, a3 is any one in stack, a2 is a2)
 class Solution {
 public:
     bool find132pattern(vector<int>& nums) {
         stack<int> st;
-        int s3 = INT_MIN;
+        int a2 = INT_MIN;
         for (int i = (int)nums.size()-1; i >= 0; --i) {
-            if (nums[i] < s3) return true;
+            if (nums[i] < a2) return true;
             while (!st.empty() && nums[i] > st.top()) {
-                s3 = st.top();
+                a2 = st.top();
                 st.pop();
             }
             st.push(nums[i]);

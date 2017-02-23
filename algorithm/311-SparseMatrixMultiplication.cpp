@@ -4,8 +4,8 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : straint-forward, ignore 0s
-class Solution {
+// Solution 1 : trivial, ignore 0s
+class Solution_1 {
 public:
     vector<vector<int>> multiply(vector<vector<int>>& A, vector<vector<int>>& B) {
         int l = A.size(), m = A[0].size(), n = B[0].size();
@@ -25,7 +25,7 @@ public:
 
 
 // Solution 2 : hash table
-class Solution_2 {
+class Solution {
 public:
     vector<vector<int>> multiply(vector<vector<int>>& A, vector<vector<int>>& B) {
         int l = A.size(), m = A[0].size(), n = B[0].size();
@@ -51,6 +51,5 @@ public:
 
 
 int main() {
-    Solution s;
     return 0;
 }

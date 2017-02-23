@@ -2,25 +2,23 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_set> 
 using namespace std;
 
 class Solution {
 public:
     bool containsNearbyDuplicate(vector<int>& nums, int k) {
-        unordered_map<int, int> m;
+        unordered_set<int> s;
         for (int i = 0; i < (int)nums.size(); ++i) {
-            if (m.count(nums[i])) {
-                if (i-m[nums[i]] <= k) return true;
-            }
-            m[nums[i]] = i;
+            if (s.count(nums[i])) return true;
+            s.insert(nums[i]);
+            if ((int)s.size() > k) s.erase(nums[i-k]);
         }
         return false;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

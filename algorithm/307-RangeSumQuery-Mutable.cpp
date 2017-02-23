@@ -3,8 +3,51 @@
 #include <numeric>
 using namespace std;
 
-// Solution 1 : segment tree.
+// Solution 1 : binary indexed tree.
 class NumArray {
+private:
+    vector<int> nums, sums;
+    int n;
+    
+    void add(int i, int val) {
+        ++i;
+        while (i <= n) {
+            sums[i] += val;
+            i += (i & -i);
+        }
+    }
+    
+    int query(int i) {
+        ++i;
+        int res = 0;
+        while (i > 0) {
+            res += sums[i];
+            i -= (i & -i);
+        }
+        return res;
+    }
+    
+public:
+    NumArray(vector<int> nums) {
+        this->nums = nums;
+        n = nums.size();
+        sums.resize(n+1);
+        for (int i = 0; i < n; ++i) add(i, nums[i]);
+    }
+    
+    void update(int i, int val) {
+        add(i, val-nums[i]);
+        nums[i] = val;
+    }
+    
+    int sumRange(int i, int j) {
+        return query(j) - query(i-1);
+    }
+};
+
+
+// Solution 2 : segment tree.
+class NumArray_2 {
 private:
     struct SegmentNode {
         int start, end;
@@ -49,7 +92,7 @@ private:
     SegmentNode* root = NULL;
 
 public:
-    NumArray(vector<int> &nums) {
+    NumArray_2(vector<int> &nums) {
         root = build(nums, 0, nums.size()-1);        
     }
 
@@ -62,49 +105,6 @@ public:
     }
 };
 
-
-// Solution 2 : binary indexed tree.
-class NumArray_bit {
-private:
-    vector<int> nums;
-    vector<int> sums;
-
-    void add(int i, int val) {
-        i++;
-        while (i < (int)sums.size()) {
-            sums[i] += val;
-            i += (i & -i);
-        }
-    }
-
-    int query(int i) {
-        i++;
-        int sum = 0;
-        while (i > 0) {
-            sum += sums[i];
-            i -= (i & -i);
-        }
-        return sum;
-    }
-
-public:
-    NumArray_bit(vector<int> &nums) {
-        this->nums = nums;
-        int n = nums.size();
-        sums.resize(n+1, 0);
-        for (int i = 0; i < n; ++i)
-            add(i, nums[i]);
-    }
-
-    void update(int i, int val) {
-        add(i, val-nums[i]);
-        nums[i] = val;
-    }
-
-    int sumRange(int i, int j) {
-        return query(j) - query(i-1);
-    }
-};
 
 
 int main() {

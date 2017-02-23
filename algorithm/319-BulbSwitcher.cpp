@@ -21,9 +21,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    cout << s.bulbSwitch(1000000) <<endl;
     return 0;
 }
-

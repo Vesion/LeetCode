@@ -18,10 +18,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    cout <<s.isIsomorphic("ab", "aa") << endl;
-    cout <<s.isIsomorphic("ab", "ca") << endl;
     return 0;
 }
-

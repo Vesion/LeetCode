@@ -6,43 +6,33 @@
 using namespace std;
 
 // Solution 1 : merge sort based, O(nlgn) time, O(n) space
-// Similar to 'find inverted pairs' problem, these kinds of problems can be sold by merge sort.
-// MergeSort based solution is a standard way to solve problems related to inverse numbers.
-// https://leetcode.com/discuss/73509/nlogn-time-space-mergesort-solution-with-detail-explanation
-class Solution_MergeSort {
+class Solution_1 {
 public:
-    void mergeCount(vector<int>& nums, int first, int last, vector<int>& indices, vector<int>& result) {
-        if (first + 1 >= last) return;
-        int mid = first + (last-first)/2;
-        mergeCount(nums, first, mid, indices, result);
-        mergeCount(nums, mid, last, indices, result);
-        vector<int> tmp;
-        tmp.reserve(last-first);
-        int li = first, ri = mid; // two parts' iterators
-        int count = 0; // count inverse numbers in second part
-        while (li < mid || ri < last) {
-            if ((ri == last) ||
-                (li < mid && nums[indices[li]] <= nums[indices[ri]])) { // push element from first part, and set it's result
-                tmp.push_back(indices[li]);
-                result[indices[li]] += count;
-                ++li;
-            } else { // push element from second part, it must be smaller than some element in first part. so we increase count
-                tmp.push_back(indices[ri]);
-                ++count;
-                ++ri;
-            }
-        }
-        move(tmp.begin(), tmp.end(), indices.begin()+first); // use move rather than copy for better performance
-    }
-
     vector<int> countSmaller(vector<int>& nums) {
-        if (nums.empty()) return {};
         int n = nums.size();
-        vector<int> result(n, 0); // to be returned
-        vector<int> indices(n, 0); // tp record each element's position
-        iota(indices.begin(), indices.end(), 0); // iota is similar to python's 'enumerate' function
-        mergeCount(nums, 0, n, indices, result);
-        return result;
+        vector<int> res(n, 0), index(n, 0);
+        iota(index.begin(), index.end(), 0);
+        mergeSort(nums, 0, n, index, res);
+        return res;
+    }
+    
+    void mergeSort(vector<int>& nums, int first, int last, vector<int>& index, vector<int>& res) {
+        if (first+1 >= last) return;
+        int mid = first + (last-first)/2;
+        mergeSort(nums, first, mid, index, res); 
+        mergeSort(nums, mid, last, index, res);
+        vector<int> cache(last-first);
+        int j = mid, r = 0;
+        int count = 0;
+        for (int i = first; i < mid; ++i) {
+            while (j < last && nums[index[i]] > nums[index[j]]) {
+                ++count;
+                cache[r++] = index[j++];
+            }
+            cache[r++] = index[i];
+            res[index[i]] += count;
+        }
+        move(cache.begin(), cache.begin()+r, index.begin()+first);
     }
 };
 
@@ -77,7 +67,7 @@ public:
     }
 };
 
-class Solution_BIT {
+class Solution_3 {
 public:
     vector<int> countSmaller(vector<int>& nums) {
         if (nums.empty()) return {};
@@ -154,7 +144,7 @@ public:
     }
 };
 
-class Solution_SegmentTree {
+class Solution_4 {
 public:
     vector<int> countSmaller(vector<int> &nums) {
         if (nums.empty()) return {};
@@ -178,16 +168,16 @@ public:
 // test
 int main() {
     vector<int> nums = {2, 4, 56, 2, 5, 9};
-    Solution_MergeSort s1;
+    Solution_1 s1;
     auto r = s1.countSmaller(nums);
     for (auto i : r) cout << i << " "; cout << endl;
 
-    Solution_SegmentTree s2;
-    r = s2.countSmaller(nums);
+    Solution_3 s3;
+    r = s3.countSmaller(nums);
     for (auto i : r) cout << i << " "; cout << endl;
 
-    Solution_BIT s3;
-    r = s3.countSmaller(nums);
+    Solution_4 s4;
+    r = s4.countSmaller(nums);
     for (auto i : r) cout << i << " "; cout << endl;
     return 0;
 }

@@ -17,44 +17,33 @@ class Solution {
 public:
     int maxPoints(vector<Point>& points) {
         int n = points.size();
-        if (n <= 1) return n;
-        unordered_map<double, int> slope_count;
-
         int res = 0;
         for (int i = 0; i < n; ++i) {
-            slope_count.clear();
-            int coincident_points = 0, sameline_points = 1;
-
+            unordered_map<long double, int> s;
+            int coincide = 0, vertical = 1, same = 1;
             for (int j = i+1; j < n; ++j) {
-                double slope;
-                if (points[i].x == points[j].x) {
-                    if (points[i].y == points[j].y) {
-                        ++coincident_points;
-                        continue;
-                    } else {
-                        slope = numeric_limits<double>::infinity();
-                    }
+                auto p1 = points[i], p2 = points[j];
+                if (p1.x == p2.x) {
+                    if (p1.y == p2.y) ++coincide;
+                    else ++vertical;
                 } else {
-                    slope = (double)(points[i].y-points[j].y) / (points[i].x-points[j].x);
+                    long double slope = (long double)(p1.y - p2.y) / (p1.x - p2.x); // use long double in case overflow
+                    if (s.count(slope)) ++s[slope];
+                    else s[slope] = 2;
+                    same = max(same, s[slope]);
                 }
-
-                if (slope_count.count(slope)) slope_count[slope] ++;
-                else slope_count[slope] = 2;
-
-                sameline_points = max(sameline_points, slope_count[slope]);
+                same = max(same, vertical);
             }
-            
-            res = max(res, sameline_points + coincident_points);
+            res = max(res, same+coincide);
         }
-
         return res;
     }
 };
 
+
 int main() {
     Solution s;
-    vector<Point> p = {{0,0}, {1,1}, {2,2}};
+    vector<Point> p = { { 0,0 },{ 94911151,94911150 },{ 94911152,94911151 } };
     cout << s.maxPoints(p) << endl;
     return 0;
 }
-

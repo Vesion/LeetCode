@@ -10,7 +10,7 @@ public:
         if (x < 0) return false;
         int n = 0;
         for (int cx = x; cx; cx /= 10) ++n;
-        int m = n/2;
+        int m = n/2; // reverse half, in case overflow
         int half = 0;
         while (m--) {
             half = half*10 + x%10;
@@ -21,9 +21,7 @@ public:
     }
 };
 
+
 int main() {
-    Solution s;
-    cout << s.isPalindrome(101);
     return 0;
 }
-

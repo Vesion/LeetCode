@@ -7,17 +7,17 @@ using namespace std;
 class Solution {
 public:
     int findNthDigit(int n) {
-        long long num = 1, c = 9, d = 1;
+        long long start = 1, c = 9, d = 1;
         while (n > c) {
             n -= c;
-            num *= 10;
+            start *= 10;
             ++d;
-            c = 9*num*d;
+            c = 9 * start * d;
         }
-        long long k = n/d, r = n%d;
-        num += k-1;
-        if (r == 0) return num%10;
-        else return to_string(++num)[r-1]-'0';
+        long long r = n/d, m = n%d;
+        start += r-1;
+        if (m == 0) return start%10;
+        else return to_string(++start)[m-1]-'0';
     }
 };
 

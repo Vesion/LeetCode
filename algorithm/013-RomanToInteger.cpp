@@ -7,7 +7,7 @@ using namespace std;
 
 class Solution {
 public:
-    int romanToInt(string s) {
+    int romanToInt(string s) {        
         unordered_map<char, int> m = {
             {'M', 1000},
             {'D', 500},
@@ -19,17 +19,14 @@ public:
         };
         int res = 0;
         for (int i = 0; i < (int)s.size(); ++i) {
-            if (i > 0 && m[s[i]] > m[s[i-1]])
-                res += m[s[i]] - 2*m[s[i-1]];
-            else
-                res += m[s[i]];
+            if (i > 0 && m[s[i]] > m[s[i-1]]) res -= 2*m[s[i-1]];
+            res += m[s[i]];
         }
         return res;
     }
 };
 
+
 int main() {
-    Solution s;
     return 0;
 }
-

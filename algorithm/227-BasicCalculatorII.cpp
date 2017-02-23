@@ -53,7 +53,7 @@ public:
                 res += sign * num;
                 sign = op == '+' ? 1 : -1;
                 in >> num;
-            } else { // if *, update num
+            } else { // if * or /, update num
                 int right;
                 in >> right;
                 if (op == '*') num *= right;
