@@ -26,7 +26,7 @@ public:
 };
 
 
-// Solution 2 : iterative, verbos but very interesting
+// Solution 2 : iterative, verbose but very interesting
 // First, we traverse the whole tree to find where p and q are,
 // and in the procedure, we use a hash table to store each node's parent node,
 // when we find p and q, we get the path from root to them, then finding the LCA becomes simple.
