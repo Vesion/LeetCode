@@ -44,7 +44,7 @@ public:
 //
 
 
-// Solution 4 : improved binary partiotion, O(n)
+// Solution 4 : improved binary partiotion, O((logn)^2)
 //
 
 

@@ -10,12 +10,10 @@ using namespace std;
 class Solution {
 public:
     void reverseWords(string &s) {
-        istringstream ss(s);
+        istringstream in(s);
         string w;
         string res;
-        while (getline(ss, w, ' ')) {
-            if (!w.empty())res = (res.empty() ? w : w + " ") + res;
-        }
+        while (in >> w) res = (res.empty() ? w : w + " ") + res;
         s = res;
     }
 };
@@ -55,7 +53,6 @@ int main() {
     string a = "    hello        world kiss     ";
     s.reverseWords(a);
     cout << a << endl;
-
     return 0;
 }
 

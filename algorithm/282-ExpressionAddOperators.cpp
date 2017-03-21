@@ -13,11 +13,11 @@ public:
     }
     
     void dfs(string& s, int start, long long sum, long long pre, int target, string path, vector<string>& res) {
-        if (start == s.size()) {
+        if (start == (int)s.size()) {
             if (sum == target) res.push_back(path);
             return;
         }
-        for (int i = start; i < s.size(); ++i) {
+        for (int i = start; i < (int)s.size(); ++i) {
             if (i > start && s[start] == '0') return; // prefix '0' is invalid
             string t = s.substr(start, i-start+1);
             long long num = stol(t);

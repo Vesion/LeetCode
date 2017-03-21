@@ -8,6 +8,7 @@ using namespace std;
 // Solution 1 : Trie, O(N*L)
 // Firstly, I build trie for all words and get MLE :(
 // Then, I build trie only for words whose shortest abbreviation conflicts with each other, and get MLE too :(
+// Finally, get AC with manual GC :)
 class Solution {
 private:
     struct TrieNode {
