@@ -6,7 +6,7 @@ using namespace std;
 
 // Divide with the last bursted balloon.
 
-// Solution 1 : top-down, recursive + memo
+// Solution 1 : top-down + memoization
 class Solution_1 {
 public:
     int maxCoins(vector<int>& nums) {
@@ -15,15 +15,15 @@ public:
         nums.push_back(1);
         int n = nums.size();
         vector<vector<int>> m(n, vector<int>(n, 0));
-        return dp(nums, 0, n-1, m);
+        return dfs(nums, 0, n-1, m);
     }
     
-    int dp(vector<int>& nums, int left, int right, vector<vector<int>>& m) {
+    int dfs(vector<int>& nums, int left, int right, vector<vector<int>>& m) {
         if (left+1 >= right) return 0; // at leat 3 ballons
         if (m[left][right]) return m[left][right];
         int res = 0;
         for (int i = left+1; i <= right-1; ++i) {
-            res = max(res, dp(nums, left, i, m) + dp(nums, i, right, m) + nums[left]*nums[i]*nums[right]);
+            res = max(res, dfs(nums, left, i, m) + dfs(nums, i, right, m) + nums[left]*nums[i]*nums[right]);
         }
         m[left][right] = res;
         return res;
@@ -59,4 +59,3 @@ public:
 int main() {
     return 0;
 }
-
