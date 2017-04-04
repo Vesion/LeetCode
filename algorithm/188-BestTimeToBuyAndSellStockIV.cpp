@@ -6,7 +6,7 @@ using namespace std;
 
 // Similar to 'Max Sum of K Subarrays'
 //
-// dp[i][j] represents the max profit at day j with at most j transactions
+// dp[i][j] represents the max profit at day j with at most i transactions
 // so, at day j, we have two choices:
 //      1. do nothing, dp[i][j] = dp[i][j-1]
 //      2. sell stock with prices[j], this means before day j we have i-1 transactions, also means we bought stock before day j, say we bought stock at day jj, 
@@ -34,10 +34,10 @@ public:
 
         vector<vector<int>> dp(k+1, vector<int>(n));
         for (int i = 1; i <= k; ++i) {
-            int localMax = dp[i-1][0] - prices[0];
+            int preMax = dp[i-1][0] - prices[0];
             for (int j = 1; j < n; ++j) {
-                dp[i][j] = max(dp[i][j-1], prices[j] + localMax);
-                localMax = max(localMax, dp[i-1][j-1] - prices[j]);
+                dp[i][j] = max(dp[i][j-1], preMax + prices[j]);
+                preMax = max(preMax, dp[i-1][j-1] - prices[j]);
             }
         }
         return dp[k][n-1];
