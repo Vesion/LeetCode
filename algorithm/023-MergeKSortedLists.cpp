@@ -35,36 +35,30 @@ public:
 };
 
 
-// Solution 2 : divide and conquer, O(n)
+// Solution 2 : divide and conquer, like merge sort, O(nlogk)
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         if (lists.empty()) return NULL;
-        ListNode* head = NULL;
-        for (ListNode* h : lists) {
-            head = mergeTwoLists(head, h);
+        int k = lists.size();
+        while (k > 1) {
+            for (int i = 0; i < k/2; ++i)
+                lists[i] = mergeTwoLists(lists[i], lists[k-1-i]);
+            k = (k+1)/2;
         }
-        return head;
+        return lists.front();
     }
     
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
         if (!l1) return l2;
         if (!l2) return l1;
-        ListNode dummy(0);
-        ListNode* head = &dummy;
-        while (l1 && l2) {
-            if (l1->val < l2->val) {
-                head->next = l1;
-                l1 = l1->next;
-            } else {
-                head->next = l2;
-                l2 = l2->next;
-            }
-            head = head->next;
+        if (l1->val < l2->val) {
+            l1->next = mergeTwoLists(l1->next, l2);
+            return l1;
+        } else {
+            l2->next = mergeTwoLists(l1, l2->next);
+            return l2;
         }
-        if (l1) head->next = l1;
-        if (l2) head->next = l2;
-        return dummy.next;
     }
 };
 

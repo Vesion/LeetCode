@@ -18,17 +18,17 @@ struct TreeNode {
 class Solution {
 public:
     void flatten(TreeNode* root) {
-        TreeNode* pre = NULL; // the pre is the 'next node in preorder traversal'
-        postorder(root, pre);
+        TreeNode* next = NULL; // the next is the 'next node in preorder traversal'
+        postorder(root, next);
     }
 
-    void postorder(TreeNode* cur, TreeNode*& pre) {
+    void postorder(TreeNode* cur, TreeNode*& next) {
         if (!cur) return;
-        postorder(cur->right, pre);
-        postorder(cur->left, pre);
-        cur->right = pre;
+        postorder(cur->right, next);
+        postorder(cur->left, next);
+        cur->right = next;
         cur->left = NULL;
-        pre = cur;
+        next = cur;
     }
 };
 

@@ -32,6 +32,6 @@ public:
 
 int main() {
     Solution s;
-    cout << s.findKthNumber(1000000, 100) << endl;
+    cout << s.findKthNumber(INT_MAX, 100) << endl;
     return 0;
 }

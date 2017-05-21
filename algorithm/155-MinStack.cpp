@@ -33,25 +33,28 @@ public:
 };
 
 
-// Solution 2 : one stack, billiant
+// Solution 2 : one stack
 class MinStack_2 {
-private:
-    stack<int> st;
-    int min = INT_MAX;
-
 public:
+    stack<int> st;
+    int minx;
+
+    MinStack_2() {
+        minx = INT_MAX; 
+    }
+    
     void push(int x) {
-        if (x <= min) {
-            st.push(min); // push old min
-            min = x;
+        if (x <= minx) {
+            st.push(minx);
+            minx = x;
         }
         st.push(x);
     }
     
     void pop() {
-        int x = st.top(); st.pop();
-        if (x == min) {
-            min = st.top();
+        int x = st.top(); st.pop(); 
+        if (x == minx) {
+            minx = st.top();
             st.pop();
         }
     }
@@ -61,7 +64,7 @@ public:
     }
     
     int getMin() {
-        return min;
+        return minx; 
     }
 };
 

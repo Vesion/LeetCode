@@ -36,9 +36,9 @@ public:
 //
 // e.g. k = 5, p = 3
 int singleNumber(vector<int>& nums) {
-     int x1 = 0, x2 = 0, x3  = 0; // we need 3 counters, 2^3 > 5
-     int mask = 0; // we need mask, because 2^3 != 5
-     for (int& i : nums) {
+    int x1 = 0, x2 = 0, x3  = 0; // we need 3 counters, 2^3 > 5
+    int mask = 0; // we need mask, because 2^3 != 5
+    for (int& i : nums) {
         x3 ^= x2 & x1 & i;
         x2 ^= x1 & i;
         x1 ^= i;
@@ -46,9 +46,10 @@ int singleNumber(vector<int>& nums) {
         x3 &= mask;
         x2 &= mask;
         x1 &= mask;
-     }
-     return x1;  // p = 3, in binary form p = '0b11', then p1 = p2 = 1, so we return x1 or x2
+    }
+    return x1;  // p = 3, in binary form p = '0b11', then p1 = p2 = 1, so we return x1 or x2
 }
+
 
 int main() {
     return 0;
