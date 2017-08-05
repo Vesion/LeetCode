@@ -6,7 +6,7 @@
 using namespace std;
 
 
-// Solution 1 : just count ship heads
+// Solution 1 : just count ship 'heads'
 class Solution {
 public:
     int countBattleships(vector<vector<char>>& board) {

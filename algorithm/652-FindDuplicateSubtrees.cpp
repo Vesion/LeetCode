@@ -13,6 +13,7 @@ struct TreeNode {
 
 
 // Serialize every subtree into a string, and hash it.
+// refer to 297. and 536.
 class Solution {
 public:
   vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) { 

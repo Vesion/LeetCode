@@ -29,4 +29,3 @@ int main() {
     cout << s.jump(nums) << endl;
     return 0;
 }
-
