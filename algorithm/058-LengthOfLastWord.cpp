@@ -2,8 +2,10 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <sstream> 
 using namespace std;
 
+// Solution 1
 class Solution {
 public:
     int lengthOfLastWord(string s) {
@@ -15,8 +17,19 @@ public:
     }
 };
 
+
+// Solution 2
+class Solution_2 {
+public:
+    int lengthOfLastWord(string s) {
+        istringstream in(s);
+        string w;
+        while (in >> w) ;
+        return w.size();
+    }
+};
+
+
 int main() {
-    Solution s;
     return 0;
 }
-
