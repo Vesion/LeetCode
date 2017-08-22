@@ -1,2 +1,1 @@
-# leetcode
-My solutions to LeetCode
+Everybody be cool, this is robbery!
