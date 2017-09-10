@@ -44,4 +44,3 @@ int main() {
     cout << s.alienOrder(words) <<endl;
     return 0;
 }
-

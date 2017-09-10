@@ -12,17 +12,16 @@ public:
         int res = 0;
         while (rows--) {
             int i = res % n;
-            if (dp[i]) res += dp[i];
-            else {
+            if (!dp[i]) {
                 int j = i, c = 0, len = 0;
                 while (len + (int)sentence[j].size() <= cols) {
                     len += sentence[j].size() + 1;
                     if (++j == n) j = 0;
                     ++c;
                 }
-                res += c;
                 dp[i] = c;
             }
+            res += dp[i];
         }
         return res / n;
     }
