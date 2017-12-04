@@ -52,7 +52,7 @@ public:
 };
 
 
-// Solution 3 : Segment Tree, O(logn) add and delete, O(logn) query, but here numbers are in (0, 10^9)
+// Solution 3 : Segment Tree, O(logN) add and delete, O(logN) query, but here N are in (0, 10^9)
 
 
 int main() {
