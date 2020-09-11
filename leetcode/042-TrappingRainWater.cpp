@@ -2,30 +2,33 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack> 
+#include <stack>
 using namespace std;
+
+// 042-TrappingRainWater.cpp
+// 084-LargestRectangleInHistogram.cpp
+// 085-MaximalRectangle.cpp
 
 // Solution 1 : stack
 class Solution {
 public:
     int trap(vector<int>& height) {
         if (height.empty()) return 0;
-        stack<int> st;
         int res = 0;
-        for (int i = 0; i < (int)height.size(); ) {
-            if (st.empty() || height[i] <= height[st.top()]) st.push(i++);
-            else {
-                int low = height[st.top()];
+        stack<int> st;
+        for (int i = 0; i < height.size(); ++i) {
+            while (!st.empty() && height[i] > height[st.top()]) {
+                const int low = height[st.top()];
                 st.pop();
                 if (st.empty()) continue;
-                int high = min(height[i], height[st.top()]); // the bar is decided by the lower one of left and right
-                res += (high-low) * (i-st.top()-1);
+                const int high = min(height[i], height[st.top()]);
+                res += (high - low) * (i-st.top()-1);
             }
+            st.push(i);
         }
         return res;
     }
 };
-
 
 // Solution 2 : two-pointers
 // Scan from two ends to middle, record leftMax and rightMax height
@@ -50,9 +53,6 @@ public:
     }
 };
 
-
 int main() {
-    Solution s;
     return 0;
 }
-

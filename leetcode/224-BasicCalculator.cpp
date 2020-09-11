@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack> 
+#include <stack>
 using namespace std;
 
 // Solution 1 : top-down parser, recursive descent
@@ -12,24 +12,23 @@ public:
         int i = 0;
         return parse(s, i);
     }
-    
-    int parse(string& s, int& i) {
-        int res = 0, sign = 1;
-        while (i < (int)s.size()) {
-            if (isdigit(s[i])) {
-                int num = 0;
-                while (i < (int)s.size() && isdigit(s[i])) num = num*10 + s[i++]-'0';
+
+    int parse(const string& s, int& i) {
+        int res = 0;
+        int sign = 1;
+        int num = 0;
+        for (; i < s.size(); ++i) {
+            if (s[i] == ' ') continue;
+            if (isdigit(s[i])) num = num * 10 + (s[i] - '0');
+            else if (s[i] == '+' || s[i] == '-') {
                 res += sign * num;
-            } else if (s[i] == '+') {
-                sign = 1; ++i;
-            } else if (s[i] == '-') {
-                sign = -1; ++i;
-            } else if (s[i] == '(') {
-                res += sign * parse(s, ++i);
-            } else if (s[i] == ')') {
-                ++i; break;
-            } else ++i;
+                num = 0;
+                sign = s[i] == '+' ? 1 : -1;
+            }
+            else if (s[i] == '(') res += sign * parse(s, ++i);
+            else if (s[i] == ')') break;
         }
+        res += sign * num;
         return res;
     }
 };

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <algorithm>
-#include <numeric> 
+#include <numeric>
 #include <vector>
 #include <string>
 using namespace std;
@@ -22,9 +22,9 @@ public:
         }
         return lower;
     }
-    
+
     // check if nums can be split into m subarrays with largest one's sum no greater than upper
-    // or, given upper sum, check if it can be split into no more than m subarrays
+    // return ture if max(sums) <= target
     bool canSplit(vector<int>& nums, int m, int target) {
         int count = 1;
         int sum = 0;

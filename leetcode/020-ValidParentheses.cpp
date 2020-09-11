@@ -2,21 +2,25 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack> 
+#include <stack>
 using namespace std;
 
 class Solution {
 public:
     bool isValid(string s) {
         stack<char> st;
-        for (int i = 0; i < (int)s.size(); ++i) {
-            if (s[i] == '(' || s[i] == '{' || s[i] == '[')
-                st.push(s[i]);
-            else {
-                if (st.empty()) return false;
-                if (s[i] == ')' && st.top() != '(') return false;
-                if (s[i] == '}' && st.top() != '{') return false;
-                if (s[i] == ']' && st.top() != '[') return false;
+        for (char c : s) {
+            if (c == '(' || c == '{' || c == '[') st.push(c);
+            else if (c == ')') {
+                if (st.empty() || st.top() != '(') return false;
+                st.pop();
+            }
+            else if (c == '}') {
+                if (st.empty() || st.top() != '{') return false;
+                st.pop();
+            }
+            else if (c == ']') {
+                if (st.empty() || st.top() != '[') return false;
                 st.pop();
             }
         }
@@ -24,8 +28,6 @@ public:
     }
 };
 
-
 int main() {
     return 0;
 }
-

@@ -2,63 +2,71 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // Solution 1 : Heap, O(nlogn)
-class Solution_1 {
+class Solution1 {
 public:
-  string reorganizeString(string s) {
-    int cnt[26] = {0};
-    for (char c : s) cnt[c-'a']++;
-    priority_queue<pair<int,char>> pq;
-    for (int i = 0; i < 26; ++i) if (cnt[i]) pq.push({cnt[i], i+'a'});
-    string res;
-    while (!pq.empty()) {
-      if (pq.size() == 1) {
-        auto t = pq.top(); pq.pop();
-        if (t.first != 1) return "";
-        res += t.second;
-      } else {
-        auto a = pq.top(); pq.pop();
-        res += a.second; --a.first;
-        auto b = pq.top(); pq.pop();
-        res += b.second; --b.first;
-        if (a.first) pq.push(a);
-        if (b.first) pq.push(b);
-      }
+    string reorganizeString(string S) {
+        unordered_map<char,int> m;
+        for (char c : S) m[c]++;
+
+        priority_queue<pair<int,char>> pq;
+        for (const auto& p : m) pq.push({p.second, p.first});
+
+        string res;
+        while (!pq.empty()) {
+            auto p1 = pq.top(); pq.pop();
+            if (res.empty() || res.back() != p1.second) {
+                res += p1.second;
+                --p1.first;
+            }
+            else if (pq.empty()) return "";
+            else {
+                auto p2 = pq.top(); pq.pop();
+                res += p2.second;
+                if (p2.first - 1 > 0) pq.push({p2.first-1, p2.second});
+            }
+            if (p1.first > 0) pq.push({p1.first, p1.second});
+        }
+        return res;
     }
-    return res;
-  }
 };
 
 
 // Solution 2 : Sort, O(n)
 class Solution {
 public:
-  string reorganizeString(string s) {
-    int n = s.size(), cnt[26] = {0};
-    for (char c : s) cnt[c-'a']++;
-    vector<pair<int,char>> v;
-    for (int i = 0; i < 26; ++i) {
-      if (cnt[i] > (n+1)/2) return "";
-      v.push_back({cnt[i], i+'a'});
+    string reorganizeString(string S) {
+        const int n = S.size();
+        const int mid = (n-1)/2+1;  // 9->5, 10->5
+
+        int m[26] = {0};
+        for (char c : S) m[c-'a']++;
+
+        vector<pair<int,char>> v;
+        for (int i = 0; i < 26; ++i) {
+            if (m[i] > mid) return "";
+            if (m[i]) v.push_back({m[i], i+'a'});
+        }
+        sort(v.begin(), v.end(), greater<pair<int,char>>());
+
+        string s;
+        for (const auto& p : v) s += string(p.first, p.second);
+
+        string res;
+        for (int i = 0, j = mid; i < mid; ++i, ++j) {
+            res += s[i];
+            if (j < n) res += s[j];
+        }
+        return res;
     }
-    sort(v.begin(), v.end(), greater<pair<int,char>>());
-    string ss;
-    for (auto& p : v) ss += string(p.first, p.second);
-    string res;
-    for (int i = 0, j = (n-1)/2+1; i <= (n-1)/2; ++i, ++j) {
-      res += ss[i];
-      if (j < n) res += ss[j];
-    }
-    return res;
-  }
 };
 
 
 int main() {
-  Solution s;
-  cout << s.reorganizeString("aabbccddddddd") << endl;
-  return 0;
+    Solution s;
+    cout << s.reorganizeString("aabbccddddddd") << endl;
+    return 0;
 }

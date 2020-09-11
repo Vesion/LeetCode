@@ -6,54 +6,58 @@ using namespace std;
 
 // Solution 1: extend from each position, O(n^2)
 // traverse the whole string, start finding the palindrome from each char (extend to left and right), get the longest substr
-class Solution_1 {
+class Solution1 {
 public:
-    string findPalindrome(string s, int l, int r) {
-        int n = s.size();
-        while (l >= 0 && r < n && s[l] == s[r]) {
-            --l;
-            ++r;
+    string longestPalindrome(string s) {
+        int maxi = 0, maxl = 0;
+        for (int i = 0; i < s.size(); ++i) {
+            const auto p = max_palindrom(s, i);
+            if (p.second > maxl) {
+                maxl = p.second;
+                maxi = p.first;
+            }
         }
-        return s.substr(l + 1, r - l - 1);
+        return s.substr(maxi, maxl);
     }
 
-    string longestPalindrome(string s) {
-        if (s.size() <= 1)
-            return s;
-        string longest, str;
-        for (int i = 0; i < (int)s.size() - 1; i++) {
-            str = findPalindrome(s, i, i);
-            if (str.size() > longest.size())
-                longest = str;
-
-            str = findPalindrome(s, i, i + 1);
-            if (str.size() > longest.size())
-                longest = str;
+    pair<int,int> max_palindrom(const string& s, int start) {
+        int l1 = 1;
+        for (int i = start-1, j = start+1; i >= 0 && j < s.size(); --i, ++j) {
+            if (s[i] != s[j]) break;
+            l1 += 2;
         }
-        return longest;
+        int l2 = 0;
+        for (int i = start, j = start+1; i >= 0 && j < s.size(); --i, ++j) {
+            if (s[i] != s[j]) break;
+            l2 += 2;
+        }
+        if (l1 > l2) return {start-l1/2, l1};
+        else return {start-l2/2+1, l2};
     }
 };
 
 
 // Solution 2 : dp, O(n^2)
 // dp[i][j] = dp[i+1][j-1] if s[i] == s[j], else = 0;
-class Solution_2 {
+class Solution2 {
 public:
     string longestPalindrome(string s) {
-        if (s.empty()) return s;
-        int n = s.size();
-        vector<vector<bool>> dp(n, vector<bool>(n, false));
+        const int n = s.size();
+        vector<vector<bool>> dp(n, vector<bool>(n, 0));
+        int maxi = 0, maxl = 1;
         for (int i = 0; i < n; ++i) dp[i][i] = true;
-        int start = 0, maxlen = 1;
         for (int len = 2; len <= n; ++len) {
             for (int i = 0; i+len-1 < n; ++i) {
-                int j = i+len-1;
-                if (i+1 == j) dp[i][j] = (s[i] == s[j]);
-                else dp[i][j] = (s[i] == s[j]) && dp[i+1][j-1];
-                if (dp[i][j] && len > maxlen) start = i, maxlen = len;
+                const int j = i+len-1;
+                if (len == 2) dp[i][j] = s[i] == s[j];
+                else dp[i][j] = (s[i] == s[j] && dp[i+1][j-1]);
+                if (dp[i][j]) {
+                    maxi = i;
+                    maxl = len;
+                }
             }
         }
-        return s.substr(start, maxlen);
+        return s.substr(maxi, maxl);
     }
 };
 

@@ -8,14 +8,14 @@ using namespace std;
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        vector<int> m(128, 0);
-        int i = 0, j = 0, c = 0;
         int res = 0;
-        while (j < (int)s.size()) {
-            if (m[s[j++]]++ > 0) ++c;
-            while (c > 0)
-                if (m[s[i++]]-- > 1) --c;
-            res = max(res, j-i);
+        int m[128]; fill_n(m, 128, -1);
+        for (int i = 0, j = 0; j < s.size(); ++j) {
+            if (m[s[j]] != -1) {
+                while (i < m[s[j]]+1) m[s[i++]] = -1;
+            }
+            res = max(res, j-i+1);
+            m[s[j]] = j;
         }
         return res;
     }

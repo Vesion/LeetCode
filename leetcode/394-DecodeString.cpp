@@ -9,22 +9,22 @@ class Solution {
 public:
     string decodeString(string s) {
         int i = 0;
-        return parse(s, i);
+        return decode(s, i);
     }
-    
-    string parse(string& s, int& i) {
+
+    // decode the token in []
+    // assume there must be digits before [
+    string decode(const string& s, int& i) {
+        int t = 0;
         string res;
-        int num = 0;
-        while (i < (int)s.size()) {
-            if (isalpha(s[i])) res += s[i++];
-            else if (isdigit(s[i])) num = num*10 + s[i++]-'0';
+        for (; i < s.size(); ++i) {
+            if (isalpha(s[i])) res += s[i];
+            else if (isdigit(s[i])) t = t*10 + (s[i] - '0');
             else if (s[i] == '[') {
-                string p = parse(s, ++i);
-                while (num--) res += p;
-                num = 0;
-            }
-            else if (s[i] == ']') {
-                ++i;
+                const string sub = decode(s, ++i);
+                while (t--) res += sub;
+                t = 0;
+            } else {  // s[i] == ']'
                 break;
             }
         }

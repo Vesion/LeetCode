@@ -5,7 +5,7 @@
 using namespace std;
 
 // Solution 1 : std::unique
-class Solution {
+class Solution1 {
 public:
     int removeDuplicates(vector<int>& nums) {
         auto it = unique(nums.begin(), nums.end());
@@ -14,20 +14,17 @@ public:
     }
 };
 
-
-// Solution 2
-class Solution_2 {
+class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
         if (nums.empty()) return 0;
-        int r = 1;
-        for (int i = 1; i < (int)nums.size(); ++i) {
-            if (nums[i] != nums[r-1]) nums[r++] = nums[i];
+        int l = 1;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i] != nums[i-1]) nums[l++] = nums[i];
         }
-        return r;
+        return l;
     }
 };
-
 
 int main() {
     return 0;

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
-#include <set> 
-#include <map> 
+#include <set>
+#include <map>
 using namespace std;
 
 // Solution 1 : merge sort based, O(nlgn) time, O(n) space
@@ -15,11 +15,11 @@ public:
         mergeSort(nums, 0, n, index, res);
         return res;
     }
-    
+
     void mergeSort(vector<int>& nums, int first, int last, vector<int>& index, vector<int>& res) {
         if (first+1 >= last) return;
         int mid = first + (last-first)/2;
-        mergeSort(nums, first, mid, index, res); 
+        mergeSort(nums, first, mid, index, res);
         mergeSort(nums, mid, last, index, res);
         vector<int> cache(last-first);
         int j = mid, r = 0;
@@ -41,49 +41,37 @@ public:
 
 
 // Solution 3 : Binary Indexed Tree (Fenwick Tree)
-class BinaryIndexedTree {
-private:
-    vector<int> sums;
-
+class Solution_3 {
 public:
-    BinaryIndexedTree(int n) {
-        sums.resize(n+1, 0);
-    }
+    vector<int> sums;
+    static constexpr int kMax = 2 * 1e4 + 4;
 
-    void update(int id, int value) {
-        while (id < (int)sums.size()) {
-            sums[id] += value;
-            id += (id & -id);
+    void add(int id, int val) {
+        for (int i = id+1; i < kMax; i += (i&-i)) {
+            sums[i] += val;
         }
     }
 
     int query(int id) {
-        int sum = 0;
-        while (id > 0) {
-            sum += sums[id];
-            id -= (id & -id);
+        int res = 0;
+        for (int i = id+1; i > 0; i -= (i&-i)) {
+            res += sums[i];
         }
-        return sum;
+        return res;
     }
-};
 
-class Solution_3 {
-public:
     vector<int> countSmaller(vector<int>& nums) {
         if (nums.empty()) return {};
-        set<int> sa(nums.begin(), nums.end());        
-        map<int, int> ma;
-        int i = 1;
-        for (auto it = sa.begin(); it != sa.end(); ++it)
-            ma.insert({*it, i++});
-        BinaryIndexedTree bit(ma.size());
-        vector<int> result;
-        for (int i = (int)nums.size()-1; i >= 0; --i) {
-            result.push_back(bit.query(ma[nums[i]]));
-            bit.update(ma[nums[i]]+1, 1);
+        for (int& num : nums) num += 1e4 + 1;
+        sums.resize(kMax, 0);
+
+        const int n = nums.size();
+        vector<int> res(n);
+        for (int i = n-1; i >= 0; --i) {
+            add(nums[i], 1);
+            res[i] = query(nums[i]-1);
         }
-        reverse(result.begin(), result.end());
-        return result;
+        return res;
     }
 };
 
@@ -148,7 +136,7 @@ class Solution_4 {
 public:
     vector<int> countSmaller(vector<int> &nums) {
         if (nums.empty()) return {};
-        set<int> sa(nums.begin(), nums.end());        
+        set<int> sa(nums.begin(), nums.end());
         map<int, int> ma;
         int i = 1;
         for (auto it = sa.begin(); it != sa.end(); ++it)

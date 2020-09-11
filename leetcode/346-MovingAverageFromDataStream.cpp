@@ -2,26 +2,32 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <deque> 
+#include <deque>
 using namespace std;
 
 class MovingAverage {
-private:
-    deque<int> q;
-    int s, sum = 0;
 public:
+    int capacity = 0;
+    int sum = 0;
+    deque<int> nums;
+
     MovingAverage(int size) {
-        s = size;
+        capacity = size;
+        sum = 0;
+        nums.clear();
     }
-    
+
     double next(int val) {
-        sum += val;
-        q.push_back(val);
-        if ((int)q.size() > s) {
-            sum -= q.front();
-            q.pop_front();
+        if (capacity <= 0) {
+            return 0.0;
         }
-        return sum*1.0 / q.size();
+        nums.push_back(val);
+        sum += val;
+        if (nums.size() > capacity) {
+            sum -= nums.front();
+            nums.pop_front();
+        }
+        return sum * 1.0 / nums.size();
     }
 };
 

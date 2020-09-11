@@ -15,13 +15,13 @@ class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
         if (!head || !head->next) return head;
-        ListNode* newhead = head->next;
-        head->next = swapPairs(newhead->next);
-        newhead->next = head;
-        return newhead;
+        ListNode* new_next = swapPairs(head->next->next);
+        ListNode* next = head->next;
+        next->next = head;
+        head->next = new_next;
+        return next;
     }
 };
-
 
 // Solution 2 : iterative
 class Solution_2 {
@@ -42,7 +42,6 @@ public:
     }
 };
 
-
 // Solution 3 : use two-level-pointer
 class Solution_3 {
 public:
@@ -57,7 +56,6 @@ public:
         return head;
     }
 };
-
 
 int main() {
     return 0;

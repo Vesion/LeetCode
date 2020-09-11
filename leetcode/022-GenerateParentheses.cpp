@@ -4,23 +4,30 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : Catalan recursive
+// Catalan number
+// https://en.wikipedia.org/wiki/Catalan_number
+// C0 = 1, Cn+1 = sum(Ci * Cn-i), i in [0, n]
+
+// recursive
 class Solution {
 public:
     vector<string> generateParenthesis(int n) {
         if (n == 0) return {""};
         vector<string> res;
         for (int i = 0; i < n; ++i) {
-            for (string& s1 : generateParenthesis(i))
-                for (string& s2 : generateParenthesis(n-i-1))
-                    res.push_back(s1 + '(' + s2 + ')');
+            const auto r1 = generateParenthesis(i);
+            const auto r2 = generateParenthesis(n-1-i);
+            for (const string& s1 : r1) {
+                for (const string& s2 : r2) {
+                    res.push_back(s1 + "(" + s2 + ")");
+                }
+            }
         }
         return res;
     }
 };
 
-
-// Solution 2 : Catalan iterative
+// iterative
 class Solution_2 {
 public:
     vector<string> generateParenthesis(int n) {
@@ -41,8 +48,7 @@ public:
     }
 };
 
-
-// Solution 3 : generate one by one
+// generate one by one
 class Solution_3 {
 public:
     vector<string> generateParenthesis(int n) {

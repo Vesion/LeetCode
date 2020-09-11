@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
-#include <queue> 
+#include <unordered_map>
+#include <queue>
 using namespace std;
 
 // Solution 1 : heap, O(nlogk)
@@ -52,7 +52,6 @@ int main() {
     Solution s;
     vector<int> nums = {1,1,1,2,2,3};
     auto r = s.topKFrequent(nums, 2);
-    for (auto& e : r) cout << e << " "; cout << endl; 
+    for (auto& e : r) cout << e << " "; cout << endl;
     return 0;
 }
-

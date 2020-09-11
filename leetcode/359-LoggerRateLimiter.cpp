@@ -2,18 +2,16 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 class Logger {
 private:
     unordered_map<string, int> m;
-    int span;
+    const int span = 0;
 public:
-    Logger() {
-        span = 10;
-    }
-    
+    Logger() : span(10) {}
+
     bool shouldPrintMessage(int timestamp, string message) {
         if (!m.count(message) || timestamp - m[message] >= span) {
             m[message] = timestamp;

@@ -2,19 +2,21 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
+// dp, similar to 001-TwoSum, O(N)
 class Solution {
 public:
     int subarraySum(vector<int>& nums, int k) {
-        unordered_map<int, int> m;
-        m[0] = 1;
-        int sum = 0, res = 0;
-        for (int& num : nums) {
-            sum += num;
-            if (m.count(sum-k)) res += m[sum-k];
-            m[sum]++;
+        unordered_map<int, int> c;
+        int res = 0;
+        int sum = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            sum += nums[i];
+            if (sum == k) ++res;
+            if (c.count(sum-k)) res += c[sum-k];
+            ++c[sum];
         }
         return res;
     }

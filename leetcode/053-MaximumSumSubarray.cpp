@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-// classic DP problem, 最大子段和问题
+// classic DP problem, max sum of subarray
 // dp[i] = max{dp[i-1] + nums[i], nums[i]}
 class Solution {
 public:

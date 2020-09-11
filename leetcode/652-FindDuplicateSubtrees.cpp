@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 struct TreeNode {
@@ -16,20 +16,25 @@ struct TreeNode {
 // refer to 297. and 536.
 class Solution {
 public:
-  vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) { 
-    unordered_map<string, vector<TreeNode*>> m;
-    serialize(root, m);
-    vector<TreeNode*> res;
-    for (auto& p : m) if (p.second.size() > 1) res.push_back(p.second[0]);
-    return res;
-  }
+    unordered_map<string, vector<TreeNode*>> trees;
 
-  string serialize(TreeNode* root, unordered_map<string, vector<TreeNode*>>& m) {
-    if (!root) return "#";
-    string r = "(" + serialize(root->left, m) + to_string(root->val) + serialize(root->right, m) + ")";
-    m[r].push_back(root);
-    return r;
-  }
+    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+        serialize(root);
+        vector<TreeNode*> res;
+        for (const auto& p : trees) {
+            if (p.second.size() > 1) res.push_back(p.second[0]);
+        }
+        return res;
+    }
+
+    string serialize(TreeNode* node) {
+        if (node == nullptr) return "#";
+        const string s = "(" + serialize(node->left) +
+                         to_string(node->val) +
+                         serialize(node->right) + ")";
+        trees[s].push_back(node);
+        return s;
+    }
 };
 
 

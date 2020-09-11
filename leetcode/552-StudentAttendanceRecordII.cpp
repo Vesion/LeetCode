@@ -4,37 +4,35 @@
 #include <string>
 using namespace std;
 
-// dp, O(n)
-// can be optimized by fast matrix power, to O(logn)
+// dp, O(n) time, O(n) space,
+//     can be O(1) space, just for meaningful code
 class Solution {
 public:
-    int checkRecord(int n) {
-        int dp[2][2][3] = {{{0}}};
-        dp[0][0][0] = 1;
-        int p = 0;
-        for (int i = 0; i < n; ++i) {
-            memset(dp[1-p], 0, sizeof dp[1-p]);
-            for (int j = 0; j < 2; ++j) {
-                for (int k = 0; k < 3; ++k) {
-                    add(dp[1-p][j][0], dp[p][j][k]); // put 'P'
-                    if (j == 0) add(dp[1-p][1][0], dp[p][j][k]); // put 'A'
-                    if (k < 2) add(dp[1-p][j][k+1], dp[p][j][k]); // put 'L'
-                }
-            }
-            p = 1-p;
-        }
-        int res = 0;
-        for (int j = 0; j < 2; ++j) for (int k = 0; k < 3; ++k) add(res, dp[p][j][k]);
-        return res;
-    }
+    using ll = long long;
+    static constexpr ll kMod = 1e9 + 7;
 
-    const static int MOD = 1e9+7;
-    void add(int& a, int b) {
-        a += b;
-        if (a >= MOD) a -= MOD;
+    int checkRecord(int n) {
+        if (n == 0) return 0;
+        if (n == 1) return 3;
+        if (n == 2) return 8;
+
+        std::vector<ll> a(n), p(n), l(n), nap(n), nal(n);
+        a[0] = 1, p[0] = 1, l[0] = 1, nap[0] = 1, nal[0] = 1;
+        a[1] = 2, p[1] = 3, l[1] = 3, nap[1] = 2, nal[1] = 2;
+
+        for (int i = 2; i < n; ++i) {
+            a[i] = (nap[i-1] + nal[i-1]) % kMod;
+            p[i] = (a[i-1] + p[i-1] + l[i-1]) % kMod;
+            l[i] = (a[i-1] + p[i-1] + a[i-2] + p[i-2]) % kMod;
+            nap[i] = (nap[i-1] + nal[i-1]) % kMod;
+            nal[i] = (nap[i-1] + nap[i-2]) % kMod;
+        }
+
+        return (a[n-1] + p[n-1] + l[n-1]) % kMod;
     }
 };
 
+// can be optimized by fast matrix power, to O(logn)
 
 int main() {
     Solution s;

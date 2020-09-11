@@ -11,29 +11,26 @@ struct ListNode {
 };
 
 // Solution 1 : iterative
-class Solution_1 {
+class Solution {
 public:
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        ListNode dummy(0);
-        ListNode* head = &dummy;
-        while (l1 && l2) {
-            if (l1->val < l2->val) {
-                head->next = l1;
-                l1 = l1->next;
-            } else {
-                head->next = l2;
+        ListNode dummy;
+        ListNode* cur = &dummy;
+        while (l1 || l2) {
+            if (!l1 || (l1 && l2 && l2->val < l1->val)) {
+                cur->next = new ListNode(l2->val);
                 l2 = l2->next;
+            } else {
+                cur->next = new ListNode(l1->val);
+                l1 = l1->next;
             }
-            head = head->next;
+            cur = cur->next;
         }
-        if (l1) head->next = l1;
-        if (l2) head->next = l2;
         return dummy.next;
     }
 };
 
-
-// Solution 2 : recursive
+// Solution 2 : recursive, need to modify inputs
 class Solution_2 {
 public:
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
@@ -48,7 +45,6 @@ public:
         }
     }
 };
-
 
 int main() {
     return 0;

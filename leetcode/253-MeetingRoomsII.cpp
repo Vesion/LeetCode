@@ -2,25 +2,22 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
-
-struct Interval {
-    int start;
-    int end;
-    Interval() : start(0), end(0) {}
-    Interval(int s, int e) : start(s), end(e) {}
-};
 
 class Solution {
 public:
-    int minMeetingRooms(vector<Interval>& intervals) {
+    int minMeetingRooms(vector<vector<int>>& intervals) {
         if (intervals.empty()) return 0;
-        sort(intervals.begin(), intervals.end(), [](const Interval i1, const Interval i2) { return i1.start < i2.start; });
-        priority_queue<int, vector<int>, greater<int>> pq;  // need only interval's end time
-        for (Interval& i : intervals) {
-            if (!pq.empty() && i.start >= pq.top()) pq.pop();
-            pq.push(i.end);
+        sort(intervals.begin(), intervals.end(),
+             [](const vector<int>& i1, const vector<int>& i2) {
+                if (i1[0] == i2[0]) return i1[1] < i2[1];
+                else return i1[0] < i2[0];
+            });
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for (const auto& interval : intervals) {
+            if (!pq.empty() && interval[0] >= pq.top()) pq.pop();
+            pq.push(interval[1]);
         }
         return pq.size();
     }

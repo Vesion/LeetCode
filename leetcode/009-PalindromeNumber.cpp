@@ -21,6 +21,18 @@ public:
     }
 };
 
+// to string
+class Solution1 {
+public:
+    bool isPalindrome(int x) {
+        const string s = to_string(x);
+        const int n = s.size();
+        for (int i = 0, j = n-1; i <= j; ++i, --j) {
+            if (s[i] != s[j]) return false;
+        }
+        return true;
+    }
+};
 
 int main() {
     return 0;
