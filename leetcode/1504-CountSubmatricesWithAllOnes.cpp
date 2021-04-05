@@ -5,7 +5,8 @@
 #include <stack>
 using namespace std;
 
-// DP, O(m*n*n)
+
+// DP, O(n^3)
 class Solution0 {
 public:
     int numSubmat(vector<vector<int>>& mat) {
@@ -26,6 +27,39 @@ public:
                 }
             }
             dp.swap(ndp);
+        }
+        return res;
+    }
+};
+
+// Convert to 1D variant, O(n^3)
+// Similar to 1074-NumberOfSubmatricesThatSumToTarget
+class Solution1 {
+public:
+    int m, n;
+    int numSubmat(vector<vector<int>>& mat) {
+        m = mat.size(), n = mat[0].size();
+        int res = 0;
+        for (int i1 = 0; i1 < m; ++i1) {
+            vector<int> h(n, 0);
+            for (int i2 = i1; i2 < m; ++i2) {
+                for (int j = 0; j < n; ++j) {
+                    if (i1 == i2) h[j] = mat[i2][j];
+                    else h[j] &= mat[i2][j];
+                }
+                res += numsubarray(h);
+            }
+        }
+        return res;
+    }
+
+    // return number of subarrays which is all 1s
+    int numsubarray(const vector<int>& h) {
+        int res = 0, len = 0;
+        for (int i = 0; i < n; ++i) {
+            if (h[i]) ++len;
+            else len = 0;
+            res += len;
         }
         return res;
     }

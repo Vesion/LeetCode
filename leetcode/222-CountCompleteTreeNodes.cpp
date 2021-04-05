@@ -41,7 +41,9 @@ public:
 
 
 // Solution 3 : count the lowest level's nodes only, the fastest, O(h^2), 72ms
-// first check the right most child of the current node's left child. If this child is exist, we know that there may be more nodes on the right side of the tree. So we move the current node to it's right child. And repeat until we reach the lowest level.
+// first check the right most child of the current node's left child.
+// If this child exists, we know that there may be more nodes on the right side of the tree.
+// So we move the current node to it's right child. And repeat until we reach the lowest level.
 class Solution_3 {
 public:
     int countNodes(TreeNode* root) {

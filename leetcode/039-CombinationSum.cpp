@@ -6,24 +6,23 @@ using namespace std;
 
 class Solution {
 public:
+    vector<vector<int>> res;
+
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        if (candidates.empty()) return {};
-        sort(candidates.begin(), candidates.end());
         vector<int> path;
-        vector<vector<int>> res;
-        dfs(candidates, 0, target, path, res);
+        dfs(0, candidates, target, path);
         return res;
     }
-    
-    void dfs(vector<int>& candidates, int start, int target, vector<int>& path, vector<vector<int>>& res) {
-        if (target == 0) {
-            res.push_back(path);
+
+    void dfs(int start, const vector<int>& nums, int target, vector<int>& path) {
+        if (start == nums.size() || target == 0) {
+            if (target == 0) res.push_back(path);
             return;
         }
-        for (int i = start; i < (int)candidates.size(); ++i) {
-            if (target-candidates[i] < 0) return;
-            path.push_back(candidates[i]);
-            dfs(candidates, i, target-candidates[i], path, res); // each number can be used unlimited times
+        for (int i = start; i < nums.size(); ++i) {
+            if (target-nums[i] < 0) continue;
+            path.push_back(nums[i]);
+            dfs(i, nums, target-nums[i], path);
             path.pop_back();
         }
     }

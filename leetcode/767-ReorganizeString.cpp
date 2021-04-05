@@ -5,30 +5,33 @@
 #include <queue>
 using namespace std;
 
+// similar to 621-TaskScheduler
+
 // Solution 1 : Heap, O(nlogn)
-class Solution1 {
+class Solution {
 public:
     string reorganizeString(string S) {
-        unordered_map<char,int> m;
-        for (char c : S) m[c]++;
-
+        int m[26] = {};
+        for (char c : S) ++m[c-'a'];
         priority_queue<pair<int,char>> pq;
-        for (const auto& p : m) pq.push({p.second, p.first});
+        for (int i = 0; i < 26; ++i) {
+            if (m[i]) pq.push({m[i], 'a'+i});
+        }
 
         string res;
         while (!pq.empty()) {
-            auto p1 = pq.top(); pq.pop();
-            if (res.empty() || res.back() != p1.second) {
-                res += p1.second;
-                --p1.first;
+            auto [t, c] = pq.top(); pq.pop();
+            if (res.empty() || res.back() != c) {
+                res += c;
+                --t;
+            } else if (pq.empty()) {
+                return "";
+            } else {
+                auto [t1, c1] = pq.top(); pq.pop();
+                res += c1;
+                if (t1 > 1) pq.push({t1-1, c1});
             }
-            else if (pq.empty()) return "";
-            else {
-                auto p2 = pq.top(); pq.pop();
-                res += p2.second;
-                if (p2.first - 1 > 0) pq.push({p2.first-1, p2.second});
-            }
-            if (p1.first > 0) pq.push({p1.first, p1.second});
+            if (t > 0) pq.push({t, c});
         }
         return res;
     }

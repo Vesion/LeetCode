@@ -5,42 +5,42 @@
 using namespace std;
 
 class Trie {
-private:
-    struct TrieNode {
-        bool isEnd;
-        TrieNode* nexts[26];
-        TrieNode() { isEnd = false; fill_n(nexts, 26, nullptr); }
+    struct Node {
+        bool end;
+        Node* next[26];
     };
-    TrieNode* root;
-    
+    Node* root;
 public:
     Trie() {
-        root = new TrieNode();
+        root = new Node();
     }
-    
+
     void insert(string word) {
-        TrieNode* cur = root;
-        for (char& c : word) {
-            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
-            cur = cur->nexts[c-'a'];
+        Node* cur = root;
+        for (char c : word) {
+            int t = c-'a';
+            if (!cur->next[t]) cur->next[t] = new Node();
+            cur = cur->next[t];
         }
-        cur->isEnd = true;
+        cur->end = true;
     }
-    
+
     bool search(string word) {
-        TrieNode* cur = root;
-        for (char& c : word) {
-            if (!cur->nexts[c-'a']) return false;
-            cur = cur->nexts[c-'a'];
+        Node* cur = root;
+        for (char c : word) {
+            int t = c-'a';
+            if (!cur->next[t]) return false;
+            cur = cur->next[t];
         }
-        return cur->isEnd;
+        return cur->end;
     }
-    
+
     bool startsWith(string prefix) {
-        TrieNode* cur = root;
-        for (char& c : prefix) {
-            if (!cur->nexts[c-'a']) return false;
-            cur = cur->nexts[c-'a'];
+        Node* cur = root;
+        for (char c : prefix) {
+            int t = c-'a';
+            if (!cur->next[t]) return false;
+            cur = cur->next[t];
         }
         return true;
     }

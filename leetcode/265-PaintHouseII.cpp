@@ -8,16 +8,17 @@ using namespace std;
 class Solution {
 public:
     int minCostII(vector<vector<int>>& costs) {
-        if (costs.empty()) return 0;
         int n = costs.size(), k = costs[0].size();
-        vector<int> dp = costs[0];
+        vector<int> dp(k);
+        for (int i = 0; i < k; ++i) dp[i] = costs[0][i];
         for (int i = 1; i < n; ++i) {
-            vector<int> left(k, INT_MAX), right(k, INT_MAX); // calculate left_min and right_min first
-            for (int j = 1; j < k; ++j) 
-                left[j] = min(left[j-1], dp[j-1]);
-            for (int j = k-2; j >= 0; --j) 
+            vector<int> right(k, INT_MAX);
+            for (int j = k-2; j >= 0; --j)
                 right[j] = min(right[j+1], dp[j+1]);
-            for (int j = 0; j < k; ++j) 
+            vector<int> left(k, INT_MAX);
+            for (int j = 1; j < k; ++j)
+                left[j] = min(left[j-1], dp[j-1]);
+            for (int j = 0; j < k; ++j)
                 dp[j] = min(left[j], right[j]) + costs[i][j];
         }
         return *min_element(dp.begin(), dp.end());

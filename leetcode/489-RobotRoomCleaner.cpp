@@ -26,40 +26,35 @@ using namespace std;
 
 class Solution {
 public:
-    int x = 0, y = 0;
-    int go[2] = {0, 1};
+    const int go[4][2] = {{-1,0}, {0,-1}, {1,0}, {0,1}};
+    int x = 0, y = 0, d = 0;
+    set<pair<int,int>> s;
 
-    void lr(Robot& robot) {
-        robot.turnLeft();
-        int ny = -go[1];
-        go[1] = go[0];
-        go[0] = ny;
+    void cleanRoom(Robot& r) {
+        r.clean();
+        s.insert({x, y});
+        for (int i = 0; i < 4; ++i) {
+            if (!s.count({x+go[d][0], y+go[d][1]}) && move(r)) {
+                cleanRoom(r);
+                turn_left(r); turn_left(r);
+                move(r);
+                turn_left(r); turn_left(r);
+            }
+            turn_left(r);
+        }
     }
 
-    bool move(Robot& robot) {
-        if (robot.move()) {
-            x += go[0], y += go[1];
+    bool move(Robot& r) {
+        if (r.move()) {
+            x += go[d][0], y += go[d][1];
             return true;
         }
         return false;
     }
 
-    set<pair<int,int>> v;
-
-    void cleanRoom(Robot& robot) {
-        int d = 0;
-        robot.clean();
-        v.insert({x, y});
-        while (d < 4) {
-            if (!v.count({x+go[0], y+go[1]}) && move(robot)) {
-                cleanRoom(robot);
-                lr(robot); lr(robot);
-                move(robot);
-                lr(robot); lr(robot);
-            }
-            lr(robot);
-            ++d;
-        }
+    void turn_left(Robot& r) {
+        r.turnLeft();
+        d = (d+1)%4;
     }
 };
 

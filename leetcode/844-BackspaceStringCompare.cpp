@@ -6,21 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool backspaceCompare(string S, string T) {
-        return gets(S) == gets(T);
+    bool backspaceCompare(string s, string t) {
+        return get(s) == get(t);
     }
-
-    string gets(const string& s) {
-        string res;
+    string get(const string& s) {
+        string r;
         for (char c : s) {
-            if (c == '#') {
-                // NOTE: pop_back an empty string is undefined
-                // https://en.cppreference.com/w/cpp/string/basic_string/pop_back
-                if (!res.empty()) res.pop_back();
-            }
-            else res.push_back(c);
+            if (c != '#') r += c;
+            else if (!r.empty()) r.pop_back();
         }
-        return res;
+        return r;
     }
 };
 

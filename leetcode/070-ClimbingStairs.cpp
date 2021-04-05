@@ -6,9 +6,10 @@ using namespace std;
 
 // It's fibonacci
 // Solution 1 : O(n) time O(n) space
-class Solution_1 {
+class Solution1 {
 public:
     int climbStairs(int n) {
+        if (n == 1) return 1;
         vector<int> dp(n+1, 0);
         dp[1] = 1; dp[2] = 2;
         for (int i = 3; i <= n; ++i) dp[i] = dp[i-1] + dp[i-2];

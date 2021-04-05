@@ -17,17 +17,15 @@ public:
 
 
 // Solution 2 : swap, O(n) time, O(1) space
-class Solution_2 {
+// swap first k numbers with last k numbers, then degrade problem from a[0...n] to a[k...n]
+class Solution2 {
 public:
     void rotate(vector<int>& nums, int k) {
-        int *a = &nums[0];
         int n = nums.size();
-        for (; k %= n; n -= k, a += k) {
-            // Swap the last k elements with the first k elements. 
-            // The last k elements will be in the correct positions
-            // but we need to rotate the remaining (n - k) elements to the right by k steps.
-            for (int i = 0; i < k; i++)
-                swap(a[i], a[n-k+i]);
+        for (int i = 0; k %= n; n -= k, i += k) {
+            for (int j = 0; j < k; ++j) {
+                swap(nums[i+j], nums[i+n-k+j]);
+            }
         }
     }
 };

@@ -8,14 +8,13 @@ using namespace std;
 class Solution {
 public:
     string removeKdigits(string num, int k) {
-        if (num.empty()) return num;
         int n = num.size();
-        k = n-k;
-        string res(k, 0);
-        int j = 0;
-        for (int i = 0; i < n; ++i) {
-            while (j != 0 && num[i] < res[j-1] && n-i+j > k) --j;
-            if (j < k) res[j++] = num[i];
+        int m = n-k;
+        string res;
+        for (int i = 0, j = 0; i < n; ++i) {
+            while (!res.empty() && num[i] < res.back() && res.size()+n-i > m)
+                res.pop_back();
+            if (res.size() < m) res.push_back(num[i]);
         }
         auto it = res.find_first_not_of('0');
         if (it == string::npos) return "0";

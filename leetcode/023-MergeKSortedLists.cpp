@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 struct ListNode {
@@ -12,23 +12,24 @@ struct ListNode {
 };
 
 
-// Solution 1 : heap, O(nlogk), TLE
-class Solution_1 {
+// Solution 1 : heap, O(nlogk)
+class Solution1 {
 public:
+    struct Lcmp {
+        bool operator()(const ListNode* n1, const ListNode* n2) {
+            return n1->val > n2->val;
+        }
+    };
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if (lists.empty()) return NULL;
-        auto cmp = [](const ListNode* h1, const ListNode* h2) {
-            return h1->val > h2->val;
-        };
-        priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> pq(cmp);
-        for (ListNode* h : lists) if (h) pq.push(h);
-        ListNode dummy(0);
-        ListNode* head = &dummy;
+        ListNode dummy;
+        ListNode* cur = &dummy;
+        priority_queue<ListNode*, vector<ListNode*>, Lcmp> pq;
+        for (ListNode* node : lists) if (node) pq.push(node);
         while (!pq.empty()) {
-            ListNode* t = pq.top(); pq.pop();
-            head->next = t;
-            head = head->next;
-            if (t->next) pq.push(t->next);
+            ListNode* node = pq.top(); pq.pop();
+            cur->next = node;
+            cur = cur->next;
+            if (node->next) pq.push(node->next);
         }
         return dummy.next;
     }
@@ -48,7 +49,7 @@ public:
         }
         return lists.front();
     }
-    
+
     ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
         if (!l1) return l2;
         if (!l2) return l1;

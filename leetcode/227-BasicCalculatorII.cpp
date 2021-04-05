@@ -2,12 +2,48 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <sstream> 
-#include <stack> 
+#include <sstream>
+#include <stack>
 using namespace std;
 
-// Solution 1 : stack
+// top-down parse
+// similar to 224-BasicCalculator but no need recursion
 class Solution {
+public:
+    using ll = long long;
+    int calculate(string s) {
+        int n = s.size();
+        ll num = 0;
+        ll res = 0;
+        int sign = 1;
+        for (int i = 0; i < n; ++i) {
+            if (s[i] >= '0' && s[i] <= '9') {
+                num = num*10 + s[i]-'0';
+            } else if (s[i] == '+' || s[i] == '-') {
+                res += num*sign;
+                sign = s[i] == '+' ? 1 : -1;
+                num = 0;
+            } else if (s[i] == '*' || s[i] == '/') {
+                char c = s[i++];
+                while (i < n && s[i] == ' ') ++i;
+                ll right = 0;
+                while (i < n && (s[i] >= '0' && s[i] <= '9')) {
+                    right = right*10 + s[i++]-'0';
+                }
+                if (c == '*') num *= right;
+                else if (right == 0) return -1;
+                else num /= right;
+                --i;
+            }
+        }
+        return res + num*sign;
+    }
+};
+
+
+// stack
+// why need stack? because we have to store left-hand-number for * and /
+class Solution1 {
 public:
     int calculate(string s) {
         int n = s.size();
@@ -17,7 +53,7 @@ public:
         for (int i = 0; i < n; ++i) {
             if (isdigit(s[i])) num = num*10 + (s[i]-'0');
             if ((!isdigit(s[i]) && s[i] != ' ') || i == n-1) { // meet +-*/ or reach last character
-                if (sign == '+') { 
+                if (sign == '+') {
                     st.push(num);
                 } else if (sign == '-') {
                     st.push(-num);
@@ -38,32 +74,6 @@ public:
         return res;
     }
 };
-
-
-// Solution 2 : stringstream
-class Solution_2 {
-public:
-    int calculate(string s) {
-        if (s.empty()) return 0;
-        istringstream in("+" + s + "+");
-        int res = 0, num = 0, sign = 1;
-        char op;
-        while (in >> op) {
-            if (op == '+' || op == '-') { // if + or -, update res
-                res += sign * num;
-                sign = op == '+' ? 1 : -1;
-                in >> num;
-            } else { // if * or /, update num
-                int right;
-                in >> right;
-                if (op == '*') num *= right;
-                else num /= right;
-            }
-        }
-        return res;
-    }
-};
-
 
 int main() {
     return 0;

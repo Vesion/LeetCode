@@ -19,8 +19,9 @@ public:
 
 
 // Solution 2 : in place
-// First reverse up to down, then swap the symmetry (clockwise rotate)
-// First reverse left to right, then swap the symmetry (anticlockwise rotate)
+// 1) First reverse up to down, then swap the symmetry (clockwise rotate)
+// or
+// 2) First reverse left to right, then swap the symmetry (anticlockwise rotate)
 class Solution {
 public:
     void rotate(vector<vector<int>>& matrix) {

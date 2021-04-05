@@ -14,20 +14,20 @@ public:
 
 class Solution {
 public:
-    unordered_map<int, Employee*> c;
+    unordered_map<int, const Employee*> m;
 
-    int getImportance(vector<Employee*> employees, int id) {
-        for (Employee* e : employees) c[e->id] = e;
-        if (!c.count(id)) return 0;
-        return dfs(c[id]);
+    int dfs(int id) {
+        const Employee* e = m[id];
+        int sum = e->importance;
+        for (int sub_id : e->subordinates) {
+            sum += dfs(sub_id);
+        }
+        return sum;
     }
 
-    int dfs(Employee* e) {
-        int res = e->importance;
-        for (int d : e->subordinates) {
-            res += dfs(c[d]);
-        }
-        return res;
+    int getImportance(vector<Employee*> employees, int id) {
+        for (const Employee* e : employees) m[e->id] = e;
+        return dfs(id);
     }
 };
 

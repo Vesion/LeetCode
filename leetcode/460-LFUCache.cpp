@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <list> 
-#include <unordered_map> 
+#include <list>
+#include <unordered_map>
 using namespace std;
 
 // similar to LRU cache, but here we use:
@@ -16,25 +16,28 @@ private:
         int val, fre;
         list<int>::iterator pos;
     };
-    unordered_map<int, Entry> entries;
-    unordered_map<int, list<int>> freMap;
+    unordered_map<int, Entry> entries;  // {key: entry}
+    unordered_map<int, list<int>> freMap;  // {freq : [keys]}
     int count, capacity, minfre;
 public:
     LFUCache(int capacity) {
         count = minfre = 0;
         this->capacity = capacity;
     }
-    
+
     int get(int key) {
         if (!entries.count(key)) return -1;
         freMap[entries[key].fre].erase(entries[key].pos); // remove from old bucket
         entries[key].fre++;
         freMap[entries[key].fre].push_front(key); // put into new bucket
         entries[key].pos = freMap[entries[key].fre].begin();
-        if (freMap[minfre].empty()) minfre++; // don't forget to update minfre
+        if (freMap[minfre].empty()) {
+            freMap.erase(minfre);
+            minfre++; // don't forget to update minfre
+        }
         return entries[key].val;
     }
-    
+
     void put(int key, int value) {
         if (capacity == 0) return;
         if (get(key) != -1) {

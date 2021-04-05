@@ -6,22 +6,23 @@ using namespace std;
 
 class Solution {
 public:
+    vector<vector<int>> res;
+
     vector<vector<int>> combinationSum3(int k, int n) {
-        vector<vector<int>> res;
         vector<int> path;
-        dfs(1, k, n, path, res);
+        dfs(1, k, n, path);
         return res;
     }
-    
-    void dfs(int start, int k, int remain, vector<int>& path, vector<vector<int>>& res) {
-        if ((int)path.size() == k) {
-            if (remain == 0) res.push_back(path);
+
+    void dfs(int start, int k, int target, vector<int>& path) {
+        if (k == 0) {
+            if (target == 0) res.push_back(path);
             return;
         }
         for (int i = start; i <= 9; ++i) {
-            if (remain-i < 0) return;
+            if (target-i < 0) break;
             path.push_back(i);
-            dfs(i+1, k, remain-i, path, res);
+            dfs(i+1, k-1, target-i, path);
             path.pop_back();
         }
     }

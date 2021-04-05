@@ -6,7 +6,8 @@ using namespace std;
 
 // https://leetcode.com/problems/single-element-in-a-sorted-array/
 //
-// Problem: Given a sorted array consisting of only integers where every element appears twice except for one element which appears once. Find this single element that appears only once.
+// Problem: Given a sorted array consisting of only integers where every element appears twice
+//          except for one element which appears once. Find this single element that appears only once.
 
 class Solution {
 public:
@@ -18,7 +19,7 @@ public:
       else left = mid+1;
     }
     return nums[2*left];
-  } 
+  }
 };
 
 

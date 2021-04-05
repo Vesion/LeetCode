@@ -6,16 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-  int maxChunksToSorted(vector<int>& arr) {
-    int n = arr.size();
-    vector<int> rightMin(n);
-    for (int i = n-1; i >= 0; --i) rightMin[i] = i == n-1 ? arr[i] : min(arr[i], rightMin[i+1]);
-    vector<int> leftMax(n);
-    for (int i = 0; i < n; ++i) leftMax[i] = i == 0 ? arr[i] : max(arr[i], leftMax[i-1]);
-    int res = 1;
-    for (int i = 0; i < n-1; ++i) if (leftMax[i] <= rightMin[i+1]) ++res;
-    return res;
-  }
+    int maxChunksToSorted(vector<int>& arr) {
+        int maxk = 0;
+        int res = 0;
+        for (int i = 0; i < arr.size(); ++i) {
+            maxk = max(maxk, arr[i]);
+            if (maxk == i) ++res;
+        }
+        return res;
+    }
 };
 
 

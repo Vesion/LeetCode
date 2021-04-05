@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <numeric> 
-#include <queue> 
+#include <numeric>
+#include <queue>
 using namespace std;
 
 // Solution 1 : BFS
@@ -34,52 +34,52 @@ public:
 
 
 // Solution 2 : DFS
-class Solution_2 {
+class Solution2 {
 public:
-    bool validTree(int n, vector<pair<int, int>>& edges) {
-        if ((int)edges.size() != n-1) return false;
-        vector<vector<int>> graph(n);
-        for (auto& e : edges) {
-            graph[e.first].push_back(e.second);
-            graph[e.second].push_back(e.first);
+    vector<vector<int>> g;
+    vector<int> vis;
+    bool validTree(int n, vector<vector<int>>& edges) {
+        g.resize(n);
+        vis.resize(n, 0);
+        for (const auto& e : edges) {
+            g[e[0]].push_back(e[1]);
+            g[e[1]].push_back(e[0]);
         }
-        vector<bool> visited(n, false);
-        if (hasCycle(0, -1, graph, visited)) return false; // detect cycle
-        for (int i = 0; i < n; ++i) if (!visited[i]) return false; // check if all nodes have been visited
+        if (!dfs(0, -1)) return false;
+        for (int i = 0; i < n; ++i) if (vis[i] != 2) return false;
         return true;
     }
-    
-    bool hasCycle(int cur, int parent, vector<vector<int>>& graph, vector<bool>& visited) {
-        if (visited[cur]) return true;
-        visited[cur] = true;
-        for (int& nbr : graph[cur]) {
-            if (nbr != parent) {
-                if (hasCycle(nbr, cur, graph, visited)) return true;
-            }
+    bool dfs(int i, int p) {
+        if (vis[i] == 2) return true;
+        vis[i] = 1;
+        for (int j : g[i]) {
+            if (j == p) continue;
+            if (vis[j] == 1 || !dfs(j, i)) return false;
         }
-        return false;
+        vis[i] = 2;
+        return true;
     }
 };
 
 
 // Solution 3 : Union Find
-class Solution_3 {
+class Solution3 {
 public:
-    bool validTree(int n, vector<pair<int, int>>& edges) {
-        if ((int)edges.size() != n-1) return false;
-        vector<int> root(n);
-        iota(root.begin(), root.end(), 0);
-        for (auto& e : edges) {
-            int ri = findRoot(e.first, root), rj = findRoot(e.second, root);
-            if (ri == rj) return false;
-            root[ri] = rj;
-        }
-        return true;
+    vector<int> root;
+    int find(int x) {
+        return x == root[x] ? x : root[x] = find(root[x]);
     }
-    
-    int findRoot(int i, vector<int>& root) {
-        if (root[i] != i) root[i] = findRoot(root[i], root);
-        return root[i];
+
+    bool validTree(int n, vector<vector<int>>& edges) {
+        root.resize(n);
+        iota(root.begin(), root.end(), 0);
+        for (const auto& e : edges) {
+            int rx = find(e[0]), ry = find(e[1]);
+            if (rx == ry) return false;
+            root[rx] = ry;
+            --n;
+        }
+        return n == 1;
     }
 };
 

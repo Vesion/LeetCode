@@ -16,27 +16,29 @@ struct TreeNode {
 class Solution {
 public:
     vector<TreeNode*> res;
-    unordered_set<int> ds;
+    unordered_set<int> m;
 
     vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
-        if (!root) return res;
-        for (int d : to_delete) ds.insert(d);
-        if (!dfs(root)) res.push_back(root);
+        for (int i : to_delete) m.insert(i);
+        if (dfs(root)) res.push_back(root);
         return res;
     }
 
-    bool dfs(TreeNode* node) {
-        if (!node) return true;
-        bool f = ds.count(node->val);
-        bool fl = dfs(node->left), fr = dfs(node->right);
-        if (f) {
-            if (!fl) res.push_back(node->left);
-            if (!fr) res.push_back(node->right);
+    bool dfs(TreeNode* root) {
+        if (!root) return false;
+        auto it = m.find(root->val);
+        bool has_left = dfs(root->left);
+        bool has_right = dfs(root->right);
+        if (it != m.end()) {
+            if (has_left) res.push_back(root->left);
+            if (has_right) res.push_back(root->right);
+            m.erase(it);
+            return false;
         } else {
-            if (fl) node->left = nullptr;
-            if (fr) node->right = nullptr;
+            if (!has_left) root->left = nullptr;
+            if (!has_right) root->right = nullptr;
+            return true;
         }
-        return f;
     }
 };
 

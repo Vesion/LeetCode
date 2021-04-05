@@ -10,23 +10,22 @@ public:
         if (s.empty() || s[0] == '0') return 0;
         int n = s.size();
         if (n == 1) return 1;
-
         vector<int> dp(n, 0);
         dp[0] = 1;
-        dp[1] = (s[1] != '0') + (isAplha(s, 1));
+        dp[1] = (s[1] != '0') + two(s, 1);
         for (int i = 2; i < n; ++i) {
             if (s[i] == '0') {
-                if (!isAplha(s, i)) return 0; // e.g. "100"
+                if (!two(s, i)) return 0;
                 dp[i] = dp[i-2];
             } else {
-                dp[i] = dp[i-1]; // s[i] can be decoded
-                if (isAplha(s, i)) dp[i] += dp[i-2]; // s[i-1,i] can be decoded
+                dp[i] = dp[i-1];
+                if (two(s, i)) dp[i] += dp[i-2];
             }
         }
         return dp[n-1];
     }
 
-    bool isAplha(string& s, int i) {
+    bool two(const string& s, int i) {
         return s[i-1] != '0' && stoi(s.substr(i-1, 2)) <= 26;
     }
 };

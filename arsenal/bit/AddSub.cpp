@@ -26,10 +26,8 @@ int sub(int a, int b) {
     return a;
 }
 
-
-
 int main() {
-    cout << add(99, 123) << endl; 
+    cout << add(99, 123) << endl;
     cout << sub(12, 90) << endl;
     return 0;
 }

@@ -8,20 +8,17 @@ using namespace std;
 // TLE
 class Solution0 {
 public:
-    int numMatchingSubseq(string S, vector<string>& words) {
-        const int n = words.size();
-        vector<int> wi(n, 0);
-        int i = 0;
+    int numMatchingSubseq(string s, vector<string>& words) {
+        int n = words.size();
+        vector<int> p(n, 0);
         int res = 0;
-        for (; i < S.size(); ++i) {
+        for (int i = 0; i < s.size(); ++i) {
             for (int j = 0; j < n; ++j) {
-                if (wi[j] < words[j].size() && S[i] == words[j][wi[j]]) {
-                    ++wi[j];
-                }
+                const string& w = words[j];
+                if (p[j] == w.size()) continue;
+                if (w[p[j]] == s[i]) ++p[j];
+                if (p[j] == w.size()) ++res;
             }
-        }
-        for (int j = 0; j < n; ++j) {
-            if (wi[j] == words[j].size()) ++res;
         }
         return res;
     }
@@ -56,23 +53,27 @@ public:
 };
 
 // Binary search, O(m*n*logs), n is the average length of words
+// Since s.size() is huge, we'd like to optimize seraching in s.
 class Solution {
 public:
-    int numMatchingSubseq(string S, vector<string>& words) {
-        vector<int> si[26];
-        for (int i = 0; i < S.size(); ++i) {
-            si[S[i]-'a'].push_back(i);
+    int numMatchingSubseq(string s, vector<string>& words) {
+        vector<int> p[26];
+        for (int i = 0; i < s.size(); ++i) {
+            p[s[i]-'a'].push_back(i);
         }
 
         int res = 0;
-        for (const string& word : words) {
-            int x = -1;
+        for (const string& w : words) {
             bool f = true;
-            for (char c : word) {
-                const auto& v = si[c-'a'];
-                auto it = upper_bound(v.begin(), v.end(), x);
-                if (it == v.end()) { f = false; break; }
-                x = *it;
+            int i = -1;
+            for (char c : w) {
+                const vector<int>& pos = p[c-'a'];
+                auto it = upper_bound(pos.begin(), pos.end(), i);
+                if (it == pos.end()) {
+                    f = false;
+                    break;
+                }
+                i = *it;
             }
             if (f) ++res;
         }

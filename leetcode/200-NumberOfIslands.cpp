@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // Solution 1 : BFS
@@ -40,30 +40,27 @@ public:
 
 
 // Solution 2 : DFS
-class Solution_2 {
+class Solution2 {
 public:
     int m, n;
-    int go[4][2] = {{0,1}, {0,-1}, {1,0}, {-1,0}};
-    
+
     int numIslands(vector<vector<char>>& grid) {
-        if (grid.empty()) return 0;
         m = grid.size(), n = grid[0].size();
         int res = 0;
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (grid[i][j] != '1') continue;
-                ++res;
+        for (int i = 0; i < m; ++i) for (int j = 0; j < n; ++j) {
+            if (grid[i][j] == '1') {
                 dfs(grid, i, j);
+                ++res;
             }
         }
-        // we should recover all '2' to '1' before return
         return res;
     }
-    
+
     void dfs(vector<vector<char>>& grid, int i, int j) {
         grid[i][j] = '2';
+        constexpr int go[5] = {1, 0, -1, 0, 1};
         for (int d = 0; d < 4; ++d) {
-            int ni = i+go[d][0], nj = j+go[d][1];
+            int ni = i+go[d], nj = j+go[d+1];
             if (ni < 0 || ni >= m || nj < 0 || nj >= n || grid[ni][nj] != '1') continue;
             dfs(grid, ni, nj);
         }
@@ -72,16 +69,16 @@ public:
 
 
 // Solution 3 : Union Find
-class Solution_3 {
+class Solution3 {
 private:
     vector<int> root;
     int count;
-    
+
     int findRoot(int i) {
         if (root[i] != i) root[i] = findRoot(root[i]);
         return root[i];
     }
-    
+
     void unionSet(int i, int j) {
         int ri = findRoot(i), rj = findRoot(j);
         if (ri != rj) {

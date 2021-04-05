@@ -11,6 +11,7 @@ int kmp(string s, string t) {
     int n = s.size(), m = t.size();
 
     // calculate prefix array
+    // prefix[i] is the length j that t[0...j) is suffix of t[0...i]
     vector<int> prefix(m, 0);
     int j = 0;
     for (int i = 1; i < (int)t.size(); ++i) {
@@ -38,7 +39,7 @@ int kmp(string s, string t) {
 //      Given a string s of length n, calculate the prefix array of s, if prefix[n-1] > 0 && n % (n-prefix[n-1]) == 0,
 //      then s is a self-repeated string, the repeated pattern is n-prefix[n-1]
 //          e.g. s = "12121212", prefix[n-1] = 6, the repeated pattern is "12"
-// 
+//
 // 2. Get the longest prefix palindrome substring
 //      Given a string s, what is the longest prefix palidrome substring of it?
 //      Reverse s and append it to s as a new string t, calculate the prefix array of t
@@ -46,6 +47,6 @@ int kmp(string s, string t) {
 
 
 int main() {
-    cout << kmp("123456456789", "123412341212");    
+    cout << kmp("123456456789", "123412341212");
     return 0;
 }

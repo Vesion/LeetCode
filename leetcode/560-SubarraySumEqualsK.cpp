@@ -5,18 +5,21 @@
 #include <unordered_map>
 using namespace std;
 
-// dp, similar to 001-TwoSum, O(N)
+// number of submatrix sum to k is equal to
+// number of prefix sum equal to (sum-k)
 class Solution {
 public:
     int subarraySum(vector<int>& nums, int k) {
-        unordered_map<int, int> c;
-        int res = 0;
+        int n = nums.size();
+        // dp[t] = count of prefix array which sum to t
+        unordered_map<int,int> dp;
         int sum = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            sum += nums[i];
-            if (sum == k) ++res;
-            if (c.count(sum-k)) res += c[sum-k];
-            ++c[sum];
+        int res = 0;
+        dp[0] = 1;
+        for (int num : nums) {
+            sum += num;
+            if (dp.count(sum-k)) res += dp[sum-k];
+            ++dp[sum];
         }
         return res;
     }

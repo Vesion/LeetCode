@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack> 
+#include <stack>
 using namespace std;
 
 struct TreeNode {
@@ -14,18 +14,16 @@ struct TreeNode {
 // Solution 1 : recursive
 class Solution {
 public:
+    vector<int> res;
     vector<int> inorderTraversal(TreeNode* root) {
-        vector<int> res;
-        dfs(root, res);
+        inorder(root);
         return res;
     }
-
-    void dfs(TreeNode* root, vector<int>& res) {
-        if (root) {
-            dfs(root->left, res);
-            res.push_back(root->val);
-            dfs(root->right, res);
-        }
+    void inorder(TreeNode* root) {
+        if (!root) return;
+        inorder(root->left);
+        res.push_back(root->val);
+        inorder(root->right);
     }
 };
 

@@ -7,7 +7,8 @@ using namespace std;
 class Solution {
 public:
     int maxVacationDays(vector<vector<int>>& flights, vector<vector<int>>& days) {
-        int n = flights.size(), m = days[0].size();    
+        int n = flights.size(), m = days[0].size();
+        // dp[i][j] = maximum play days in week i and city j
         vector<vector<int>> dp(m+1, vector<int>(n, -1));
         dp[0][0] = 0;
         for (int i = 1; i <= m; ++i) {

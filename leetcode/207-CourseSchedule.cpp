@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // Solution 1 : BFS
@@ -35,28 +35,31 @@ public:
 
 
 // Solution 2 : DFS
-class Solution_2 {
+class Solution2 {
 public:
-    bool canFinish(int n, vector<pair<int, int>>& edges) {
-        if (n == 0 || edges.empty()) return true;
-        vector<vector<int>> graph(n);
-        for (auto& e : edges) graph[e.second].push_back(e.first);
-        
-        vector<bool> visited(n, false);
-        vector<bool> onpath(n, false);
-        for (int i = 0; i < n; ++i) 
-            if (hasCycle(graph, i, visited, onpath)) return false;
+    vector<vector<int>> g;
+    vector<int> vis; // 0 non-visited, 1 visiting, 2 visited
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        g.resize(n);
+        vis.resize(n, false);
+        for (const auto& q : prerequisites) {
+            g[q[1]].push_back(q[0]);
+        }
+        for (int i = 0; i < n; ++i) {
+            if (vis[i] == 2) continue;
+            if (!dfs(i)) return false;
+        }
         return true;
     }
-    
-    bool hasCycle(vector<vector<int>>& graph, int cur, vector<bool>& visited, vector<bool>& onpath) {
-        if (visited[cur]) return false;
-        visited[cur] = onpath[cur] = true;
-        for (int& nbr : graph[cur]) {
-            if (onpath[nbr] || hasCycle(graph, nbr, visited, onpath)) return true;
+
+    bool dfs(int i) {
+        if (vis[i] == 2) return true;
+        vis[i] = 1;
+        for (int j : g[i]) {
+            if (vis[j] == 1 || !dfs(j)) return false;
         }
-        onpath[cur] = false;
-        return false;
+        vis[i] = 2;
+        return true;
     }
 };
 

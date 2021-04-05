@@ -2,9 +2,9 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
-#include <unordered_set> 
-#include <stack> 
+#include <unordered_map>
+#include <unordered_set>
+#include <stack>
 using namespace std;
 
 struct TreeNode {
@@ -21,7 +21,9 @@ public:
         if (root == p || root == q) return root;
         TreeNode* left = lowestCommonAncestor(root->left, p, q);
         TreeNode* right = lowestCommonAncestor(root->right, p, q);
-        return (left && right) ? root : (left ? left : right);
+        if (left && right) return root;
+        if (left) return left;
+        return right;
     }
 };
 

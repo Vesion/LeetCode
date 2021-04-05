@@ -4,48 +4,48 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : backtracking, generate
+// Solution 1
+// generate a full binary tree
+// for each number, we have two choices(pick or not pick), only leaf node is a result
 class Solution {
 public:
+    vector<vector<int>> res;
     vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> res;
         vector<int> path;
-        dfs(nums, 0, path, res);
+        dfs(nums, 0, path);
         return res;
     }
-    
-    // will generate a perfect binary tree
-    // so dfs() will be called 2^(n+1)-1 times
-    void dfs(vector<int>& nums, int start, vector<int>& path, vector<vector<int>>& res) {
-        if (start == (int)nums.size()) {
+
+    void dfs(const vector<int>& nums, int start, vector<int>& path) {
+        if (start == nums.size()) {
             res.push_back(path);
             return;
         }
-        dfs(nums, start+1, path, res);
+        dfs(nums, start+1, path);
         path.push_back(nums[start]);
-        dfs(nums, start+1, path, res);
+        dfs(nums, start+1, path);
         path.pop_back();
     }
 };
 
 
-// Solution 2 : backtracking, combination
-class Solution_2 {
+// Solution 2 :
+// nary-tree, much shallower than binary tree
+// in each dfs call, we want to pick a number for the path, so we try all numbers starting from `start`
+class Solution2 {
 public:
+    vector<vector<int>> res;
     vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> res;
         vector<int> path;
-        dfs(nums, 0, path, res);
+        dfs(nums, 0, path);
         return res;
     }
-    
-    // 2^n = 1 + 2^0 + 2^1 + 2^2 + ... + 2^(n-1)
-    // dfs() will be called 2^n times
-    void dfs(vector<int>& nums, int start, vector<int>& path, vector<vector<int>>& res) {
+
+    void dfs(const vector<int>& nums, int start, vector<int>& path) {
         res.push_back(path);
-        for (int i = start; i < (int)nums.size(); ++i) {
+        for (int i = start; i < nums.size(); ++i) {
             path.push_back(nums[i]);
-            dfs(nums, i+1, path, res);
+            dfs(nums, i+1, path);
             path.pop_back();
         }
     }
@@ -53,15 +53,15 @@ public:
 
 
 // Solution 3 : bitmap, there are total 2^n subsets
-class Solution_3 {
+class Solution3 {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
         vector<vector<int>> res;
         int n = nums.size();
-        for (int i = 0; i < (1<<n); ++i) {
+        for (int i = 0; i < (1<<n); ++i) {  // the bit pattern that how we choose numbers
             vector<int> path;
             for (int j = 0; j < n; ++j) {
-                if ((i>>j) & 1) path.push_back(nums[j]);
+                if (i & (1<<j)) path.push_back(nums[j]);
             }
             res.push_back(path);
         }

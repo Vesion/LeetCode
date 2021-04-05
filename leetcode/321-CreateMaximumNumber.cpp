@@ -19,16 +19,9 @@ public:
             if (larger(candidate, k, 0, res, k, 0)) res = candidate;
         }
         return res;
-        
     }
 
-    // compare two numbers, O(m+n)
-    bool larger(vector<int>& nums1, int m, int i, vector<int>& nums2, int n, int j) {
-        while (i < m && j < n && nums1[i] == nums2[j]) ++i, ++j;
-        return j == n || (i < m && nums1[i] > nums2[j]);
-    }
-
-    // get the max k-digits-number in a array, O(n)
+    // get the max k-digits-number in a array, stack, O(n)
     vector<int> getMax(vector<int>& nums, int k) {
         int n = nums.size();
         vector<int> res(k);
@@ -48,6 +41,12 @@ public:
             res[k] = larger(nums1, m, i, nums2, n, j) ? nums1[i++] : nums2[j++];
         return res;
     }
+
+    // compare two numbers, O(m+n)
+    bool larger(vector<int>& nums1, int m, int i, vector<int>& nums2, int n, int j) {
+        while (i < m && j < n && nums1[i] == nums2[j]) ++i, ++j;
+        return j == n || (i < m && nums1[i] > nums2[j]);
+    }
 };
 
 
@@ -56,6 +55,6 @@ int main() {
     vector<int> nums1 = {3,4,6,5};
     vector<int> nums2 = {9,1,2,5,8,3};
     auto r = s.maxNumber(nums1, nums2, 5);
-    for (auto& e : r) cout << e << " "; cout << endl; 
+    for (auto& e : r) cout << e << " "; cout << endl;
     return 0;
 }

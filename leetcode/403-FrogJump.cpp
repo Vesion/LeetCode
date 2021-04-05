@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
-#include <unordered_map> 
+#include <unordered_set>
+#include <unordered_map>
 using namespace std;
 
 // Solution 0 : naive dp, O(n^3), TLE
@@ -30,10 +30,33 @@ public:
 };
 
 
+// dp[i][k] = whether can make a k jump when at position i
+class Solution {
+public:
+    bool canCross(vector<int>& stones) {
+        int n = stones.size();
+        vector<vector<bool>> dp(n, vector<bool>(n+1, false));
+        dp[0][1] = true;
+
+        for (int i = 1; i < n; ++i) {
+            for (int j = 0; j < i; ++j) {
+                int jump = stones[i] - stones[j];
+                if (jump > n || !dp[j][jump]) continue;
+                dp[i][jump] = true;
+                if (jump-1 >= 0) dp[i][jump-1] = true;
+                if (jump+1 <= n) dp[i][jump+1] = true;
+                if (i == n-1) return true;
+            }
+        }
+        return false;
+    }
+};
+
+
 // Solution 1 : dp, generate positions
 // For solution 0, it cost large time (O(n^2)) to find all steps to reach one position, so finally it's O(n^3).
 // This solution extends all posssible positions from current position in O(n), so finally it's O(n^2).
-class Solution {
+class Solution1 {
 public:
     bool canCross(vector<int>& stones) {
         unordered_map<int, unordered_set<int>> dp;
@@ -58,7 +81,7 @@ public:
 //      and start step is 1, so the largest step(k) is 1100;
 //      the largest position index is 1100, so we only need 11 bits (2^11 == 2048 > 1100).
 // So, key is (k << 11) | pos
-class Solution_2 {
+class Solution2 {
 public:
     unordered_map<int, bool> memo;
 

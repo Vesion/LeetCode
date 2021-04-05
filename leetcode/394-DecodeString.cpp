@@ -9,23 +9,25 @@ class Solution {
 public:
     string decodeString(string s) {
         int i = 0;
-        return decode(s, i);
+        return parse(s, i);
     }
 
-    // decode the token in []
-    // assume there must be digits before [
-    string decode(const string& s, int& i) {
-        int t = 0;
+    string parse(const string& s, int& i) {
         string res;
+        int num = 0;
         for (; i < s.size(); ++i) {
-            if (isalpha(s[i])) res += s[i];
-            else if (isdigit(s[i])) t = t*10 + (s[i] - '0');
-            else if (s[i] == '[') {
-                const string sub = decode(s, ++i);
-                while (t--) res += sub;
-                t = 0;
-            } else {  // s[i] == ']'
+            char c = s[i];
+            if (c >= '0' && c <= '9') {
+                num = num*10 + (c-'0');
+            } else if (c == '[') {
+                string t = parse(s, ++i);
+                for (int k = 0; k < num; ++k) res += t;
+                num = 0;
+                // ++i will skip ']'
+            } else if (c == ']') {
                 break;
+            } else {
+                res += c;
             }
         }
         return res;

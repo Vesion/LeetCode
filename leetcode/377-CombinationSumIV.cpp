@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 // Solution 1 : top-down + memo
@@ -13,7 +13,7 @@ public:
         unordered_map<int, int> m;
         return dfs(nums, target, m);
     }
-    
+
     int dfs(vector<int>& nums, int target, unordered_map<int,int>& m) {
         if (target == 0) return 1;
         if (m.count(target)) return m[target];
@@ -33,11 +33,11 @@ public:
 class Solution {
 public:
     int combinationSum4(vector<int>& nums, int target) {
-        vector<int> dp(target+1, 0);
+        vector<long long> dp(target+1, 0);
         dp[0] = 1;
         for (int i = 1; i <= target; ++i) {
-            for (int& num : nums) {
-                if (i >= num) dp[i] += dp[i-num];
+            for (int num : nums) {
+                if (i >= num) dp[i] = (dp[i] + dp[i-num]) % INT_MAX;  // in case int overflow
             }
         }
         return dp[target];

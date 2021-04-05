@@ -8,14 +8,15 @@ class Solution {
 public:
     string toHex(int num) {
         if (num == 0) return "0";
-        string m = "0123456789abcdef";
+        constexpr char m[] = "0123456789abcdef";
         string res;
-        while (num && res.size() < 8) {
-            res = m[num&0xf] + res; // num & 0xf equals to (unsigned)num % 16
+        while (num && res.size() < 8) {  // why < 8? consider num is -1
+            res += m[num&0xf];  // num & 0xf == num % 16
             num >>= 4;
         }
+        reverse(res.begin(), res.end());
         return res;
-    }   
+    }
 };
 
 int main() {

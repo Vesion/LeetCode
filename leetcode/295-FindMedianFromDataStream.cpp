@@ -15,12 +15,10 @@ private:
 
 public:
     void addNum(int num) {
-        if (small.empty() || num <= small.top())
-            small.push(num);
-        else
-            large.push(num);
+        if (small.empty() || num <= small.top()) small.push(num);
+        else large.push(num);
 
-        if (large.size() > small.size()) {
+        if (large.size() == small.size()+1) {
             small.push(large.top());
             large.pop();
         } else if (small.size() == large.size()+2) {
@@ -30,6 +28,7 @@ public:
     }
 
     double findMedian() {
+        if (small.empty()) return 0;
         if (small.size() > large.size()) return small.top();
         return (small.top() + large.top()) * 0.5;
     }

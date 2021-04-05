@@ -9,8 +9,9 @@ using namespace std;
 // dp[i][j] represents the max profit at day j with at most i transactions
 // so, at day j, we have two choices:
 //      1. do nothing, dp[i][j] = dp[i][j-1]
-//      2. sell stock with prices[j], this means before day j we have i-1 transactions, also means we bought stock before day j, say we bought stock at day jj, 
-//         then dp[i][j] = dp[i-1][jj-1] - prices[j]] + prices[j]
+//      2. sell stock with prices[j], this means before day j we have i-1 transactions,
+//         also means we bought stock before day j, say we bought stock at day jj,
+//         then dp[i][j] = dp[i-1][jj-1] - prices[jj] + prices[j]
 //         so, we have to choose one day which can maximize our profit, just iterate jj from 0 to j-1
 //         dp[i][j] = max(dp[i-1][jj-1] - prices[jj]) + prices[j]
 //
@@ -41,7 +42,7 @@ public:
             }
         }
         return dp[k][n-1];
-    }  
+    }
 };
 
 

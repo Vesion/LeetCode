@@ -10,22 +10,23 @@ using namespace std;
 class Solution {
 public:
     int longestSubstring(string s, int k) {
-        return partition(s, k, 0, s.size());
+        return helper(s, 0, s.size(), k);
     }
 
-    int partition(string& s, int k, int start, int end) {
-        int m[26] = {0};
-        for (int i = start; i < end; ++i) m[s[i]-'a']++;
-
+    int helper(const string& s, int start, int end, int k) {
+        int m[26] = {};
+        for (int i = start; i < end; ++i) ++m[s[i]-'a'];
         int res = 0;
-        int i = start;
-        while (i < end) {
+        for (int i = start; i < end; ) {
             if (m[s[i]-'a'] >= k) {
                 int j = i;
-                while (i < end && m[s[i]-'a'] >= k) ++i;
-                if (j == start && i == end) return i-j; // recursion terminates
-                res = max(res, partition(s, k, j, i));
-            } else ++i;
+                while (j < end && m[s[j]-'a'] >= k) ++j;
+                if (i == start && j == end) return j-i;
+                res = max(res, helper(s, i, j, k));
+                i = j;
+            } else {
+                ++i;
+            }
         }
         return res;
     }

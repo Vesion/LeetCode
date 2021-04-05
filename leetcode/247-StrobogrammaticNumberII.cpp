@@ -2,30 +2,31 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 class Solution {
 public:
+    unordered_map<char,char> m = {{'0','0'}, {'1','1'}, {'6','9'}, {'9','6'}, {'8','8'}};
+    vector<string> res;
+
     vector<string> findStrobogrammatic(int n) {
-        unordered_map<char,char> m = {{'0','0'}, {'1','1'}, {'6','9'}, {'8','8'}, {'9','6'}};
-        vector<string> res;
         string path(n, '0');
-        dfs(0, n-1, m, path, res);
+        dfs(0, n-1, path);
         return res;
     }
-    
-    void dfs(int start, int end, unordered_map<char,char>& m, string& path, vector<string>& res) {
-        if (start > end) {
+
+    void dfs(int i, int j, string& path) {
+        if (i > j) {
             res.push_back(path);
             return;
         }
-        for (auto& p : m) {
-            if (start < end && start == 0 && p.first == '0') continue; // prefix '0' is invalid
-            if (start == end && (p.first == '6' || p.first == '9')) continue; // the exact middle one cannot be '6' or '9'
-            path[start] = p.first;
-            path[end] = p.second;
-            dfs(start+1, end-1, m, path, res);
+        for (const auto& p : m) {
+            if (i < j && i == 0 && p.first == '0') continue;
+            if (i == j && (p.first == '6' || p.first == '9')) continue;
+            path[i] = p.first;
+            path[j] = p.second;
+            dfs(i+1, j-1, path);
         }
     }
 };

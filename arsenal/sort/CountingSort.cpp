@@ -11,12 +11,13 @@ using namespace std;
 //
 // Solution:
 //      The main idea is put number to its right place.
-//      Go through the array sequentially and for every index write the value at the index to the index specified by value.
+//      Go through the array sequentially and for every index
+//      write the value at the index to the index specified by value.
 //
 // In this situation, we can sort in-place and in average O(n) time.
 // This can solve many problems such as 'Find missing number' or 'Find  duplicates'...
 
-// e.g. 
+// e.g.
 //
 // https://leetcode.com/problems/first-missing-positive/
 int firstMissingPositive(vector<int>& nums) {

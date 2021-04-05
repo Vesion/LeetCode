@@ -8,7 +8,7 @@ class Solution {
 public:
     int minJumps(vector<int>& arr) {
         if (arr.size() < 2) return 0;
-        // dedup to speedup
+        // dedup, allow at most 2 consecutive equal numbers
         int n = 2;
         for (int i = 2; i < arr.size(); ++i) {
             if (arr[i] != arr[i-2] || arr[i] != arr[i-1]) arr[n++] = arr[i];
@@ -17,25 +17,25 @@ public:
 
         unordered_map<int, vector<int>> m;
         for (int i = 0; i < n; ++i) m[arr[i]].push_back(i);
-        vector<bool> v(n, 0);
 
-        vector<int> s; s.push_back(0); v[0] = true;
+        vector<bool> vis(n, false);
+        queue<int> q;
+        q.push(0); vis[0] = true;
         int res = 0;
-        while (!s.empty()) {
-            vector<int> ns;
-            for (const int i : s) {
+        while (!q.empty()) {
+            int len = q.size();
+            while (len--) {
+                int i = q.front(); q.pop();
                 if (i == n-1) return res;
-                auto& nis = m[arr[i]];
-                nis.push_back(i+1); nis.push_back(i-1);
-                for (const int ni : nis) {
-                    if (ni >= 0 && ni < n && !v[ni]) {
-                        ns.push_back(ni);
-                        v[ni] = true;
-                    }
+                auto& next = m[arr[i]];
+                next.push_back(i-1);
+                next.push_back(i+1);
+                for (int ni : next) {
+                    if (ni < 0 || ni >= n || vis[ni]) continue;
+                    q.push(ni);
+                    vis[ni] = true;
                 }
-                nis.clear();  // to avoid duplicate states, speedup
             }
-            s.swap(ns);
             ++res;
         }
         return -1;

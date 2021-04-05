@@ -8,13 +8,13 @@ using namespace std;
 class Solution {
 public:
     int rob(vector<int>& nums) {
-        int rob = 0, notrob = 0;
-        for (int num : nums) {
-            int tmp = notrob;
-            notrob = max(rob, notrob); // if not rob current house, we get max of previous notrob and rob
-            rob = tmp + num; // if rob current house, we get previous notrob + current money
+        int norob = 0, rob = nums[0];
+        for (int i = 1; i < nums.size(); ++i) {
+            int norob_t = norob;
+            norob = max(norob_t, rob);
+            rob = norob_t + nums[i];
         }
-        return max(rob, notrob);
+        return max(rob, norob);
     }
 };
 

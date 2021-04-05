@@ -49,16 +49,15 @@ public:
 class Solution {
 public:
     int depthSumInverse(vector<NestedInteger>& nestedList) {
-        int pre = 0;
-        int res = 0;
+        int pre = 0, res = 0;
         while (!nestedList.empty()) {
-            vector<NestedInteger> nextLevel;
-            for (NestedInteger& ni : nestedList) {
+            vector<NestedInteger> nl;
+            for (const NestedInteger& ni : nestedList) {
                 if (ni.isInteger()) pre += ni.getInteger();
-                else nextLevel.insert(nextLevel.end(), ni.getList().begin(), ni.getList().end());
+                else nl.insert(nl.end(), ni.getList().begin(), ni.getList().end());
             }
             res += pre;
-            nestedList = nextLevel;
+            swap(nestedList, nl);
         }
         return res;
     }

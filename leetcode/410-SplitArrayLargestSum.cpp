@@ -17,7 +17,7 @@ public:
         }
         while (lower <= upper) {
             int mid = lower + (upper-lower)/2;
-            if (canSplit(nums, m, mid)) upper = mid-1; // we want to get a minimal result
+            if (canSplit(nums, m, mid)) upper = mid-1;
             else lower = mid+1;
         }
         return lower;
@@ -26,16 +26,16 @@ public:
     // check if nums can be split into m subarrays with largest one's sum no greater than upper
     // return ture if max(sums) <= target
     bool canSplit(vector<int>& nums, int m, int target) {
-        int count = 1;
+        int k = 1;
         int sum = 0;
-        for (int& num : nums) {
-            sum += num;
-            if (sum > target) {
-                ++count;
+        for (int num : nums) {
+            if (sum + num <= target) sum += num;
+            else {
                 sum = num;
+                ++k;
             }
         }
-        return count <= m;
+        return k <= m;
     }
 };
 

@@ -8,74 +8,64 @@ using namespace std;
 // dfs + memo, O(N)
 class Solution {
 public:
-    vector<vector<int>> dp;
     int m, n;
+    vector<vector<int>> dp;
 
     int longestIncreasingPath(vector<vector<int>>& matrix) {
-        if (matrix.empty()) return 0;
-        m = matrix.size();
-        n = matrix[0].size();
-        dp.resize(m, vector<int>(n, 0));
+        m = matrix.size(), n = matrix[0].size();
+        dp = vector<vector<int>>(m, vector<int>(n, 0));
         int res = 0;
-        for (int i = 0; i < m; ++i) for (int j = 0; j < n; ++j) {
+        for (int i = 0; i < m; ++i) for (int j = 0; j < n; ++j)
             res = max(res, dfs(matrix, i, j));
-        }
         return res;
     }
 
-    int dfs(vector<vector<int>>& matrix, int si, int sj) {
-        constexpr int go[4][2] = {{1, 0}, {0, 1}, {0, -1}, {-1, 0}};
-        if (dp[si][sj]) return dp[si][sj];
+    int dfs(vector<vector<int>>& matrix, int i, int j) {
+        constexpr int go[5] = {1, 0, -1, 0, 1};
+        if (dp[i][j]) return dp[i][j];
         int res = 1;
         for (int d = 0; d < 4; ++d) {
-            const int i = si + go[d][0];
-            const int j = sj + go[d][1];
-            if (i >= 0 && i < m && j >= 0 && j < n && matrix[i][j] > matrix[si][sj]) {
-                res = max(res, 1 + dfs(matrix, i, j));
-            }
+            int ni = i+go[d], nj = j+go[d+1];
+            if (ni < 0 || ni >= m || nj < 0 || nj >= n) continue;
+            if (matrix[i][j] <= matrix[ni][nj]) continue;
+            res = max(res, dfs(matrix, ni, nj) + 1);
         }
-        dp[si][sj] = res;
+        dp[i][j] = res;
         return res;
     }
 };
 
-// convert to graph, find the longest path (diameter)
+// convert to graph, find the longest path (diameter), O(N)
 class Solution1 {
 public:
     int longestIncreasingPath(vector<vector<int>>& matrix) {
-        if (matrix.empty()) {
-            return 0;
-        }
-        const int m = matrix.size();
-        const int n = matrix[0].size();
-        constexpr int go[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int m = matrix.size(), n = matrix[0].size();
+        vector<vector<int>> g(m*n);
         vector<int> in(m*n, 0);
-        vector<vector<int>> graph(m*n);
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                for (int d = 0; d < 4; ++d) {
-                    const int ni = i + go[d][0];
-                    const int nj = j + go[d][1];
-                    if (ni >= 0 && ni < m && nj >= 0 && nj < n && matrix[ni][nj] > matrix[i][j]) {
-                        graph[i*n+j].push_back(ni*n+nj);
-                        in[ni*n+nj]++;
-                    }
-                }
+        constexpr int go[5] = {1, 0, -1, 0, 1};
+        for (int i = 0; i < m; ++i) for (int j = 0; j < n; ++j) {
+            int x = i*n + j;
+            for (int d = 0; d < 4; ++d) {
+                int ni = i + go[d], nj = j + go[d+1];
+                if (ni < 0 || ni >= m || nj < 0 || nj >= n) continue;
+                if (matrix[i][j] >= matrix[ni][nj]) continue;
+                int y = ni*n + nj;
+                g[x].push_back(y);
+                ++in[y];
             }
         }
-
-        vector<int> zero;
-        for (int i = 0; i < m*n; ++i) if (in[i] == 0) zero.push_back(i);
 
         int res = 0;
-        while (!zero.empty()) {
-            vector<int> new_zero;
-            for (int i : zero) {
-                for (int j : graph[i]) {
-                    if (--in[j] == 0) new_zero.push_back(j);
+        queue<int> q;
+        for (int i = 0; i < m*n; ++i) if (in[i] == 0) q.push(i);
+        while (!q.empty()) {
+            int s = q.size();
+            while (s--) {
+                int i = q.front(); q.pop();
+                for (int j : g[i]) {
+                    if (--in[j] == 0) q.push(j);
                 }
             }
-            zero.swap(new_zero);
             ++res;
         }
         return res;

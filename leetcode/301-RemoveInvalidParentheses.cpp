@@ -2,14 +2,16 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
-#include <queue> 
+#include <unordered_set>
+#include <queue>
 using namespace std;
 
 // Solution 1 : DFS, generate without invalid lefts and rights
 class Solution {
 public:
+    unordered_set<string> res;
     vector<string> removeInvalidParentheses(string s) {
+        // count invalid number of '('s and ')'s
         int lefts = 0, rights = 0;
         for (char c : s) {
             if (c == '(') ++lefts;
@@ -18,29 +20,39 @@ public:
                 else ++rights;
             }
         }
-
-        unordered_set<string> res;
-        dfs(s, 0, lefts, rights, 0, "", res);
+        string path;
+        dfs(s, 0, lefts, rights, 0, path);
         return vector<string>(res.begin(), res.end());
     }
 
-    void dfs(string& s, int start, int lefts, int rights, int pairs, string path, unordered_set<string>& res) {
-        if (start == (int)s.size()) {
+    void dfs(const string& s, int start, int lefts, int rights, int pairs, string& path) {
+        if (start == s.size()) {
             if (lefts == 0 && rights == 0 && pairs == 0) res.insert(path);
             return;
         }
-
         char c = s[start];
         if (c == '(') {
-            if (lefts > 0) dfs(s, start+1, lefts-1, rights, pairs, path, res); // if there are still invalid lefts, remove this one
-            dfs(s, start+1, lefts, rights, pairs+1, path+c, res); // keep this left to form a pair
+            // if there are still redundant '('s, we can remove c
+            if (lefts > 0) dfs(s, start+1, lefts-1, rights, pairs, path);
+            // or use c to start a new pair
+            path += c;
+            dfs(s, start+1, lefts, rights, pairs+1, path);
+            path.pop_back();
+        } else if (c == ')') {
+            // if there are still redundant ')'s, we can remove c
+            if (rights > 0) dfs(s, start+1, lefts, rights-1, pairs, path);
+            // or use c to end a pair
+            if (pairs > 0) {
+                path += c;
+                dfs(s, start+1, lefts, rights, pairs-1, path);
+                path.pop_back();
+            }
+        } else {
+            path += c;
+            dfs(s, start+1, lefts, rights, pairs, path);
+            path.pop_back();
         }
-        else if (c == ')') {
-            if (rights > 0) dfs(s, start+1, lefts, rights-1, pairs, path, res); // if there are still invalid rights, remove this one
-            if (pairs > 0) dfs(s, start+1, lefts, rights, pairs-1, path+c, res); // keep this right to eliminate a pair
-        }
-        else
-            dfs(s, start+1, lefts, rights, pairs, path+c, res);
+
     }
 };
 
@@ -121,7 +133,7 @@ int main() {
     Solution_2 s;
     auto r = s.removeInvalidParentheses("())())");
     cout << r.size() << endl;
-    for (auto& e : r) cout << e << " "; cout << endl; 
+    for (auto& e : r) cout << e << " "; cout << endl;
     return 0;
 }
 

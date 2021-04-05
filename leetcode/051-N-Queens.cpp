@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : trivial backtracking
+// naive
 class Solution_1 {
 public:
     vector<vector<string>> solveNQueens(int n) {
@@ -14,7 +14,7 @@ public:
         dfs(board, 0, n, res);
         return res;
     }
-    
+
     void dfs(vector<string>& board, int row, int n, vector<vector<string>>& res) {
         if (row == n) {
             res.push_back(board);
@@ -26,7 +26,7 @@ public:
             board[row][j] = '.';
         }
     }
-    
+
     bool valid(vector<string>& board, int row, int col, int n) {
         for (int i = 0; i < row; ++i) if (board[i][col] == 'Q') return false;
         for (int i = row-1, j = col-1; i >= 0 && j >= 0; --i, --j) if (board[i][j] == 'Q') return false;
@@ -36,30 +36,36 @@ public:
 };
 
 
-// Solution 2 : dfs + bitmask
+// mark col, left_diagonal, right_diagonal
 class Solution {
 public:
+    vector<vector<string>> res;
+    vector<bool> col, ld, rd;
+    vector<string> board;
+
     vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> res;
-        vector<string> board(n, string(n, '.'));
-        vector<bool> flag(n + (2*n-1) + (2*n-1), 1);
-        dfs(0, n, flag, board, res);
+        col.resize(n, false);
+        ld.resize(2*n-1, false);
+        rd.resize(2*n-1, false);
+        board.resize(n, string(n, '.'));
+        dfs(0, n);
         return res;
     }
 
-    void dfs(int row, int n, vector<bool>& flag, vector<string>& board, vector<vector<string>>& res) {
-        if (row == n) {
+    void dfs(int i, int n) {
+        if (i == n) {
             res.push_back(board);
             return;
         }
-        for (int col = 0; col < n; ++col) {
-            if (flag[col] && flag[n+row+col] && flag[4*n-2+col-row]) {
-                flag[col] = flag[n+row+col] = flag[4*n-2+col-row] = false;
-                board[row][col] = 'Q';
-                dfs(row+1, n, flag, board, res);
-                board[row][col] = '.';
-                flag[col] = flag[n+row+col] = flag[4*n-2+col-row] = true;
-            }
+        for (int j = 0; j < n; ++j) {
+            int l = i+n-1-j;
+            int r = i+j;
+            if (col[j] || ld[l] || rd[r]) continue;
+            col[j] = ld[l] = rd[r] = true;
+            board[i][j] = 'Q';
+            dfs(i+1, n);
+            board[i][j] = '.';
+            col[j] = ld[l] = rd[r] = false;
         }
     }
 };

@@ -14,8 +14,8 @@ class Solution {
 public:
     TreeNode* deleteNode(TreeNode* root, int key) {
         if (!root) return root;
-        if (root->val < key) root->right = deleteNode(root->right, key);
-        else if (root->val > key) root->left = deleteNode(root->left, key);
+        if (key < root->val) root->left = deleteNode(root->left, key);
+        else if (key > root->val) root->right = deleteNode(root->right, key);
         else {
             if (!root->left) {
                 TreeNode* right = root->right;
@@ -27,16 +27,16 @@ public:
                 delete root;
                 return left;
             }
-            TreeNode* successor = findSuccessor(root->right);
-            root->val = successor->val;
-            root->right = deleteNode(root->right, successor->val);
+            TreeNode* next = findnext(root->right);
+            root->val = next->val;
+            root->right = deleteNode(root->right, next->val);
         }
         return root;
     }
-    
-    TreeNode* findSuccessor(TreeNode* root) {
-        if (!root->left) return root;
-        return findSuccessor(root->left);
+
+    TreeNode* findnext(TreeNode* root) {
+        while (root->left) root = root->left;
+        return root;
     }
 };
 

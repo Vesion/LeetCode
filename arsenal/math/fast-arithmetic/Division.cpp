@@ -4,29 +4,21 @@
 #include <string>
 using namespace std;
 
-// use only addition + to implement division /, binary search
-class Solution {
-public:
-    using ll = long long;
-
-    int divide(int dividend, int divisor) {
-        if (divisor == 0 || (dividend == INT_MIN && divisor == -1)) return INT_MAX;
-        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
-        ll ldvd = labs(dividend), ldvs = labs(divisor);
-        int res = 0;
-        while (ldvs <= ldvd) {
-            ll sum = ldvs;
-            int count = 1;
-            while (sum + sum <= ldvd) {
-                sum *= 2;
-                count *= 2;
-            }
-            ldvd -= sum;
-            res += count;
+// use only addition + to implement division /, doubling
+int divide(int A, int B) {
+    if (B == 0 || (A == INT_MIN && B == -1)) return INT_MAX;
+    unsigned a = abs(A), b = abs(B), res = 0;
+    while (a >= b) {
+        unsigned sum = b, count = 1;
+        while (sum < (INT_MAX>>1) && sum + sum <= a) {
+            sum += sum;
+            count += count;
         }
-        return sign * res;
+        a -= sum;
+        res += count;
     }
-};
+    return (A > 0) == (B > 0) ? res : -res;
+}
 
 
 int main() {

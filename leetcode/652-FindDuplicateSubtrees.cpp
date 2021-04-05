@@ -16,24 +16,22 @@ struct TreeNode {
 // refer to 297. and 536.
 class Solution {
 public:
-    unordered_map<string, vector<TreeNode*>> trees;
+    unordered_map<string, int> m;
+    vector<TreeNode*> res;
 
+    string serialize(TreeNode* root) {
+        if (!root) return "#";
+        const string s =
+            "(" + serialize(root->left) + to_string(root->val)
+            + serialize(root->right) + ")";
+        auto it = m.find(s);
+        if (it != m.end() && it->second == 1) res.push_back(root);
+        ++m[s];
+        return s;
+    }
     vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
         serialize(root);
-        vector<TreeNode*> res;
-        for (const auto& p : trees) {
-            if (p.second.size() > 1) res.push_back(p.second[0]);
-        }
         return res;
-    }
-
-    string serialize(TreeNode* node) {
-        if (node == nullptr) return "#";
-        const string s = "(" + serialize(node->left) +
-                         to_string(node->val) +
-                         serialize(node->right) + ")";
-        trees[s].push_back(node);
-        return s;
     }
 };
 

@@ -2,27 +2,26 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 class WordDistance {
-private:
     unordered_map<string, vector<int>> m;
 public:
-    WordDistance(vector<string>& words) {
-        for (int i = 0; i < words.size(); ++i) {
-            m[words[i]].push_back(i);
+    WordDistance(vector<string>& wordsDict) {
+        for (int i = 0; i < wordsDict.size(); ++i) {
+            m[wordsDict[i]].push_back(i);
         }
     }
 
     int shortest(string word1, string word2) {
+        const auto& a1 = m[word1];
+        const auto& a2 = m[word2];
         int res = INT_MAX;
-        auto ids1 = m[word1], ids2 = m[word2];
-        int i = 0, j = 0;
-        while (i < ids1.size() && j < ids2.size()) { // ids1 and ids2 are sorted, so we use the idea of merge sort, O(m+n)
-            res = min(res, abs(ids1[i]-ids2[j]));
-            if (ids1[i] > ids2[j]) ++j;
-            else ++i;
+        for (int i = 0, j = 0; i < a1.size() && j < a2.size(); ) {
+            res = min(abs(a1[i]-a2[j]), res);
+            if (a1[i] < a2[j]) ++i;
+            else ++j;
         }
         return res;
     }

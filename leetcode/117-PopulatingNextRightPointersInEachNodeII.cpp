@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 struct TreeLinkNode {
@@ -37,10 +37,10 @@ public:
 class Solution {
 public:
     void connect(TreeLinkNode *root) {
-        while (root) {
+        while (root) {  // level by level
             TreeLinkNode *pre = NULL, *cur = root;
             TreeLinkNode* first = NULL;
-            while (cur) {
+            while (cur) { // connect the child level
                 if (!first) first = cur->left ? cur->left : cur->right;
                 if (cur->left) {
                     if (pre) pre->next = cur->left;

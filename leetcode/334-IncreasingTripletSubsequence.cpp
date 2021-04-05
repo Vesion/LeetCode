@@ -6,14 +6,12 @@ using namespace std;
 class Solution {
 public:
     bool increasingTriplet(vector<int>& nums) {
-        vector<int> res;
+        vector<int> lis;
         for (int num : nums) {
-            if (res.empty() || num > res.back()) res.push_back(num);
-            else {
-                for (int i = 0; i < (int)res.size(); ++i)
-                    if (res[i] >= num) { res[i] = num; break; }
-            }
-            if (res.size() == 3) return true;
+            auto it = lower_bound(lis.begin(), lis.end(), num);
+            if (it == lis.end()) lis.push_back(num);
+            else *it = num;
+            if (lis.size() == 3) return true;
         }
         return false;
     }

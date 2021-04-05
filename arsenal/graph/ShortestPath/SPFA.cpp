@@ -3,11 +3,12 @@
 #include <vector>
 #include <string>
 #include <cstring>
-#include <climits> 
-#include <queue> 
+#include <climits>
+#include <queue>
 using namespace std;
 
 // SPFA (Shortest Path Faster Algorithm), O(kE)
+// a variant of BellmanFord algorithm
 // suitable for edges-sparse-graph
 
 const int MAXN = 100005;
@@ -39,7 +40,7 @@ void spfa(int s) {
 }
 
 int main() {
-    cin >> N >> M >> S >> T; 
+    cin >> N >> M >> S >> T;
     while (M--) {
         int a, b, l; cin >> a >> b >> l;
         g[a].push_back({b, l});

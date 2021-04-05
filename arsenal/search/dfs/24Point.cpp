@@ -3,12 +3,13 @@
 #include <vector>
 #include <string>
 #include <cstring>
-#include <cmath> 
-#include <unordered_set> 
+#include <cmath>
+#include <unordered_set>
 using namespace std;
 
-// Problem: Pick N cards from a deck of cards (point starts from 1 to 13), find the numebr of ways to manipulate the 4 integers so that the end result is 24.
-//      e.g. 4, 7, 8, 8, a possible solution is (7-(8/8))*4 = 24
+// Problem: Pick N cards from a deck of cards (point starts from 1 to 13),
+//          find the numebr of ways to manipulate the 4 integers so that the end result is 24.
+//          e.g. 4, 7, 8, 8, a possible solution is (7-(8/8))*4 = 24
 
 const int MAX = 10;
 const double FMIN = 1e-6;

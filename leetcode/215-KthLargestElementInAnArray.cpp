@@ -2,12 +2,13 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // The classic 'Kth Largest Number' problem
 
-// Solution 1 : quickSelect, O(n) average
+// Solution 1 : quickSelect, O(n^2) best, O(n) worst
+//              if we preprocess nums with shuffling it, the O(n) is guaranteed
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
@@ -35,13 +36,16 @@ public:
 };
 
 
-// Solution 2 : max-heap, O(klogn)
-class Solution_2 {
+// Solution 2 : max-heap, O(nlogk)
+class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        priority_queue<int> q(nums.begin(), nums.end());
-        while (--k) q.pop();
-        return q.top();
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for (int num : nums) {
+            pq.push(num);
+            if (pq.size() > k) pq.pop();
+        }
+        return pq.top();
     }
 };
 

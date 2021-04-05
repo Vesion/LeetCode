@@ -3,13 +3,15 @@
 #include <vector>
 #include <string>
 #include <cstring>
-#include <climits> 
-#include <cmath> 
-#include <queue> 
+#include <climits>
+#include <cmath>
+#include <queue>
 using namespace std;
 using ll = long long;
 
-// Problem : a bipartite graph (or bigraph) is a graph (usually undirected graph) whose vertices can be divided into two disjoint sets U and V, such that every edge connects a vertex in U to one in V.
+// Problem : a bipartite graph (or bigraph) is a graph (usually undirected graph)
+//           whose vertices can be divided into two disjoint sets U and V, such that
+//           every edge connects a vertex in U to one in V.
 //
 // Solution : BFS
 
@@ -22,11 +24,20 @@ bool bfs(int s) {
     queue<int> q;
     q.push(s); color[s] = 0;
     while (!q.empty()) {
-        int t = q.front(); q.pop(); 
+        int t = q.front(); q.pop();
         for (int& nbr : g[t]) {
             if (color[nbr] == -1) { q.push(nbr); color[nbr] = 1-color[t]; }
             else if (color[nbr] == color[t]) return false;
         }
+    }
+    return true;
+}
+
+bool dfs(int s, int c) {
+    color[s] = c;
+    for (int t : g[s]) {
+        if (color[t] == 1-c) continue;
+        if (color[t] == c || !dfs(t, 1-c)) return false;
     }
     return true;
 }

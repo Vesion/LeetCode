@@ -26,31 +26,32 @@ public:
     }
 };
 
-// DFS + memo, O(nns)
+// Top-down DP
 class Solution {
 public:
-    unordered_map<string, int> m;
-    unordered_map<int, vector<string>> twords;
+    unordered_map<string, int> dp;
+    unordered_map<int, vector<string>> m;
 
     int longestStrChain(vector<string>& words) {
-        int res = 0;
-        for (const string& word : words) {
-            twords[word.size()].push_back(word);
+        for (const string& w : words) {
+            m[w.size()].push_back(w);
         }
-        for (const string& word : words) {
-            res = max(res, dfs(word));
+        int res = 0;
+        for (const string& w : words) {
+            res = max(res, dfs(w));
         }
         return res;
     }
 
     int dfs(const string& w) {
-        if (m[w]) return m[w];
-        int res = 1;
-        if (!twords.count(w.size()+1)) return res;
-        for (const string& nw : twords[w.size()+1]) {
-            if (isnext(w, nw)) res = max(res, dfs(nw) + 1);
+        if (dp.count(w)) return dp[w];
+        int res = 0;
+        int n = w.size();
+        if (!m.count(n+1)) return 1;
+        for (const string& nw : m[n+1]) {
+            if (isnext(w, nw)) res = max(res, dfs(nw));
         }
-        return res;
+        return dp[w] = res+1;
     }
 
     bool isnext(const string& w, const string& nw) {

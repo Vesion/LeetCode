@@ -4,29 +4,27 @@
 #include <string>
 using namespace std;
 
-// Solution 1 : use t[i] to store the largest number's position on the right of i, O(n) time O(n) space
-class Solution_1 {
+// Solution 1 : use t[i] to store the largest number's position to the right of i, O(n) time O(n) space
+class Solution1 {
 public:
-  int maximumSwap(int num) {
-    string s = to_string(num);
-    int n = s.size();
-    vector<int> t(n, 0);
-    char maxc = 0; int j = n-1;
-    for (int i = n-1; i >= 0; --i) {
-      if (s[i] > maxc) {
-        maxc = s[i];
-        j = i;
-      }
-      t[i] = j;
+    int maximumSwap(int num) {
+        string s = to_string(num);
+        int maxd = -1, maxi = -1;
+        int lefti = -1, righti = -1;
+        for (int i = s.size()-1; i >= 0; --i) {
+            if (s[i]-'0' > maxd) {
+                maxd = s[i]-'0';
+                maxi = i;
+            }
+            if (s[i]-'0' < maxd) {
+                lefti = i;
+                righti = maxi;
+            }
+        }
+        if (lefti == -1) return num;
+        swap(s[lefti], s[righti]);
+        return stoi(s);
     }
-    for (int i = 0; i < n; ++i) {
-      if (t[i] != i && s[i] != s[t[i]]) {
-        swap(s[i], s[t[i]]);
-        break;
-      }
-    }
-    return stoi(s);
-  }
 };
 
 

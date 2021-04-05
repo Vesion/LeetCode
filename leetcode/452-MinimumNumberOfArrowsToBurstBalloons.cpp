@@ -7,18 +7,22 @@ using namespace std;
 // greedy, same with 435-NonOverlappingIntervals
 class Solution {
 public:
-    int findMinArrowShots(vector<pair<int, int>>& points) {
-        sort(points.begin(), points.end(), [](const pair<int,int>& p1, const pair<int,int>& p2) {
-            if (p1.first == p2.first) return p1.second < p2.second;
-            return p1.first < p2.first;
-        });
-        int res = 0;
-        long long end = LONG_MIN;
-        for (auto& p : points) {
-            if (p.first <= end) end = min(end, (long long)p.second);
-            else { ++res; end = p.second; }
+    using ll = long long;
+    int findMinArrowShots(vector<vector<int>>& points) {
+        sort(points.begin(), points.end(),
+             [](const vector<int>& p1, const vector<int>& p2) {
+                 if (p1[0] == p2[0]) return p1[1] < p2[1];
+                 return p1[0] < p2[0];
+             });
+        ll pre_end = LONG_MIN;
+        int overlaps = 0;
+        for (const vector<int>& p : points) {
+            if (p[0] <= pre_end) {
+                ++overlaps;
+                pre_end = min(pre_end, ll(p[1]));
+            } else pre_end = p[1];
         }
-        return res;
+        return points.size()-overlaps;
     }
 };
 

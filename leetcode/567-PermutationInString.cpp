@@ -7,13 +7,14 @@ using namespace std;
 class Solution {
 public:
     bool checkInclusion(string s1, string s2) {
-        vector<int> m(128, 0);
-        for (char& c : s1) m[c]++;
-        int i = 0, j = 0, c = s1.size();
-        while (j < (int)s2.size()) {
-            if (m[s2[j++]]-- > 0) --c;
-            if (c == 0) return true;
-            if (j-i == (int)s1.size() && m[s2[i++]]++ >= 0) ++c;
+        int n1 = s1.size(), n2 = s2.size();
+        int m[26] = {};
+        for (char c : s1) ++m[c-'a'];
+        int k = 0;
+        for (int i = 0, j = 0; j < n2; ++j) {
+            if (--m[s2[j]-'a'] >= 0) ++k;
+            if (j-i+1 > n1 && ++m[s2[i++]-'a'] > 0) --k;
+            if (k == n1) return true;
         }
         return false;
     }

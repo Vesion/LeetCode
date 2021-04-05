@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 struct TreeNode {
@@ -14,30 +14,30 @@ struct TreeNode {
 // postorder
 class Solution {
 public:
+    int res = 0;
+
     int largestBSTSubtree(TreeNode* root) {
-        int res = 0;
-        int lower, upper;
-        postorder(root, res, lower, upper);
+        post(root);
         return res;
     }
-    
-    bool postorder(TreeNode* root, int& res, int& lower, int& upper) {
-        if (!root) return true;
-        int left_res = 0, right_res = 0;
-        int left_lower, left_upper, right_lower, right_upper;
-        bool left_is = postorder(root->left, left_res, left_lower, left_upper);
-        bool right_is = postorder(root->right, right_res, right_lower, right_upper);
-        if (left_is && right_is && (!root->left || root->val > left_upper) && (!root->right || root->val < right_lower)) {
-            res = left_res + right_res + 1;
-            lower = root->left ? left_lower : root->val;
-            upper = root->right ? right_lower : root->val;
-            return true;
+
+    tuple<bool,int,int,int> post(TreeNode* root) {
+        if (!root) return {true, 0, 0, 0};
+        auto [l_is, l_lower, l_upper, l_count] = post(root->left);
+        auto [r_is, r_lower, r_upper, r_count] = post(root->right);
+        if (l_is && r_is &&
+            (!root->left || l_upper < root->val) &&
+            (!root->right || root->val < r_lower)) {
+            res = max(res, l_count+r_count+1);
+            return {true,
+                    root->left ? l_lower : root->val,
+                    root->right ? r_upper : root->val,
+                    l_count+r_count+1};
+        } else {
+            return {false, 0, 0, 0};
         }
-        res = max(left_res, right_res);
-        return false;
     }
 };
-
 
 int main() {
     return 0;

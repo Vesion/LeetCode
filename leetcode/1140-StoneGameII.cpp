@@ -4,28 +4,32 @@
 #include <string>
 using namespace std;
 
+// Note the difference between this and 1406-StoneGameIII,
+// this one needs to find the maximum stones of the first player,
+// 1406 only needs to find whether the first player can win.
+
 // Top down dp, O(n*n*n)
 class Solution {
 public:
-    static constexpr int MAX = 202;
-    int dp[MAX][MAX] = {0};
+    vector<vector<int>> dp;
 
     int stoneGameII(vector<int>& piles) {
-        vector<int> sufsums = piles;
-        for (int i = sufsums.size()-2; i >= 0; --i) sufsums[i] += sufsums[i+1];
-        return dfs(sufsums, 0, 1);
+        int n = piles.size();
+        dp.resize(2*n+1, vector<int>(2*n+1, -1));
+        vector<int> sufsum = piles;
+        for (int i = n-2; i >= 0; --i) sufsum[i] += sufsum[i+1];
+        return dfs(sufsum, 0, 1);
     }
 
-    int dfs(const vector<int>& sufsums, int s, int m) {
-        if (dp[s][m]) return dp[s][m];
-        if (s >= sufsums.size()) return 0;
-
-        int min_rival = sufsums[0];
-        for (int x = 1; x <= 2*m && s-1+x < sufsums.size(); ++x) {
-            min_rival = min(min_rival, dfs(sufsums, s+x, max(m,x)));
+    // return maximum stones the player could get
+    int dfs(const vector<int>& sufsum, int i, int m) {
+        if (i >= sufsum.size()) return 0;
+        if (dp[i][m] != -1) return dp[i][m];
+        int rival = INT_MAX;
+        for (int x = 1; x <= 2*m && i+x-1 < sufsum.size(); ++x) {
+            rival = min(rival, dfs(sufsum, i+x, max(m, x)));
         }
-        dp[s][m] = sufsums[s] - min_rival;
-        return dp[s][m];
+        return dp[i][m] = sufsum[i]-rival;
     }
 };
 

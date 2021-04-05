@@ -9,7 +9,10 @@ class Solution {
 public:
     bool isSubsequence(string s, string t) {
         int i = 0;
-        for (char& c : t) if (c == s[i]) ++i;
+        for (char& c : t) {
+            if (i == s.size()) break;
+            if (c == s[i]) ++i;
+        }
         return i == (int)s.size();
     }
 };

@@ -2,10 +2,11 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <map> 
+#include <map>
 using namespace std;
 
-// Solution 1 : O(n^2), based on 729-MyCalendarI, check overlap if overlapped with overlaps before
+// O(n^2), check overlap if overlapped with overlaps before
+// similar to 729-MyCalendarI
 class MyCalendar {
 private:
   vector<pair<int,int>> books;
@@ -38,7 +39,7 @@ public:
 };
 
 
-// Solution 2 : O(n), go through all points one by one in sorting order
+// O(n), BST, similar to 732-MyCalendarIII
 class MyCalendarTwo_2 {
 private:
   map<int,int> m;
@@ -59,9 +60,6 @@ public:
     return true;
   }
 };
-
-
-// Solution 3 : BST, O(logn), similar to 715-RangeModule
 
 
 int main() {

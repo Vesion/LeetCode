@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 using namespace std;
 
 struct RandomListNode {
@@ -13,7 +13,7 @@ struct RandomListNode {
 
 
 // Solution 1 : hash map + dfs, Similar to 133-CloneGraph, O(n) space
-class Solution {
+class Solution1 {
 public:
     RandomListNode *copyRandomList(RandomListNode *head) {
         unordered_map<RandomListNode*, RandomListNode*> copied;
@@ -34,30 +34,24 @@ public:
 
 // Solution 2 : no-map, O(1) space
 // insert copied node i between original node i and i+1, then set random pointers, lastly break them up
-class Solution_2 {
+class Solution {
 public:
-    RandomListNode *copyRandomList(RandomListNode *head) {
-        if (!head) return NULL;
-        for (RandomListNode* cur = head; cur; ) {
-            RandomListNode* copied = new RandomListNode(cur->label);
-            copied->next = cur->next;
-            cur->next = copied;
-            cur = copied->next;
+    Node* copyRandomList(Node* head) {
+        if (!head) return nullptr;
+        for (Node* cur = head; cur; cur = cur->next->next) {
+            Node* copy = new Node(cur->val);
+            copy->next = cur->next;
+            cur->next = copy;
         }
-        
-        for (RandomListNode* cur = head; cur; ) {
-            RandomListNode* copied = cur->next;
-            if (cur->random) // be careful with NULL random
-                copied->random = cur->random->next;
-            cur = cur->next->next;
+        for (Node* cur = head; cur; cur = cur->next->next) {
+            if (cur->random) cur->next->random = cur->random->next;
         }
-        
-        RandomListNode dummy(0);
-        RandomListNode* p = &dummy;
-        for (RandomListNode* cur = head; cur; ) {
-            p->next = cur->next;
-            p = p->next;
-            cur->next = p->next;
+        Node dummy(0);
+        Node* copy = &dummy;
+        for (Node* cur = head; cur; ) {
+            copy->next = cur->next;
+            copy = copy->next;
+            cur->next = cur->next->next;
             cur = cur->next;
         }
         return dummy.next;

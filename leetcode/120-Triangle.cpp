@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-// dp, O(n^2) time, O(n) space
+// from bottom row to top row
 class Solution {
 public:
     int minimumTotal(vector<vector<int>>& triangle) {
@@ -19,6 +19,26 @@ public:
     }
 };
 
+
+// from top row to bottom row
+class Solution2 {
+public:
+    int minimumTotal(vector<vector<int>>& t) {
+        int n = t.size(), m = t.back().size();
+        if (n == 1) return t[0][0];
+        vector<int> dp(m, INT_MAX);
+        dp[0] = t[0][0];
+        int res = INT_MAX;
+        for (int i = 1; i < n; ++i) {
+            for (int j = i; j >= 0; --j) {
+                if (j == 0) dp[j] += t[i][j];
+                else dp[j] = min(dp[j], dp[j-1]) + t[i][j];
+                if (i == n-1) res = min(res, dp[j]);
+            }
+        }
+        return res;
+    }
+};
 
 int main() {
     return 0;

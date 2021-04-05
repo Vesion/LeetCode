@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <set> 
+#include <set>
 using namespace std;
 
 class Solution {
@@ -11,19 +11,26 @@ public:
         set<vector<int>> s;
         s.insert(p1); s.insert(p2); s.insert(p3); s.insert(p4);
         if (s.size() != 4) return false;
-        vector<vector<int>> vs(s.begin(), s.end());
-        vector<int> v1 = {vs[0][0]-vs[1][0], vs[0][1]-vs[1][1]},
-                    v2 = {vs[0][0]-vs[2][0], vs[0][1]-vs[2][1]},
-                    v3 = {vs[0][0]-vs[3][0], vs[0][1]-vs[3][1]},
-                    v4 = {vs[1][0]-vs[2][0], vs[1][1]-vs[2][1]};
-        return vertical(v1, v2) && vertical(v3, v4);
+        vector<vector<int>> v(s.begin(), s.end());
+        vector<int> v1 = {{v[0][0]-v[1][0], v[0][1]-v[1][1]}};
+        vector<int> v2 = {{v[0][0]-v[2][0], v[0][1]-v[2][1]}};
+        vector<int> v3 = {{v[0][0]-v[3][0], v[0][1]-v[3][1]}};
+        vector<int> v4 = {{v[1][0]-v[2][0], v[1][1]-v[2][1]}};
+        return inner_prod(v1, v2) == 0 && inner_prod(v3, v4) == 0
+            && length2(v3) == length2(v4);
     }
 
-    bool vertical(vector<int>& v1, vector<int>& v2) {
-        return v1[0]*v2[0]+v1[1]*v2[1] == 0;
+    int inner_prod(const vector<int>& v1, const vector<int>& v2) {
+        return v1[0]*v2[0] + v1[1]*v2[1];
+    }
+
+    int length2(const vector<int>& v) {
+        return v[0]*v[0] + v[1]*v[1];
     }
 };
 
 int main() {
     return 0;
 }
+
+

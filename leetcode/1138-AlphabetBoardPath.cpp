@@ -6,29 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    int m[26][2];
-    int x = 0, y = 0;
-
     string alphabetBoardPath(string target) {
-        for (int i = 0; i < 26; ++i) {
-            m[i][0] = i/5;
-            m[i][1] = i%5;
-        }
         string res;
-        for (char c : target) res += move(c);
+        int start = 0;
+        for (int i = 0; i < target.size(); ++i) {
+            res += get(start, target[i]-'a');
+            start = target[i]-'a';
+        }
         return res;
     }
 
-    string move(char c) {
-        const int nx = m[c-'a'][0], ny = m[c-'a'][1];
+    string get(int x, int y) {
+        int ix = x/5, iy = x%5;
+        int jx = y/5, jy = y%5;
         string res;
-        // Note the order for case e.g. "zdz"
-        res += string(max(0, x-nx), 'U');
-        res += string(max(0, y-ny), 'L');
-        res += string(max(0, ny-y), 'R');
-        res += string(max(0, nx-x), 'D');
-        x = nx, y = ny;
-        return res + "!";
+        if (jy < iy) res += string(iy-jy, 'L');
+        if (jx > ix) res += string(jx-ix, 'D');
+        if (jx < ix) res += string(ix-jx, 'U');
+        if (jy > iy) res += string(jy-iy, 'R');
+        res += "!";
+        return res;
     }
 };
 

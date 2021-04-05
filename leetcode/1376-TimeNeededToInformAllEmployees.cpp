@@ -4,26 +4,48 @@
 #include <string>
 using namespace std;
 
+
+// DFS, find the largest weight path
 class Solution {
 public:
-    vector<pair<vector<int>, int>> tree;
+    vector<vector<int>> g;
 
     int numOfMinutes(int n, int headID, vector<int>& manager, vector<int>& informTime) {
-        tree.resize(n);
-        for (int i = 0; i < n; ++i) tree[i].second = 0;
+        g.resize(n);
         for (int i = 0; i < n; ++i) {
-            if (manager[i] != -1) tree[manager[i]].first.push_back(i);
-            tree[i].second = informTime[i];
+            if (manager[i] != -1) g[manager[i]].push_back(i);
         }
-        return dfs(headID);
+        return dfs(headID, informTime);
     }
 
-    // Maximum depth of the tree
-    int dfs(int root) {
+    int dfs(int i, const vector<int>& t) {
         int res = 0;
-        const int d = tree[root].second;
-        for (const int child : tree[root].first) {
-            res = max(res, dfs(child) + d);
+        for (int j : g[i]) {
+            res = max(res, dfs(j, t) + t[i]);
+        }
+        return res;
+    }
+};
+
+// BFS
+class Solution1 {
+public:
+    int numOfMinutes(int n, int headID, vector<int>& manager, vector<int>& t) {
+        vector<vector<int>> g(n);
+        for (int i = 0; i < n; ++i) {
+            if (manager[i] != -1) g[manager[i]].push_back(i);
+        }
+
+        queue<pair<int,int>> pq;
+        pq.push({headID, 0});
+        int res = 0;
+        while (!pq.empty()) {
+            auto s = pq.front(); pq.pop();
+            int i = s.first, w = s.second;
+            res = max(res, w);
+            for (int j : g[i]) {
+                pq.push({j, w + t[i]});
+            }
         }
         return res;
     }

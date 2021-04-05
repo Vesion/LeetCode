@@ -11,22 +11,25 @@ using namespace std;
 // We need the shortest one of three cases
 class Solution {
 public:
+    vector<vector<string>> dp;
+
     string encode(string s) {
         int n = s.size();
-        vector<vector<string>> dp(n, vector<string>(n, ""));
+        dp = vector<vector<string>>(n, vector<string>(n, ""));
         for (int len = 1; len <= n; ++len) {
             for (int i = 0; i+len-1 < n; ++i) {
                 int j = i+len-1;
-                // case 1 : do not encode
+
+                // 1. not encode
                 dp[i][j] = s.substr(i, len);
 
-                // case 2 : encode to one part
-                string co = collapse(s, i, j, dp);
+                // 2. try to encode as k[...]
+                string co = collapse(s, i, len);
                 if (co.size() < dp[i][j].size()) dp[i][j] = co;
 
-                // case 3 : encode to multi parts
+                // 3. split
                 for (int k = i; k < j; ++k) {
-                    if (dp[i][k].size()+dp[k+1][j].size() < dp[i][j].size())
+                    if (dp[i][k].size() + dp[k+1][j].size() < dp[i][j].size())
                         dp[i][j] = dp[i][k] + dp[k+1][j];
                 }
             }
@@ -34,18 +37,12 @@ public:
         return dp[0][n-1];
     }
 
-    // find repeated pattern in s[i:j]
-    // this method: (t+t).find(t,1) < t.size()
-    // is learnt from 459-RepeatedSubstringPattern solution 3
-    string collapse(string& s, int i, int j, vector<vector<string>>& dp) {
-        string t = s.substr(i, j-i+1);
+    string collapse(const string& s, int i, int len) {
+        string t = s.substr(i, len);
         auto pos = (t+t).find(t, 1);
         if (pos >= t.size()) return t;
-
-        // if s[i:j] is self-repeated, and its repeated pattern is s[i:p]
-        // then s[i:j] can be encoded into n[dp[i][p]] 
-        // because s[i:p] may have been encoded, so here must use dp[i][p]
-        return to_string(t.size()/pos) + '[' + dp[i][i+pos-1] + ']';
+        int num = t.size() / pos;
+        return to_string(num) + "[" + dp[i][i+pos-1] + "]";
     }
 };
 

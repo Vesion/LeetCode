@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack> 
+#include <stack>
 using namespace std;
 
 struct TreeNode {
@@ -12,7 +12,7 @@ struct TreeNode {
 };
 
 
-// Solution 1 : determine its inorder traversal if is a increasing sequence
+// Solution 1 : inorder traverse, stack
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
@@ -35,17 +35,32 @@ public:
 };
 
 
+// Solution 1.1: inorder traverse, recursion
+class Solution1 {
+public:
+    TreeNode* prev = nullptr;
+    bool isValidBST(TreeNode* root) {
+        if (!root) return true;
+        if (!isValidBST(root->left)) return false;
+        if (prev && prev->val >= root->val) return false;
+        prev = root;
+        if (!isValidBST(root->right)) return false;
+        return true;
+    }
+};
+
+
 // Solution 2 : determine a node's val if is in valid range, recursively
-class Solution_2 {
+class Solution2 {
 public:
     bool isValidBST(TreeNode* root) {
         return isValid(root, LONG_MIN, LONG_MAX);
     }
-    
+
     bool isValid(TreeNode* root, long long lower, long long upper) {
         if (!root) return true;
-        return root->val > lower && root->val < upper 
-            && isValid(root->left, lower, root->val) 
+        return root->val > lower && root->val < upper
+            && isValid(root->left, lower, root->val)
             && isValid(root->right, root->val, upper);
     }
 };

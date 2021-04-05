@@ -2,30 +2,30 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
-#include <queue> 
+#include <unordered_map>
+#include <queue>
 using namespace std;
 
-struct UndirectedGraphNode {
-    int label;
-    vector<UndirectedGraphNode *> neighbors;
-    UndirectedGraphNode(int x) : label(x) {};
+struct Node {
+    int val;
+    vector<Node *> neighbors;
+    Node(int x) : val(x) {};
 };
 
 // Solution 1 : DFS
 class Solution {
 public:
-    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+    Node *cloneGraph(Node *node) {
         if (!node) return node;
-        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> copied;
+        unordered_map<Node*, Node*> copied;
         return dfs(node, copied);
     }
 
-    UndirectedGraphNode* dfs(UndirectedGraphNode* node, unordered_map<UndirectedGraphNode*, UndirectedGraphNode*>& copied) {
+    Node* dfs(Node* node, unordered_map<Node*, Node*>& copied) {
         if (copied.count(node)) return copied[node];
-        UndirectedGraphNode* newnode = new UndirectedGraphNode(node->label);
+        Node* newnode = new Node(node->val);
         copied[node] = newnode;
-        for (UndirectedGraphNode* nbr : node->neighbors) {
+        for (Node* nbr : node->neighbors) {
             newnode->neighbors.push_back(dfs(nbr, copied));
         }
         return newnode;
@@ -36,20 +36,20 @@ public:
 // Solution 2 : BFS
 class Solution_2 {
 public:
-    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+    Node *cloneGraph(Node *node) {
         if (!node) return node;
-        unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> cloned;
-        cloned[node] = new UndirectedGraphNode(node->label);
-        queue<UndirectedGraphNode*> q;
+        unordered_map<Node*, Node*> cloned;
+        cloned[node] = new Node(node->val);
+        queue<Node*> q;
         q.push(node);
         while (!q.empty()) {
-            UndirectedGraphNode* t = q.front(); q.pop();
-            for (UndirectedGraphNode* nbr : t->neighbors) {
+            Node* t = q.front(); q.pop();
+            for (Node* nbr : t->neighbors) {
                 if (cloned.count(nbr)) {
                     cloned[t]->neighbors.push_back(cloned[nbr]);
                 }
                 else {
-                    cloned[nbr] = new UndirectedGraphNode(nbr->label);
+                    cloned[nbr] = new Node(nbr->val);
                     cloned[t]->neighbors.push_back(cloned[nbr]);
                     q.push(nbr);
                 }

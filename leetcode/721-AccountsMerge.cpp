@@ -2,53 +2,57 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <set> 
-#include <unordered_map> 
+#include <set>
+#include <unordered_map>
 using namespace std;
 
 // Union Find
 class Solution {
 public:
-  unordered_map<string, string> root;
-  unordered_map<string, string> user;
-  unordered_map<string, set<string>> unions;
+    unordered_map<string,string> root;
 
-  string findRoot(const string& s) {
-    if (s != root[s]) root[s] = findRoot(root[s]);
-    return root[s];
-  }
-
-  vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
-    int n = accounts.size();
-    for (int i = 0; i < n; ++i) {
-      for (int j = 1; j < (int)accounts[i].size(); ++j) {
-        root[accounts[i][j]] = accounts[i][j];
-        user[accounts[i][j]] = accounts[i][0];
-      }
+    string find(const string& x) {
+        if (root[x] != x) root[x] = find(root[x]);
+        return root[x];
+    }
+    void link(const string& x, const string& y) {
+        const string& rx = find(x);
+        const string& ry = find(y);
+        if (rx != ry) root[ry] = rx;
     }
 
-    for (int i = 0; i < n; ++i) {
-      string r = findRoot(accounts[i][1]);
-      for (int j = 2; j < (int)accounts[i].size(); ++j) {
-        root[findRoot(accounts[i][j])] = r;
-      }
-    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        int n = accounts.size();
+        unordered_map<string, string> user;
+        for (const auto& account : accounts) {
+            for (int i = 1; i < account.size(); ++i) {
+                root[account[i]] = account[i];
+                user[account[i]] = account[0];
+            }
+        }
+        for (const auto& account : accounts) {
+            for (int i = 2; i < account.size(); ++i) {
+                link(account[1], account[i]);
+            }
+        }
 
+        unordered_map<string, set<string>> group;
+        for (const auto& account : accounts) {
+            for (int i = 1; i < account.size(); ++i) {
+                group[find(account[i])].insert(account[i]);
+            }
+        }
 
-    for (int i = 0; i < n; ++i) {
-      for (int j = 1; j < (int)accounts[i].size(); ++j) {
-        unions[findRoot(accounts[i][j])].insert(accounts[i][j]);
-      }
+        vector<vector<string>> res;
+        for (const auto& p : group) {
+            vector<string> r;
+            const string& name = user[p.first];
+            r.push_back(name);
+            for (const string& email : p.second) r.push_back(email);
+            res.push_back(move(r));
+        }
+        return res;
     }
-
-    vector<vector<string>> res;
-    for (auto& p : unions) {
-      vector<string> emails(p.second.begin(), p.second.end());
-      emails.insert(emails.begin(), user[p.first]);
-      res.push_back(emails);
-    }
-    return res;
-  }
 };
 
 

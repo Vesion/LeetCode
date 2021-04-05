@@ -34,35 +34,31 @@ public:
 };
 
 // DP, O(m*n)
+// dp[i][j] = min l, subject to T[0:j] is subsequence of S[i-l, i]
 class Solution {
 public:
     string minWindow(string S, string T) {
-        const int m = S.size();
-        const int n = T.size();
-        constexpr int kMax = numeric_limits<int>::max();
-        vector<vector<int>> dp(m+1, vector<int>(n+1, kMax));
-        for (int i = 0; i < m+1; ++i) dp[i][0] = 0;
+        int m = S.size(), n = T.size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1, INT_MAX));
+        for (int i = 0; i <= m; ++i) dp[i][0] = 0;
 
-        for (int i = 1; i < m+1; ++i) {
-            for (int j = 1; j < n+1; ++j) {
-                if (S[i-1] == T[j-1]) {
-                    if (dp[i-1][j-1] != kMax) dp[i][j] = dp[i-1][j-1] + 1;
-                    if (dp[i-1][j] != kMax) dp[i][j] = min(dp[i][j], dp[i-1][j] + 1);
-                } else {
-                    if (dp[i-1][j] != kMax) dp[i][j] = dp[i-1][j] + 1;
-                }
+        for (int i = 1; i <= m; ++i) for (int j = 1; j <= n; ++j) {
+            if (S[i-1] == T[j-1]) {
+                if (dp[i-1][j-1] != INT_MAX) dp[i][j] = dp[i-1][j-1] + 1;
+                if (dp[i-1][j] != INT_MAX) dp[i][j] = min(dp[i][j], dp[i-1][j] + 1);
+            } else {
+                if (dp[i-1][j] != INT_MAX) dp[i][j] = dp[i-1][j] + 1;
             }
         }
 
-        int min_l = kMax, min_i = -1;
-        for (int i = 1; i < m+1; ++i) {
-            if (dp[i][n] < min_l) {
-                min_l = dp[i][n];
-                min_i = i;
+        int r = -1, l = INT_MAX;
+        for (int i = 1; i <= m; ++i) {
+            if (dp[i][n] < l) {
+                r = i;
+                l = dp[i][n];
             }
         }
-        if (min_i == -1) return "";
-        return S.substr(min_i-min_l, min_l);
+        return r == -1 ? "" : S.substr(r-l, l);
     }
 };
 

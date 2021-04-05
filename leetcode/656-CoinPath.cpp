@@ -40,7 +40,7 @@ public:
     vector<int> cheapestJump(vector<int>& A, int B) {
       if (A.empty() || A.back() == -1) return {};
       int n = A.size();
-      vector<int> dp(n, INT_MAX), pre(n, -1);
+      vector<int> dp(n, INT_MAX), jump(n, -1);
       dp[n-1] = A[n-1];
       for (int i = n-2; i >= 0; --i) {
         if (A[i] == -1) continue;
@@ -48,7 +48,7 @@ public:
           if (dp[j] == INT_MAX) continue;
           if (A[i]+dp[j] < dp[i]) {
             dp[i] = A[i]+dp[j];
-            pre[i] = j;
+            jump[i] = j;
           }
         }
       }
@@ -58,7 +58,7 @@ public:
       int i = 0;
       while (i != -1) {
         res.push_back(i+1);
-        i = pre[i];
+        i = jump[i];
       }
       return res;
     }
@@ -69,6 +69,6 @@ int main() {
   Solution s;
   vector<int> A = {0,-1,-1,-1,-1,-1};
   auto r = s.cheapestJump(A, 5);
-  for (auto& e : r) cout << e << " "; cout << endl; 
+  for (auto& e : r) cout << e << " "; cout << endl;
   return 0;
 }

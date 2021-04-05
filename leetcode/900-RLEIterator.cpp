@@ -33,7 +33,8 @@ public:
 class RLEIterator {
 public:
     using ll = long long;
-    vector<ll> c, a;
+    vector<ll> c;  // prefix sum of counts, A[0], A[0]+A[2], A[0]+A[2]+A[4]...
+    vector<ll> a;  // numbers, A[1], A[3], A[5]...
     ll sumn = 0;
     int lower = 0;
 

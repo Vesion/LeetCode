@@ -5,47 +5,42 @@
 using namespace std;
 
 class WordDictionary {
-private:
-    struct TrieNode {
-        bool isEnd;
-        TrieNode* nexts[26];
-        TrieNode() { isEnd = false; fill_n(nexts, 26, nullptr); }
+    struct Node {
+        bool end;
+        Node* next[26];
     };
-    TrieNode* root;
-    
-    void insert(string& word) {
-        TrieNode* cur = root;
-        for (char& c : word) {
-            if (!cur->nexts[c-'a']) cur->nexts[c-'a'] = new TrieNode();
-            cur = cur->nexts[c-'a'];
-        }
-        cur->isEnd = true;
-    }
+    Node* root;
 
+    bool dfs(const string& w, int i, Node* node) {
+        if (!node) return false;
+        if (i == w.size()) return node->end;
+        char c = w[i];
+        if (c == '.') {
+            for (int j = 0; j < 26; ++j) {
+                if (dfs(w, i+1, node->next[j])) return true;
+            }
+            return false;
+        } else {
+            return dfs(w, i+1, node->next[c-'a']);
+        }
+    }
 public:
     WordDictionary() {
-        root = new TrieNode();
+        root = new Node();
     }
-    
+
     void addWord(string word) {
-        insert(word);
+        Node* cur = root;
+        for (char c : word) {
+            if (cur->next[c-'a'] == nullptr)
+                cur->next[c-'a'] = new Node();
+            cur = cur->next[c-'a'];
+        }
+        cur->end = true;
     }
-    
+
     bool search(string word) {
         return dfs(word, 0, root);
-    }
-    
-    bool dfs(string& word, int start, TrieNode* cur) {
-        if (start == (int)word.size()) return cur->isEnd;
-        char c = word[start];
-        if (c != '.') {
-            if (!cur->nexts[c-'a']) return false;
-            return dfs(word, start+1, cur->nexts[c-'a']);
-        } else {
-            for (int i = 0; i < 26; ++i)
-                if (cur->nexts[i] && dfs(word, start+1, cur->nexts[i])) return true;
-            return false;
-        }
     }
 };
 

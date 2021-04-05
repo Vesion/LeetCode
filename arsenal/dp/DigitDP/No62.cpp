@@ -2,12 +2,13 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <cstring> 
+#include <cstring>
 using namespace std;
 
 // http://acm.hdu.edu.cn/showproblem.php?pid=2089
 //
-// Given two integers N and M, 0 < N <= M <= 1000000, find how many integers in range[N, M] which has no '4' and '62' in its digits
+// Given two integers N and M, 0 < N <= M <= 1000000,
+// count how many integers in range[N, M] which has no '4' and '62' in its digits
 
 int digit[32];
 int dp[32][10]; // dp[i][j] means the solution for when reach digit i (from high to low), and previous digit is j
@@ -37,7 +38,7 @@ int solve(int n) {
 
 int main() {
     memset(dp, -1, sizeof dp); // dp has nothing to do with input, so we init it before all things
-    int N, M;    
+    int N, M;
     while ((cin >> N >> M) && N+M) {
         cout << solve(M) - solve(N-1) << endl;
     }

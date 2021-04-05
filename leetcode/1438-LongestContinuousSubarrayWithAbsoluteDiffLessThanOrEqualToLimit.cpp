@@ -8,11 +8,13 @@ using namespace std;
 class Solution {
 public:
     int longestSubarray(vector<int>& nums, int limit) {
+        map<int,int> m;  // we need a self-maintained ordered container
         int res = 0;
-        map<int,int> m;
-        for (int i = 0, j = 0; j < nums.size(); ++j) {
-            m[nums[j]]++;
-            while (m.rbegin()->first - m.begin()->first > limit) {
+        for (int i = 0, j = 0; j < nums.size() && i <= j; ++j) {
+            ++m[nums[j]];
+            while (!m.empty()
+                   && m.rbegin()->first - m.begin()->first > limit
+                   && i <= j) {
                 if (--m[nums[i]] == 0) m.erase(nums[i]);
                 ++i;
             }

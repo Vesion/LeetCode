@@ -8,22 +8,22 @@ class Solution {
 public:
     int wordsTyping(vector<string>& sentence, int rows, int cols) {
         int n = sentence.size();
-        vector<int> dp(n, 0); // dp[i] = the number of words can be fitting in one row when start with sentence[i]
-        int res = 0;
+        // dp[i] = the number of words can be fit in a row if the row starts with sentence[i]
+        vector<int> dp(n, 0);
+        int words = 0;  // total number of words has been printed
         while (rows--) {
-            int i = res % n;
+            int i = words % n;  // this row starts with sentence[i]
             if (!dp[i]) {
-                int j = i, c = 0, len = 0;
-                while (len + (int)sentence[j].size() <= cols) {
+                int j = i, len = 0;
+                while (len + sentence[j].size()  <= cols) {
                     len += sentence[j].size() + 1;
-                    if (++j == n) j = 0;
-                    ++c;
+                    j = (j+1)%n;
+                    ++dp[i];
                 }
-                dp[i] = c;
             }
-            res += dp[i];
+            words += dp[i];
         }
-        return res / n;
+        return words/n;
     }
 };
 

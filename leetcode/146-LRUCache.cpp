@@ -15,33 +15,36 @@ using namespace std;
 
 class LRUCache {
 private:
-    list<pair<int,int>> cache;
-    unordered_map<int, list<pair<int,int>>::iterator> pos;
-    size_t capacity;
+    using Cache = list<pair<int,int>>;
+    Cache cache;
+    unordered_map<int, Cache::iterator> table;
+    int cap;
 public:
     LRUCache(int capacity) {
-        this->capacity = capacity;
+        cap = capacity;
     }
-    
+
     int get(int key) {
-        if (!pos.count(key)) return -1;
-        auto it = pos[key];
-        cache.splice(cache.begin(), cache, it);
-        pos[key] = cache.begin();
-        return pos[key]->second;
+        auto it = table.find(key);
+        if (it == table.end()) return -1;
+        auto cit = it->second;
+        int val = cit->second;
+        cache.splice(cache.begin(), cache, cit);
+        table[key] = cache.begin();
+        return val;
     }
-    
+
     void put(int key, int value) {
-        if (!pos.count(key)) {
-            if (cache.size() == capacity) {
-                pos.erase(cache.back().first);
+        if (get(key) != -1) {
+            table[key]->second = value;
+        } else {
+            if (cache.size() == cap) {
+                int k = cache.back().first;
+                table.erase(k);
                 cache.pop_back();
             }
             cache.push_front({key, value});
-            pos[key] = cache.begin();
-        } else {
-            get(key);
-            pos[key]->second = value;
+            table[key] = cache.begin();
         }
     }
 };

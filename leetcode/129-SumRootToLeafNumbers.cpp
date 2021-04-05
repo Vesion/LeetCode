@@ -12,18 +12,18 @@ struct TreeNode {
 
 class Solution {
 public:
+    int res = 0;
     int sumNumbers(TreeNode* root) {
-        int res = 0;
-        dfs(root, 0, res);
+        dfs(root, 0);
         return res;
     }
-    
-    void dfs(TreeNode* root, int num, int& res) {
+
+    void dfs(TreeNode* root, int path) {
         if (!root) return;
-        num = num*10 + root->val;
-        if (!root->left && !root->right) res += num;
-        if (root->left) dfs(root->left, num, res);
-        if (root->right) dfs(root->right, num, res);
+        path = path*10 + root->val;
+        if (!root->left && !root->right) res += path;
+        if (root->left) dfs(root->left, path);
+        if (root->right) dfs(root->right, path);
     }
 };
 

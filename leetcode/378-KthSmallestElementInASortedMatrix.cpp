@@ -2,24 +2,27 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
-// Solution 1 : heap, O(klogk), same with 373-FIndKPairsWithSmallestSums
+// Solution 1 : heap, O(klogk)
+// consider the matrix as a directed garph, start from [0,0], get a k-length path with minimum cost
+// similar with 373-FindKPairsWithSmallestSums
 class Solution {
 public:
     int kthSmallest(vector<vector<int>>& matrix, int k) {
-        if (matrix.empty()) return 0;
         int n = matrix.size();
-        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-        pq.push({matrix[0][0], 0});
+        using S = tuple<int,int,int>;
+        priority_queue<S, vector<S>, greater<S>> pq;
+        pq.push({matrix[0][0], 0, 0});
         int res = 0;
         while (!pq.empty() && k--) {
-            res = pq.top().first;
-            int i = pq.top().second/n, j = pq.top().second%n;
-            pq.pop();
-            if (j+1 < n) pq.push({matrix[i][j+1], i*n+(j+1)});
-            if (j == 0 && i+1 < n) pq.push({matrix[i+1][j], (i+1)*n+j});
+            auto [t, i, j] = pq.top(); pq.pop();
+            res = t;
+            if (j+1 < n) pq.push({matrix[i][j+1], i, j+1});
+            // Note we extend i only if j is 0, think why?
+            // because matrix[i][j] can only be extened by matrix[i][j-1] if j > 0
+            if (j == 0 && i+1 < n) pq.push({matrix[i+1][j], i+1, j});
         }
         return res;
     }

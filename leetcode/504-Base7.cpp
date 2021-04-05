@@ -9,14 +9,16 @@ class Solution {
 public:
     string convertToBase7(int num) {
         if (num == 0) return "0";
-        bool sign = num > 0;
+        bool negative = num < 0;
         num = abs(num);
         string res;
         while (num) {
-            res = to_string(num%7) + res;
+            res += num % 7 + '0';
             num /= 7;
         }
-        return sign ? res : "-"+res;
+        reverse(res.begin(), res.end());
+        if (negative) res = "-" + res;
+        return res;
     }
 };
 

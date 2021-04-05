@@ -1,9 +1,9 @@
 #include <iostream>
-#include <cmath> 
+#include <cmath>
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <stack> 
+#include <stack>
 using namespace std;
 
 struct TreeNode {
@@ -15,23 +15,23 @@ struct TreeNode {
 // Solution 1 : inorder traversal, maintain a window of size k, O(n)
 class Solution {
 public:
+    deque<int> res;
     vector<int> closestKValues(TreeNode* root, double target, int k) {
-        deque<int> res;
-        inorder(root, target, k, res);
-        return vector<int>(res.begin(), res.end());
+        inorder(root, target, k);
+        return {res.begin(), res.end()};
     }
-    
-    void inorder(TreeNode* root, double target, int k, deque<int>& res) {
+
+    void inorder(TreeNode* root, double target, int k) {
         if (!root) return;
-        inorder(root->left, target, k, res);
-        if ((int)res.size() < k) res.push_back(root->val);
+        inorder(root->left, target, k);
+        if (res.size() < k) res.push_back(root->val);
         else {
-            if (fabs(root->val-target) < fabs(res.front()-target)) {
+            if (fabs(root->val - target) < fabs(res.front() - target)) {
                 res.pop_front();
                 res.push_back(root->val);
             } else return;
         }
-        inorder(root->right, target, k, res);
+        inorder(root->right, target, k);
     }
 };
 

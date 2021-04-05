@@ -6,20 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-  int pivotIndex(vector<int>& nums) {
-    int n = nums.size();
-    int total = 0;
-    for (int& num : nums) total += num;
-    int sum = 0;
-    for (int i = 0; i < n; ++i) {
-      if (i > 0) sum += nums[i-1];
-      if (sum*2 == total-nums[i]) return i;
+    int pivotIndex(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> sums(n);
+        partial_sum(nums.begin(), nums.end(), sums.begin());
+        for (int i = 0; i < n; ++i) {
+            int left = i == 0 ? 0 : sums[i-1];
+            int right = sums[n-1] - sums[i];
+            if (left == right) return i;
+        }
+        return -1;
     }
-    return -1;
-  }
 };
 
 
 int main() {
-  return 0;
+    return 0;
 }

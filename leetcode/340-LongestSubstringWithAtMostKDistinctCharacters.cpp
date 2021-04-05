@@ -4,18 +4,22 @@
 #include <string>
 using namespace std;
 
-// Sliding window
+// Similar problems, longest subarray with at most k distinct elements:
+// 340-LongestSubstringWithAtMostKDistinctCharacters
+// 424-LongestRepeatingCharacterReplacement
+// 992-SubarraysWithKDifferentIntegers
+
 class Solution {
 public:
     int lengthOfLongestSubstringKDistinct(string s, int k) {
-        vector<int> m(128, 0);
-        int i = 0, j = 0, c = 0;
+        vector<int> m(256, 0);
         int res = 0;
-        while (j < (int)s.size()) {
-            if (m[s[j++]]++ == 0) ++c;
-            while (c > k)
-                if (m[s[i++]]-- == 1) --c;
-            res = max(res, j-i);
+        for (int i = 0, j = 0; i < s.size(); ++i) {
+            if (m[s[i]]++ == 0) --k;
+            while (j <= i && k < 0) {
+                if (--m[s[j++]] == 0) ++k;
+            }
+            res = max(res, i-j+1);
         }
         return res;
     }

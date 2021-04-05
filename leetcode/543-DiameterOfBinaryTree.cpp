@@ -12,18 +12,19 @@ struct TreeNode {
 
 class Solution {
 public:
+    int res;
     int diameterOfBinaryTree(TreeNode* root) {
-        int res = 0;
-        postorder(root, res);
+        res = 0;
+        dfs(root);
         return res;
     }
-    
-    int postorder(TreeNode* root, int& res) {
+
+    int dfs(TreeNode* root) {
         if (!root) return 0;
-        int left = postorder(root->left, res);
-        int right = postorder(root->right, res);
-        res = max(res, left+right);
-        return max(left, right) + 1;
+        int left = dfs(root->left);
+        int right = dfs(root->right);
+        res = max(res, left+right+1-1);  // +1 is the number of nodes, -1 is the length
+        return max(left, right)+1;
     }
 };
 

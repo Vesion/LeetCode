@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // Solution 0 : union set, O(n^6)
@@ -48,42 +48,41 @@ public:
 };
 
 
-// Solution 1 : union set, O(n^2)
+// Solution 1 : union find, O(n^2)
 class Solution {
-private:
-  vector<int> root;
-  int findRoot(int i) {
-    if (i != root[i]) root[i] = findRoot(root[i]);
-    return root[i];
-  }
-  void unionSet(int i, int j) {
-    int ri = findRoot(i), rj = findRoot(j);
-    if (ri != rj) root[rj] = ri;
-  }
-  int go[4][2] = {{1,0}, {0,1}, {-1,0}, {0,-1}};
-
 public:
-  int swimInWater(vector<vector<int>>& grid) {
-    int n = grid.size();
-    root.resize(n*n);
-    for (int i = 0; i < n*n; ++i) root[i] = i;
-    vector<pair<int,int>> g(n*n);
-    for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
-      g[grid[i][j]] = {i,j};
-
-    int t = 0, target = n*n-1;
-    while (t <= target) {
-      int i = g[t].first, j = g[t].second;
-      for (int d = 0; d < 4; ++d) {
-        int ni = i+go[d][0], nj = j+go[d][1];
-        if (ni >= 0 && ni < n && nj >= 0 && nj < n && t >= grid[ni][nj])
-          unionSet(i*n+j, ni*n+nj);
-      }
-      if (findRoot(0) == findRoot(target)) break;
-      ++t;
+    vector<int> root;
+    int find(int x) {
+        return root[x] == x ? root[x] : root[x] = find(root[x]);
     }
-    return t;
-  }
+    void link(int x, int y) {
+        int rx = find(x), ry = find(y);
+        if (rx != ry) root[rx] = ry;
+    }
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        root.resize(n*n);
+        iota(root.begin(), root.end(), 0);
+
+        vector<pair<int,int>> g(n*n);
+        for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j) {
+            g[grid[i][j]] = {i, j};
+        }
+
+        constexpr int go[5] = {1, 0, -1, 0, 1};
+        int t = 0;
+        for (; t < n*n; ++t) {
+            int i = g[t].first, j = g[t].second;
+            for (int d = 0; d < 4; ++d) {
+                int ni = i+go[d], nj = j+go[d+1];
+                if (ni < 0 || ni >= n || nj < 0 || nj >= n) continue;
+                if (t < grid[ni][nj]) continue;
+                link(i*n+j, ni*n+nj);
+            }
+            if (find(0) == find(n*n-1)) break;
+        }
+        return t;
+    }
 };
 
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <numeric> 
+#include <numeric>
 #include <string>
 using namespace std;
 
@@ -10,25 +10,24 @@ using namespace std;
 class Solution {
 public:
     string getPermutation(int n, int k) {
-        // initialize a dictionary that stores 1, 2, ..., n
         string dict(n, '0');
         iota(dict.begin(), dict.end(), '1');
-
-        // build up a look-up factorial table, which stores (n-1)!, (n-2)!, ..., 1!, 0!
-        vector<int> fact(n, 1);
-        for (int i = n-3; i >= 0; --i)
-            fact[i] = fact[i+1] * (n-i-1);
-
-        // let k be zero based
-        --k;
-
+        --k;  // to be zero-based
         string res(n, '0');
         for (int i = 0; i < n; ++i) {
-            int select = k / fact[i];
-            k %= fact[i];
-            res[i] = dict[select];
-            dict.erase(dict.begin()+select);
+            int f = factorial(n-1-i);
+            int j = k / f;
+            k %= f;
+            res[i] = dict[j];
+            dict.erase(dict.begin() + j);
         }
+        return res;
+    }
+
+    // return x!
+    int factorial(int x) {
+        int res = 1;
+        for (int i = 1; i <= x; ++i) res *= i;
         return res;
     }
 };

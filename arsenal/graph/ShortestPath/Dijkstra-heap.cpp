@@ -1,10 +1,11 @@
 #include <iostream>
 #include <algorithm>
-#include <numeric> 
+#include <numeric>
 #include <vector>
 #include <string>
 #include <cstring>
-#include <climits> 
+#include <climits>
+#include <queue>
 using namespace std;
 
 // Dijkstra, min-heap, O((V+E)logV)
@@ -35,6 +36,34 @@ void dijkstra_heap(int s) {
     }
 }
 
+// Priority queue
+// https://leetcode.com/problems/path-with-minimum-effort/
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        constexpr int go[5] = {-1, 0, 1, 0, -1};
+        int m = heights.size(), n = heights[0].size();
+        vector<vector<int>> effort(m, vector<int>(n, INT_MAX));
+        effort[0][0] = 0;
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        pq.push({0, 0});
+        while (!pq.empty()) {
+            auto p = pq.top(); pq.pop();
+            int e = p.first, x = p.second;
+            int i = x/n, j = x%n;
+            for (int d = 0; d < 4; ++d) {
+                int ni = i + go[d], nj = j + go[d+1];
+                if (ni < 0 || ni >= m || nj < 0 || nj >= n) continue;
+                int ne = max(e, abs(heights[i][j] - heights[ni][nj]));
+                if (ne < effort[ni][nj]) {
+                    effort[ni][nj] = ne;
+                    pq.push({ne, ni*n+nj});
+                }
+            }
+        }
+        return effort[m-1][n-1];
+    }
+};
 
 int main() {
     cin >> N >> M >> S >> T;

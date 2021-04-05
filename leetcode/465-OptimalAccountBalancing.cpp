@@ -3,36 +3,41 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include <set> 
+#include <set>
 using namespace std;
 
 // This is a NPC problem
 //
-// This solution has been proved wrong!
+// https://leetcode.com/problems/optimal-account-balancing/discuss/95355/Concise-9ms-DFS-solution-(detailed-explanation)
 class Solution {
 public:
+    vector<int> debt;
+
     int minTransfers(vector<vector<int>>& transactions) {
-        unordered_map<int, int> m;
-        for (auto& t : transactions) {
-            m[t[0]] += t[2];
-            m[t[1]] -= t[2];
+        unordered_map<int,int> m;
+        for (const auto& t : transactions) {
+            m[t[0]] -= t[2];
+            m[t[1]] += t[2];
         }
-
-        multiset<int> s;
-        for (auto& p : m)
-            if (p.second != 0) s.insert(p.second);
-
-        int res = 0;
-        while (!s.empty()) {
-            int lower = *s.begin();
-            s.erase(s.begin());
-            int upper = *s.rbegin();
-            s.erase(--s.end());
-            int sum = lower + upper;
-            if (sum != 0) s.insert(sum);
-            ++res;
+        for (const auto& p : m) {
+            if (p.second)  // do not need to consider persons whose debt is 0
+                debt.push_back(p.second);
         }
-        return res;
+        return dfs(0);
+    }
+
+    int dfs(int s) {
+        // skip already clear debts
+        while (s < debt.size() && debt[s] == 0) ++s;
+        int res = INT_MAX;
+        for (int i = s+1; i < debt.size(); ++i) {
+            if (debt[i] * debt[s] < 0) {
+                debt[i] += debt[s];
+                res = min(res, dfs(s+1)+1);
+                debt[i] -= debt[s];
+            }
+        }
+        return res == INT_MAX ? 0 : res;
     }
 };
 

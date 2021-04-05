@@ -11,44 +11,45 @@ using namespace std;
 //
 //
 // Version 1 : Basical 0-1 knapsack
-//      Problem: each kind of item has weight and value, and amount is 1, fill in W weight knapsack, ensure maximal values
-//      Solution: dp[i][j] = max { dp[i-1][j], dp[i-1][j-w[i]]+v[i] }
+//   Problem: each kind of item has weight and value, and amount is 1,
+//            fill in W weight knapsack, find maximal values
+//   Solution: dp[i][j] = max { dp[i-1][j], dp[i-1][j-w[i]]+v[i] }
 //
 // Version 1.1 : Require the knapsack is exactly full
-//      Problem: the total weight of result is exactly W
-//      Solution: init dp[1...W] to INT_MIN
+//   Problem: the total weight of result is exactly W
+//   Solution: init dp[1...W] to INT_MIN
 //
 //
 // Version 2 : Unbounded knapsack
-//      Problem: the amount of each kind of item is infinite
-//      Solution: 
-//              trivial: convert it into 0-1 version: dp[i][j] = max { dp[i-1][j-k*w[i]]+k*v[i] | 0 <= k*w <= W }
-//              improvement: dp[i][j] = max { dp[i-1][j], dp[i][j-w[i]]+v[i] }
+//   Problem: the amount of each kind of item is infinite
+//   Solution:
+//     trivial: convert it into 0-1 version: dp[i][j] = max { dp[i-1][j-k*w[i]]+k*v[i] | 0 <= k*w <= W }
+//     improvement: dp[i][j] = max { dp[i-1][j], dp[i][j-w[i]]+v[i] }
 //
 //
 // Version 3 : Multiple knapsack
-//      Problem: the amount of item i is c[i]
-//      Solution: divide each kind of item into several groups whose size if power of 2
-//              dp[i][j] = max { dp[i-1][j-k*w[i]]+k*v[i] | 0 <= k <= c[i] }
+//   Problem: the amount of item i is c[i]
+//   Solution: divide each kind of item into several groups whose size if power of 2
+//             dp[i][j] = max { dp[i-1][j-k*w[i]]+k*v[i] | 0 <= k <= c[i] }
 //
 //
 // Version 4 : 2D Weight knapsack
-//      Problem: each item has two type of weight w1 and w2, the upper limit of each is W1 and W2
-//      Solution:
-//              dp[i][j][k] = max { dp[i-1][j][k], dp[i-1][j-w1i][k-w2i]+v[i] }
+//   Problem: each item has two type of weight w1 and w2,
+//            the limit of each is W1 and W2 respectively
+//   Solution: dp[i][j][k] = max { dp[i-1][j][k], dp[i-1][j-w1i][k-w2i]+v[i] }
 //
 //
 // Version 5 : Group knapsack
-//      Problem: based on 0-1 knapsack, divide all kinds of item into k groups, only one item of each group can be put into knapsack
-//      Solution:
-//              dp[i][j] means the maximal values of first i groups in j weights
-//              dp[i][j] = max { dp[i-1][j], dp[i-1][j-w[t]]+v[t] | item t is in group i }
+//   Problem: based on 0-1 knapsack, divide all kinds of item into k groups,
+//            only one item of each group can be put into knapsack
+//   Solution: dp[i][j] means the maximal values of first i groups in j weights
+//             dp[i][j] = max { dp[i-1][j], dp[i-1][j-w[t]]+v[t] | item t is in group i }
 //
 // Version 6 : Generalization knapsack
-//      Problem: each kind of item has variable weight and value, when its weight is w, its value is f(w)
-//      Solution: based on V4, regard each kind of item as a group, which has all variable weight item
-//              So, when ith item's weight is w:
-//              dp[i][j] = max { dp[i-1][j], dp[i-1][j-w]+f(w) }
+//   Problem: each kind of item has variable weight and value,
+//            when its weight is w, its value is f(w)
+//   Solution: based on V5, regard each kind of item as a group, which has all variable weight item
+//             So, when ith item's weight is w: dp[i][j] = max { dp[i-1][j], dp[i-1][j-w]+f(w) }
 
 
 
@@ -58,14 +59,14 @@ int knapsack_01_basic(vector<int>& w, vector<int>& v, int W) {
     if (w.empty() || v.empty()) return 0;
     int N = w.size();
     vector<vector<int>> dp(N+1, vector<int>(W+1, 0));
-    for (int i = 1; i <= N; ++i) { 
+    for (int i = 1; i <= N; ++i) {
         for (int j = 0; j <= W; ++j) {
             if (j < w[i-1])
                 dp[i][j] = dp[i-1][j];
             else
                 dp[i][j] = max(dp[i-1][j-w[i-1]]+v[i-1], dp[i-1][j]);
         }
-    } 
+    }
     return dp[N][W];
 }
 
@@ -101,10 +102,10 @@ int knapsack_infinite(vector<int>& w, vector<int>& v, int W) {
     if (w.empty() || v.empty()) return 0;
     int N = w.size();
     vector<int> dp(W+1, 0);
-    for (int i = 0; i < N; ++i) { 
-        for (int j = w[i]; j <= W; ++j) 
+    for (int i = 0; i < N; ++i) {
+        for (int j = w[i]; j <= W; ++j)
             dp[j] = max(dp[j-w[i]]+v[i], dp[j]);
-    } 
+    }
     return dp[W];
 }
 
@@ -140,7 +141,7 @@ int knapsack_multiple(vector<int>& w, vector<int>& v, vector<int>& c, int W) {
         }
     }
     return dp[W];
-} 
+}
 
 
 // Version 4 : 2D weights

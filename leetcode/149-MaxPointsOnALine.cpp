@@ -2,39 +2,27 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_map> 
-#include <cfloat> 
+#include <unordered_map>
+#include <cfloat>
 using namespace std;
-
-struct Point {
-    int x;
-    int y;
-    Point() : x(0), y(0) {}
-    Point(int a, int b) : x(a), y(b) {}
-};
 
 class Solution {
 public:
-    int maxPoints(vector<Point>& points) {
+    int maxPoints(vector<vector<int>>& points) {
+        constexpr double kMax = numeric_limits<double>::max();
         int n = points.size();
-        int res = 0;
+        int res = 1;
         for (int i = 0; i < n; ++i) {
-            unordered_map<long double, int> s;
-            int coincide = 0, vertical = 1, same = 1;
+            int x0 = points[i][0], y0 = points[i][1];
+            unordered_map<double, int> lines;
             for (int j = i+1; j < n; ++j) {
-                auto p1 = points[i], p2 = points[j];
-                if (p1.x == p2.x) {
-                    if (p1.y == p2.y) ++coincide;
-                    else ++vertical;
-                } else {
-                    long double slope = (long double)(p1.y - p2.y) / (p1.x - p2.x); // use long double in case overflow
-                    if (s.count(slope)) ++s[slope];
-                    else s[slope] = 2;
-                    same = max(same, s[slope]);
-                }
-                same = max(same, vertical);
+                int x1 = points[j][0], y1 = points[j][1];
+                double slop = 0;
+                if (x0 == x1) slop = kMax;
+                else slop = (y1-y0)*1.0 / (x1-x0);
+                ++lines[slop];
             }
-            res = max(res, same+coincide);
+            for (const auto& p : lines) res = max(res, p.second+1);
         }
         return res;
     }

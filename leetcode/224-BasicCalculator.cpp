@@ -8,28 +8,29 @@ using namespace std;
 // Solution 1 : top-down parser, recursive descent
 class Solution {
 public:
+    using ll = long long;
     int calculate(string s) {
         int i = 0;
         return parse(s, i);
     }
 
-    int parse(const string& s, int& i) {
-        int res = 0;
-        int sign = 1;
-        int num = 0;
+    ll parse(const string& s, int& i) {
+        ll num = 0, sign = 1;
+        ll res = 0;
         for (; i < s.size(); ++i) {
-            if (s[i] == ' ') continue;
-            if (isdigit(s[i])) num = num * 10 + (s[i] - '0');
-            else if (s[i] == '+' || s[i] == '-') {
-                res += sign * num;
-                num = 0;
+            if (s[i] >= '0' && s[i] <= '9') {
+                num = num*10 + s[i]-'0';
+            } else if (s[i] == '(') {
+                res += sign * parse(s, ++i);
+            } else if (s[i] == ')') {
+                break;
+            } else if (s[i] == '+' || s[i] == '-') {
+                res += num*sign;
                 sign = s[i] == '+' ? 1 : -1;
+                num = 0;
             }
-            else if (s[i] == '(') res += sign * parse(s, ++i);
-            else if (s[i] == ')') break;
         }
-        res += sign * num;
-        return res;
+        return res + num*sign;
     }
 };
 

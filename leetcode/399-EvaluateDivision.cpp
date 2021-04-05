@@ -58,6 +58,7 @@ public:
 
 
 // Solution 2 : Build a fully-connected graph, every query takes O(1) time
+//              FloydWarshall algorithm
 class Solution_2 {
 public:
     vector<double> calcEquation(vector<vector<string>> equations,

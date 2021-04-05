@@ -9,19 +9,18 @@ using namespace std;
 class Solution {
 public:
     bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
-        stack<int> s;
-        int i = 0, j = 0;
-        while (j < popped.size()) {
-            if (s.empty() || s.top() != popped[j]) {
-                if (i == pushed.size()) return false;
-                s.push(pushed[i++]);
-            }
-            else {
-                s.pop();
+        stack<int> st;
+        int n = pushed.size();
+        for (int i = 0, j = 0; j < n; ) {
+            if (st.empty() || st.top() != popped[j]) {
+                if (i == n) return false;
+                st.push(pushed[i++]);
+            } else {
+                st.pop();
                 ++j;
             }
         }
-        return s.empty();
+        return true;
     }
 };
 

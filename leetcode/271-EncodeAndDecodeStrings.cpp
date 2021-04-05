@@ -4,6 +4,7 @@
 #include <string>
 using namespace std;
 
+// It can work on any possible characters in strs[i], including '#'s
 class Codec {
 public:
     string encode(vector<string>& strs) {
@@ -34,6 +35,6 @@ int main() {
     string ec = c.encode(s);
     cout << ec << endl;
     auto r = c.decode(ec);
-    for (auto& e : r) cout << e << " "; cout << endl; 
+    for (auto& e : r) cout << e << " "; cout << endl;
     return 0;
 }

@@ -6,32 +6,21 @@ using namespace std;
 
 // https://leetcode.com/problems/non-overlapping-intervals/
 
-struct Interval {
-    int start;
-    int end;
-    Interval() : start(0), end(0) {}
-    Interval(int s, int e) : start(s), end(e) {}
-};
-
 class Solution {
 public:
-    int eraseOverlapIntervals(vector<Interval>& intervals) {
-        if (intervals.empty()) return 0;
-        sort(intervals.begin(), intervals.end(), 
-            [](const Interval& i1, const Interval& i2) {
-                if (i1.start == i2.start) return i1.end < i2.end;
-                return i1.start < i2.start;
-        });
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end(),
+             [](const vector<int>& v1, const vector<int>& v2) {
+                 if (v1[0] == v2[0]) return v1[1] < v2[1];
+                 return v1[0] < v2[0];
+             });
+        int pre_end = INT_MIN;
         int res = 0;
-        int n = intervals.size();
-        for (int i = 0; i < n; ) {
-            int j = i+1;
-            while (j < n && intervals[j].start < intervals[i].end) {
-                intervals[i].end = min(intervals[i].end, intervals[j].end); // greedy
-                ++j;
+        for (const auto& i : intervals) {
+            if (i[0] < pre_end) {
                 ++res;
-            }
-            i = j;
+                pre_end = min(pre_end, i[1]);
+            } else pre_end = i[1];
         }
         return res;
     }

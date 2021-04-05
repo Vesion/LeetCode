@@ -2,42 +2,62 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <list> 
-#include <numeric> 
+#include <list>
+#include <numeric>
 using namespace std;
 
-// unordered_set and list both get TLE!
-// So, we use array indexing to simulate list.
 
+// Set, O(logN)
+class PhoneDirectory1 {
+public:
+    set<int> m;
+    PhoneDirectory(int maxNumbers) {
+        for (int i = 0; i < maxNumbers; ++i) m.insert(i);
+    }
+    int get() {
+        if (m.empty()) return -1;
+        int i = *m.begin();
+        m.erase(i);
+        return i;
+    }
+    bool check(int number) {
+        return m.count(number);
+    }
+    void release(int number) {
+        m.insert(number);
+    }
+};
+
+
+// Next pointer, O(1)
 class PhoneDirectory {
 private:
-    vector<int> nums;
-    vector<bool> used;
-    int index, upper;
-    
+    vector<int> next;
+    int pos;
+
 public:
     PhoneDirectory(int maxNumbers) {
-        index = 0, upper = maxNumbers;
-        used.resize(maxNumbers, false);
-        nums.resize(maxNumbers);
-        iota(nums.begin(), nums.end(), 0);
+        next.resize(maxNumbers);
+        for (int i = 0; i < maxNumbers; ++i) next[i] = (i+1) % maxNumbers;
+        pos = 0;
     }
-    
+
     int get() {
-        if (index == upper) return -1;
-        int res = nums[index++];
-        used[res] = true;
+        if (next[pos] == -1) return -1;
+        int res = pos;
+        pos = next[pos];
+        next[res] = -1;
         return res;
     }
-    
+
     bool check(int number) {
-        return number >= 0 && number < upper && !used[number];
+        return next[number] != -1;
     }
-    
+
     void release(int number) {
         if (check(number)) return;
-        nums[--index] = number;
-        used[number] = false;
+        next[number] = pos;
+        pos = number;
     }
 };
 

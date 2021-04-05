@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // A naive solution is iterate height from 1 to 20000, accumulate water level by level using dfs, TLE
@@ -47,8 +47,9 @@ public:
 };
 
 // A big optimization:
-// Used DFS for the cells that are shorter or equal, 
-// because you know they are going to be switched to the root of the queue, why bother putting them back wasting logN time.
+// Used DFS for the cells that are shorter or equal,
+// because you know they are going to be switched to the root of the queue,
+// why bother putting them back wasting logN time.
 
 
 int main() {

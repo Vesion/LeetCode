@@ -8,21 +8,20 @@ class Solution {
 public:
     string findReplaceString(string S, vector<int>& indexes, vector<string>& sources, vector<string>& targets) {
         string res;
-        vector<string> subs(S.size());
-        vector<bool> r(S.size(), false);
-        for (int i = 0; i < indexes.size(); ++i) {
-            const int index = indexes[i];
-            const string& s = sources[i];
-            const string& t = targets[i];
-            if (S.substr(index, s.size()) == s) {
-                subs[index] = t;
-                for (int j = index; j < index + s.size(); ++j) r[j] = true;
+        int n = S.size();
+        vector<string> subs(n);
+        vector<bool> f(n, false);
+        for (int k = 0; k < indexes.size(); ++k) {
+            int i = indexes[k];
+            const string& src = sources[k], tgt = targets[k];
+            if (S.find(src, i) == i) {
+                subs[i] = tgt;
+                for (int j = i; j < i+src.size(); ++j) f[j] = true;
             }
         }
-        for (int i = 0; i < S.size(); ++i) {
+        for (int i = 0; i < n; ++i) {
+            if (!f[i]) res += S[i];
             if (!subs[i].empty()) res += subs[i];
-            if (r[i]) continue;
-            res += S[i];
         }
         return res;
     }

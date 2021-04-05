@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
+#include <unordered_set>
 using namespace std;
 
 // Solution 0 : brute-force, O(n^3), TLE
@@ -38,18 +38,17 @@ public:
     bool splitArray(vector<int>& nums) {
         int n = nums.size();
         if (n < 7) return false;
-        vector<int> sums(n+1, 0);
-        for (int i = 1; i <= n; ++i) sums[i] = sums[i-1]+nums[i-1];
+        vector<int> sums(n);
+        partial_sum(nums.begin(), nums.end(), sums.begin());
 
-        for (int j = 0; j < n; ++j) {
-            unordered_set<int> m;
-            for (int i = 1; i < j-1; ++i) {
-                int s1 = sums[i], s2 = sums[j]-sums[i+1];
-                if (s1 == s2) m.insert(s1);
+        for (int k = 3; k < n-3; ++k) {
+            unordered_set<int> pre;
+            for (int i = 1; i < k-1; ++i) {
+                if (sums[i-1] == sums[k-1]-sums[i]) pre.insert(sums[i-1]);
             }
-            for (int k = j+2; k < n-1; ++k) {
-                int s1 = sums[k]-sums[j+1], s2 = sums[n]-sums[k+1];
-                if (s1 == s2 && m.count(s1)) return true;
+            for (int j = k+1; j < n-1; ++j) {
+                if (sums[n-1]-sums[j] == sums[j-1]-sums[k] &&
+                    pre.count(sums[n-1]-sums[j])) return true;
             }
         }
         return false;

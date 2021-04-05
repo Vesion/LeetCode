@@ -10,16 +10,16 @@ using namespace std;
 class Solution {
 public:
     int jump(vector<int>& nums) {
-        int farthest = 0, end = 0; // farthest is the farthest point jump from [start, end] can reach
-        int level = 0;
-        for (int i = 0; i < (int)nums.size(); ++i) {
+        int max_end = 0, end = 0;
+        int res = 0;
+        for (int i = 0; i < nums.size(); ++i) {
             if (i > end) {
-                end = farthest;
-                ++level;
+                end = max_end;
+                ++res;
             }
-            farthest = max(farthest, i+nums[i]);
+            max_end = max(max_end, i+nums[i]);
         }
-        return level;
+        return res;
     }
 };
 

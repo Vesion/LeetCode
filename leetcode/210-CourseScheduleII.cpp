@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // Solution 1 : BFS
@@ -15,10 +15,10 @@ public:
             graph[p.second].push_back(p.first);
             indegrees[p.first]++;
         }
-        
+
         queue<int> q;
         for (int i = 0; i < numCourses; ++i) if (indegrees[i] == 0) q.push(i);
-        
+
         vector<int> res;
         while (!q.empty()) {
             int t = q.front(); q.pop();
@@ -34,29 +34,32 @@ public:
 
 
 // Solution 2 : DFS
-class Solution_2 {
+class Solution {
 public:
-    vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
-        vector<vector<int>> graph(numCourses);
-        for (auto& p : prerequisites) graph[p.second].push_back(p.first);
+    vector<vector<int>> g;
+    vector<bool> vis, onpath;
+    vector<int> res;
 
-        vector<bool> visited(numCourses, false), onpath(numCourses, false);
-        vector<int> res;
-        for (int i = 0; i < numCourses; ++i) {
-            if (hasCycle(i, graph, visited, onpath, res)) return {};
-        }
+    vector<int> findOrder(int n, vector<vector<int>>& prerequisites) {
+        g.resize(n);
+        for (const auto& p : prerequisites) g[p[1]].push_back(p[0]);
+
+        vis.resize(n, false);
+        onpath.resize(n, false);
+        for (int i = 0; i < n; ++i)
+            if (cycle(i)) return {};
         reverse(res.begin(), res.end());
         return res;
-    } 
+    }
 
-    bool hasCycle(int cur, vector<vector<int>>& graph, vector<bool>& visited, vector<bool>& onpath, vector<int>& res) {
-        if (visited[cur]) return false;
-        visited[cur] = onpath[cur] = true;
-        for (int nbr : graph[cur])
-            if (onpath[nbr] 
-            || hasCycle(nbr, graph, visited, onpath, res)) return true;
-        onpath[cur] = false;
-        res.push_back(cur);
+    bool cycle(int i) {
+        if (vis[i]) return false;
+        vis[i] = onpath[i] = true;
+        for (int j : g[i]) {
+            if (onpath[j] || cycle(j)) return true;
+        }
+        onpath[i] = false;
+        res.push_back(i);
         return false;
     }
 };

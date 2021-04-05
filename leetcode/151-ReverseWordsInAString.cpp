@@ -2,19 +2,19 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <sstream> 
+#include <sstream>
 using namespace std;
 
 
 // Solution 1 : sstream, O(n) place
 class Solution {
 public:
-    void reverseWords(string &s) {
+    string reverseWords(string s) {
         istringstream in(s);
         string w;
         string res;
         while (in >> w) res = (res.empty() ? w : w + " ") + res;
-        s = res;
+        return res;
     }
 };
 
@@ -22,7 +22,7 @@ public:
 // Solution 2 : swap, O(1) place
 class Solution_2 {
 public:
-    void reverseWords(string &s) {
+    string reverseWords(string s) {
         auto si = s.find_first_not_of(' ');
         s.erase(0, si);
         auto sj = s.find_last_not_of(' ');
@@ -44,6 +44,7 @@ public:
             }
             i = j;
         }
+        return s;
     }
 };
 

@@ -7,23 +7,18 @@ using namespace std;
 class Solution {
 public:
     vector<string> summaryRanges(vector<int>& nums) {
-        if (nums.empty()) return {};
-        int start = nums[0];
         vector<string> res;
-        for (int i = 1; i < (int)nums.size(); ++i) {
-            if (nums[i] > nums[i-1]+1) {
-                res.push_back(getRange(start, nums[i-1]));
-                start = nums[i];
+        int i = 0, j = 1, n = nums.size();
+        for (; j <= n; ++j) {
+            if (j == n || nums[j] > nums[j-1]+1) {
+                if (j-1 > i)
+                    res.push_back(to_string(nums[i]) + "->" + to_string(nums[j-1]));
+                else
+                    res.push_back(to_string(nums[i]));
+                i = j;
             }
         }
-        res.push_back(getRange(start, nums.back()));
         return res;
-    }
-    
-    string getRange(int start, int end) {
-        string r = to_string(start);
-        if (start < end) r += "->" + to_string(end);
-        return r;
     }
 };
 

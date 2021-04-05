@@ -6,11 +6,14 @@ using namespace std;
 
 class Solution {
 public:
+    using ll = long long;
     int nextGreaterElement(int n) {
-        string s = to_string(n);
-        next_permutation(s.begin(), s.end());
-        long res = stol(s);
-        return (res > n && res <= INT_MAX) ? res : -1;
+        string ns = to_string(n);
+        bool f = next_permutation(ns.begin(), ns.end());
+        if (!f) return -1;
+        ll nn = stoll(ns);
+        if (nn > INT_MAX) return -1;
+        return nn;
     }
 };
 

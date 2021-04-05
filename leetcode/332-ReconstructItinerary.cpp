@@ -2,11 +2,11 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <set> 
-#include <queue> 
-#include <stack> 
-#include <unordered_map> 
-#include <unordered_set> 
+#include <set>
+#include <queue>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
 using namespace std;
 
 // Construct Eulerian Path
@@ -15,17 +15,17 @@ using namespace std;
 // Solution 1 : recursive
 class Solution {
 public:
-    vector<string> findItinerary(vector<pair<string, string>> tickets) {
+    vector<string> findItinerary(vector<vector<string>> tickets) {
         unordered_map<string, multiset<string>> graph;
         for (auto& p : tickets) {
-            graph[p.first].insert(p.second);
+            graph[p[0]].insert(p[1]);
         }
         vector<string> res;
         dfs("JFK", graph, res);
         reverse(res.begin(), res.end());
         return res;
     }
-    
+
     void dfs(string cur, unordered_map<string, multiset<string>>& graph, vector<string>& res) {
         while (!graph[cur].empty()) {
             string nbr = *graph[cur].begin();
@@ -47,7 +47,7 @@ public:
         for (const pair<string, string> & ticket : tickets) {
             m[ticket.first].insert(ticket.second);
         }
-        
+
         // Step 2: March greedily and traceback
         vector<string> march = { "JFK" }; // the storage for greedy searching
         vector<string> results; // store the final results reversely

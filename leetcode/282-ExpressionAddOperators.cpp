@@ -4,6 +4,8 @@
 #include <string>
 using namespace std;
 
+
+// Variant of 24-points-game, dfs
 class Solution {
 public:
     vector<string> addOperators(string num, int target) {
@@ -11,7 +13,7 @@ public:
         dfs(num, 0, 0, 0, target, "", res);
         return res;
     }
-    
+
     void dfs(string& s, int start, long long sum, long long pre, int target, string path, vector<string>& res) {
         if (start == (int)s.size()) {
             if (sum == target) res.push_back(path);
@@ -22,7 +24,7 @@ public:
             string t = s.substr(start, i-start+1);
             long long num = stol(t);
             if (start == 0) dfs(s, i+1, num, num, target, path+t, res);
-            else { 
+            else {
                 dfs(s, i+1, sum+num, num, target, path+"+"+t, res);
                 dfs(s, i+1, sum-num, -num, target, path+"-"+t, res);
                 dfs(s, i+1, sum-pre+pre*num, pre*num, target, path+"*"+t, res);

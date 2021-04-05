@@ -4,41 +4,55 @@
 #include <string>
 using namespace std;
 
+// NP hard, DFS
 class Solution {
 public:
-  bool canPartitionKSubsets(vector<int>& nums, int k) {
-    int n = nums.size();
-    int sum = 0;
-    for (int& num : nums) sum += num;
-    if (sum%k) return false;
-    vector<bool> visited(n, false);
-    sort(nums.begin(), nums.end());
-    return dfs(0, nums, 0, sum/k, k, visited);
-  }
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int sum = 0;
+        for (int num : nums) sum += num;
+        if (sum % k) return false;
+        return dfs(nums, 0, 0, sum/k, k, 0);
+    }
 
-  bool dfs(int i, vector<int>&nums, int sum, int target, int k, vector<bool>& visited) {
-    if (i == (int)nums.size()) {
-      if (sum == target) {
+    bool dfs(const vector<int>& nums, int start, int sum, int target, int k, int vis) {
         if (k == 1) return true;
-        return dfs(0, nums, 0, target, k-1, visited);
-      }
-      return false;
+        if (sum == target) return dfs(nums, 0, 0, target, k-1, vis);
+        if (start == nums.size()) return false;
+        for (int i = start; i < nums.size(); ++i) {
+            if ((vis>>i)&1) continue;
+            vis |= (1<<i);
+            if (dfs(nums, i+1, sum+nums[i], target, k, vis)) return true;
+            vis ^= (1<<i);
+        }
+        return false;
     }
-    if (dfs(i+1, nums, sum, target, k, visited)) return true;
-    if (!visited[i]) {
-      if (sum+nums[i] > target) return false;
-      visited[i] = true;
-      if (dfs(i+1, nums, sum+nums[i], target, k, visited)) return true;
-      visited[i] = false;
-    }
-    return false;
-  }
 };
 
 
+// DP
+// https://leetcode.com/problems/partition-to-k-equal-sum-subsets/discuss/480707/C%2B%2B-DP-bit-manipulation-in-20-lines
+class Solution {
+public:
+    int dp[(1<<16)+2];
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int n = nums.size(), sum = 0;
+        fill(dp, dp+(1<<16)+2, -1);
+        dp[0] = 0;
+        for (int i = 0; i < n; i++) sum += nums[i];
+        if (sum % k) return false;
+        int tar = sum/k;
+
+        for (int mask = 0; mask < (1<<n); mask++) {
+            if (dp[mask] == -1) continue;  // if current state is illegal, simply ignore it
+            for (int i = 0; i < n; i++) {
+                if (!(mask&(1<<i)) && dp[mask]+nums[i] <= tar) {  // if nums[i] is unchosen && choose nums[i] would not cross the target
+                    dp[mask|(1<<i)] = (dp[mask]+nums[i]) % tar;
+                }
+            }
+        }
+        return dp[(1<<n)-1] == 0;
+    }
+};
+
 int main() {
-  Solution s;
-  vector<int> nums = { 2,2,2,2,3,4,5 };
-  cout << s.canPartitionKSubsets(nums, 4) << endl;
-  return 0;
 }

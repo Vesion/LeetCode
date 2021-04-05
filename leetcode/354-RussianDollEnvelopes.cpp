@@ -38,10 +38,10 @@ public:
 
 
 
-// Solution 1 : naive dp, O(n^2)
+// Solution 1 : naive dp in LIS problem
 class Solution_1 {
 public:
-    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
         if (envelopes.empty()) return 0;
         sort(envelopes.begin(), envelopes.end());
         int n = envelopes.size();
@@ -49,7 +49,7 @@ public:
         int res = 1;
         for (int i = 1; i < n; ++i) {
             for (int j = i-1; j >= 0; --j) {
-                if (envelopes[i].first > envelopes[j].first && envelopes[i].second > envelopes[j].second) {
+                if (envelopes[i][0] > envelopes[j][0] && envelopes[i][1] > envelopes[j][1]) {
                     dp[i] = max(dp[i], dp[j]+1);
                 }
                 res = max(res, dp[i]);
@@ -60,21 +60,21 @@ public:
 };
 
 
-// Solution 2 : dp + binary search, similar to LIS
+// Solution 2 : dp + binary search in LIS problem
 class Solution {
 public:
-    int maxEnvelopes(vector<pair<int, int>>& envelopes) {
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
         // Note: sort with width first, when widths equal, the one with greater height goes first
-        sort(envelopes.begin(), envelopes.end(), [](const pair<int,int>& e1, const pair<int,int>& e2) {
-            if (e1.first == e2.first) return e1.second > e2.second;
-            return e1.first < e2.first;
-        });
-        
+        sort(envelopes.begin(), envelopes.end(),
+             [](const vector<int>& e1, const vector<int>& e2) {
+                 if (e1[0] == e2[0]) return e1[1] > e2[1];
+                 return e1[0] < e2[0];
+             });
         vector<int> lis;
-        for (auto& e : envelopes) {
-            auto it = lower_bound(lis.begin(), lis.end(), e.second);
-            if (it == lis.end()) lis.push_back(e.second);
-            else *it = e.second;
+        for (const auto& e : envelopes) {
+            auto it = lower_bound(lis.begin(), lis.end(), e[1]);
+            if (it == lis.end()) lis.push_back(e[1]);
+            else *it = e[1];
         }
         return lis.size();
     }

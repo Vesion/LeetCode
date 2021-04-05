@@ -9,6 +9,7 @@ using namespace std;
 // 084-LargestRectangleInHistogram.cpp
 // 085-MaximalRectangle.cpp
 //
+// mono-increasing stack
 // So, we maintain a monotonic increasing stack, when we find a bar shorter than its top, we pop a bar as x
 // then current shorter bar is x's right border, where is x's left border? the new top one (or -1 if stack is empty)
 // so the area for rectangle of x as height is x * (right-left)

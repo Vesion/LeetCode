@@ -2,10 +2,10 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
-#include <map> 
-#include <unordered_map> 
-#include <set> 
+#include <queue>
+#include <map>
+#include <unordered_map>
+#include <set>
 using namespace std;
 
 
@@ -16,31 +16,34 @@ using namespace std;
 // Solution 1 : heap + sweep line, O(nlogn) time
 class Solution_sl {
 public:
-    vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {
-        vector<pair<int, int>> result;    
-        int n = buildings.size();
-        int x = 0, h = 0; // current time, current height
-        priority_queue<pair<int, int>> pq; // height, end time; max height heap, if height equals, bigger end time goes first
-        int i = 0;
-        while (i < n || !pq.empty()) {
-            // current time is either the next new start time, or the end time of top building
-            if (pq.empty() || (i < n && buildings[i][0] <= pq.top().second)) {
-                // the next new building starts before the top one ends
-                x = buildings[i][0];
-                while (i < n && buildings[i][0] == x) { // go throught all the buildings start at the same time, just push them
-                    pq.push({buildings[i][2], buildings[i][1]});
+    vector<vector<int>> getSkyline(vector<vector<int>>& b) {
+        vector<vector<int>> res;
+        int n = b.size();
+        // {height:end time} max height heap, if height equals, bigger end time goes first
+        priority_queue<pair<int,int>> pq;
+        for (int i = 0; i < n || !pq.empty(); ) {
+            int x = 0;
+            if (pq.empty() || (i < n && b[i][0] <= pq.top().second)) {
+                // the new building starts before the top one ends
+                x = b[i][0];
+                // push all the buildings start at the same time
+                while (i < n && b[i][0] == x) {
+                    pq.push({b[i][2], b[i][1]});
                     ++i;
                 }
             } else {
-                // current tallest building ends before the next new building's starting time
+                // current tallest building ends before the new building's starting time
                 x = pq.top().second;
-                while (!pq.empty() && (pq.top().second <= x)) pq.pop(); // pop those buildings end before the current one
+                // pop those buildings end before the current one
+                while (!pq.empty() && pq.top().second <= x) pq.pop();
             }
-            h = pq.empty() ? 0 : pq.top().first; // get current tallest building's height
-            if (result.empty() || (result.back().second != h))
-                result.push_back({x, h});
+            // get current tallest building's height
+            int h = pq.empty() ? 0 : pq.top().first;
+            if (res.empty() || res.back()[1] != h) {
+                res.push_back({x, h});
+            }
         }
-        return result;
+        return res;
     }
 };
 
@@ -215,6 +218,6 @@ int main() {
     vector<vector<int>> b = { { 1,2,1 },{ 2147483646,2147483647,2147483647 } };
     Solution_st s;
     auto r = s.getSkyline(b);
-    for (auto& e : r) cout << e.first << " " << e.second << endl; cout << endl; 
+    for (auto& e : r) cout << e.first << " " << e.second << endl; cout << endl;
     return 0;
 }

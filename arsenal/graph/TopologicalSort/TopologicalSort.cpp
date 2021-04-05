@@ -2,9 +2,9 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <set> 
-#include <map> 
-#include <queue> 
+#include <set>
+#include <map>
+#include <queue>
 using namespace std;
 
 // Topological Sort ususallly occurs in schedule-like problems
@@ -39,25 +39,25 @@ vector<int> bfs() {
 
 // Solution 2 : DFS
 
-int visit[MAXN], onpath[MAXN];
+int visit[MAXN];  // 0 for non-visited, 1 for visiting, 2 for visited
 
-bool hasCycle(int cur, vector<int>& res) {
-    if (visit[cur]) return false;
-    visit[cur] = onpath[cur] = true;
-    for (int& child : g[cur]) {
-        if (onpath[child] || hasCycle(child, res)) return true;
+// return false if cycle detected
+bool dfs(int cur, vector<int>& res) {
+    if (visit[cur] == 2) return true;
+    visit[cur] = 1;
+    for (int child : g[cur]) {
+        if (visit[child] == 1 || !dfs(child, res)) return false;
     }
-    onpath[cur] = false;
-    res.push_back(cur);
-    return false;
+    res.push_back(cur);  // push from the end of the path
+    visit[cur] = 2;
+    return true;
 }
 
 vector<int> dfs() {
     memset(visit, 0, sizeof visit);
-    memset(onpath, 0, sizeof onpath);
     vector<int> res;
     for (int i = 0; i < n; ++i) {
-        if (!visit[i] && hasCycle(i, res)) return {}; // has cycle
+        if (visit[i] == 0 && !dfs(i, res)) return {}; // has cycle
     }
     reverse(res.begin(), res.end());
     return res;
@@ -71,6 +71,6 @@ int main() {
     g[2].push_back(3);
     g[3].push_back(1);
     auto r = dfs();
-    for (auto& e : r) cout << e << " "; cout << endl; 
+    for (auto& e : r) cout << e << " "; cout << endl;
     return 0;
 }

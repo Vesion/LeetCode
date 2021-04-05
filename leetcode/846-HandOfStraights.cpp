@@ -22,13 +22,13 @@ public:
                 pq.push({card, 1});
                 continue;
             }
-            const P group = pq.top();  // NOTE: no &
+            const P group = pq.top();
             if (card < group.first || card > group.first + 1) return false;
-            if (card == group.first) {
+            if (card == group.first) {  // start a new group
                 pq.push({card, 1});
-            } else {
+            } else {  // extend this group
                 pq.pop();
-                if (group.second+1 == W) ++c;
+                if (group.second+1 == W) ++c;  // this group is done
                 else pq.push({card, group.second+1});
             }
         }
@@ -42,11 +42,11 @@ public:
     bool isNStraightHand(vector<int>& hand, int W) {
         map<int,int> m;
         for (int card : hand) ++m[card];
-        for (const auto p : m) {  // NOTE: no &
-            assert(p.second >= 0);
-            if (p.second == 0) continue;
-            for (int i = 0; i < W; ++i) {
-                if ((m[p.first + i] -= p.second) < 0) return false;
+        for (const auto& p : m) {
+            int i = p.first, c = p.second;
+            if (c == 0) continue;
+            for (int j = i; j < i+W; ++j) {
+                if ((m[j] -= c) < 0) return false;
             }
         }
         return true;

@@ -41,35 +41,30 @@ public:
 
 
 // Solution 3 : Binary Indexed Tree (Fenwick Tree)
-class Solution_3 {
+class Solution3 {
 public:
+    const int N = 2*1e4 + 5;
     vector<int> sums;
-    static constexpr int kMax = 2 * 1e4 + 4;
 
-    void add(int id, int val) {
-        for (int i = id+1; i < kMax; i += (i&-i)) {
-            sums[i] += val;
-        }
+    void add(int id) {
+        for (int i = id+1; i < N; i += (i&-i)) ++sums[i];
     }
 
-    int query(int id) {
+    int get(int id) {
         int res = 0;
-        for (int i = id+1; i > 0; i -= (i&-i)) {
-            res += sums[i];
-        }
+        for (int i = id+1; i > 0; i -= (i&-i)) res += sums[i];
         return res;
     }
 
     vector<int> countSmaller(vector<int>& nums) {
-        if (nums.empty()) return {};
-        for (int& num : nums) num += 1e4 + 1;
-        sums.resize(kMax, 0);
-
-        const int n = nums.size();
-        vector<int> res(n);
+        sums.resize(N, 0);
+        int n = nums.size();
+        // ensure num >= 0
+        for (int& num : nums) num += 1e4;
+        vector<int> res(n, 0);
         for (int i = n-1; i >= 0; --i) {
-            add(nums[i], 1);
-            res[i] = query(nums[i]-1);
+            res[i] = get(nums[i]-1);
+            add(nums[i]);
         }
         return res;
     }

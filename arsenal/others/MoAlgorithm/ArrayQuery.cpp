@@ -2,13 +2,15 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <cmath> 
+#include <cmath>
 #include <cstring>
 using namespace std;
 
 // Introduction:
-//      Modui Algorithm, proposed by MoTao, an offline algorithm used to deal with interval query problems without modification.
+//      Modui Algorithm, proposed by MoTao,
+//      an offline algorithm used to deal with interval query problems without modification.
 //      http://www.cnblogs.com/hzf-sbit/p/4056874.html
+//      https://www.hackerearth.com/practice/notes/mos-algorithm
 //
 // e.g.
 //      http://hihocoder.com/problemset/problem/1488

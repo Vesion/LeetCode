@@ -3,7 +3,7 @@
 #include <cstdlib>
 using namespace std;
 
-// Solution 1 : std::strtod
+// Solution 0 : std::strtod
 class Solution {
 public:
     bool isNumber(string s) {
@@ -20,12 +20,42 @@ public:
 };
 
 
+// Solution 1 : straight forward
+class Solution {
+public:
+    bool isNumber(string s) {
+        int i = 0;
+        int n = s.size();
+        while (i < n && s[i] == ' ') ++i;
+        if (s[i] == '+' || s[i] == '-') ++i;
+
+        int nums = 0, points = 0;
+        while (i < n && (s[i] == '.' || (s[i] >= '0' && s[i] <= '9'))) {
+            s[i++] == '.' ? ++points : ++nums;
+        }
+        if (points > 1 || nums < 1) return false;
+
+        if (s[i] == 'e' || s[i] == 'E') {
+            ++i;
+            if (s[i] == '+' || s[i] == '-') ++i;
+            nums = 0;
+            while (i < n && (s[i] >= '0' && s[i] <= '9')) {
+                ++i; ++nums;
+            }
+            if (nums < 1) return false;
+        }
+        while (i < n && s[i] == ' ') ++i;
+        return i == n;
+    }
+};
+
+
 // Solution 2 : DFA
 class Solution_2 {
 public:
     bool isNumber(string str) {
         int state=0, flag=0; // flag to judge the special case "."
-        while(str[0]==' ')  str.erase(0,1);//delete the  prefix whitespace 
+        while(str[0]==' ')  str.erase(0,1);//delete the  prefix whitespace
         while(str[str.length()-1]==' ') str.erase(str.length()-1, 1);//delete the suffix whitespace
         for(int i=0; i<(int)str.length(); i++){
             if('0'<=str[i] && str[i]<='9'){

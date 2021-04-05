@@ -7,21 +7,20 @@ using namespace std;
 // Solution 1 : backtracking
 class Solution {
 public:
+    vector<vector<int>> res;
     vector<vector<int>> combine(int n, int k) {
-        vector<vector<int>> res;
         vector<int> path;
-        dfs(n, 1, k, path, res);
+        dfs(1, n, k, path);
         return res;
     }
-    
-    void dfs(int n, int start, int k, vector<int>& path, vector<vector<int>>& res) {
-        if ((int)path.size() == k) {
+    void dfs(int start, int n, int k, vector<int>& path) {
+        if (k == 0) {
             res.push_back(path);
             return;
         }
         for (int i = start; i <= n; ++i) {
             path.push_back(i);
-            dfs(n, i+1, k, path, res);
+            dfs(i+1, n, k-1, path);
             path.pop_back();
         }
     }

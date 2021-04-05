@@ -2,93 +2,82 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <sstream> 
-#include <queue> 
+#include <sstream>
+#include <queue>
 using namespace std;
 
 class FileSystem {
-private:
-    struct File {
-        bool isFile;
-        string name;
-        string content;
-        vector<File*> child;
-        File() {}
-        File(bool f, string n) : isFile(f), name(n) {}
-    };
-    File* root;
-
 public:
+    struct Node {
+        bool is_dir;
+        string content;
+        unordered_map<string, Node*> children;
+    };
+    Node* root;
+
     FileSystem() {
-        root = new File(); 
+        root = new Node();
+        root->is_dir = true;
     }
-    
+
     vector<string> ls(string path) {
         istringstream in(path);
-        string file;
-        File* cur = root;
-        while (getline(in, file, '/')) {
-            bool f = false;
-            for(File* c : cur->child) {
-                if (c->name == file) { f = true; cur = c; break; }
-            }
-            if (!f) return {};
+        string token;
+        Node* node = root;
+        while (getline(in, token, '/')) {
+            if (token.empty()) continue;
+            node = node->children[token];
         }
-        if (cur->isFile) return {cur->name};
-        vector<string> res;
-        for (File* c : cur->child) res.push_back(c->name);
-        sort(res.begin(), res.end());
-        return res;
+        if (node->is_dir) {
+            vector<string> res;
+            for (const auto& p : node->children) res.push_back(p.first);
+            sort(res.begin(), res.end());
+            return res;
+        } else {
+            return {token};
+        }
     }
-    
+
     void mkdir(string path) {
         istringstream in(path);
-        string file;
-        File* cur = root;
-        while (getline(in, file, '/')) {
-            bool f = false;
-            for(File* c : cur->child) {
-                if (c->name == file) { f = true; cur = c; break; }
+        string token;
+        Node* node = root;
+        while (getline(in, token, '/')) {
+            if (token.empty()) continue;
+            if (!node->children.count(token)) {
+                Node* c = new Node();
+                c->is_dir = true;
+                node->children[token] = c;
             }
-            if (!f) {
-                File* t = new File(false, file);
-                cur->child.push_back(t);
-                cur = t;
-            }
+            node = node->children[token];
         }
     }
-    
+
     void addContentToFile(string filePath, string content) {
         istringstream in(filePath);
-        string file;
-        File* cur = root;
-        while (getline(in, file, '/')) {
-            bool f = false;
-            for(File* c : cur->child) {
-                if (c->name == file) { f = true; cur = c; break; }
+        string token;
+        Node* node = root;
+        while (getline(in, token, '/')) {
+            if (token.empty()) continue;
+            if (!node->children.count(token)) {
+                Node* c = new Node();
+                c->is_dir = false;
+                node->children[token] = c;
             }
-            if (!f) {
-                File* t = new File(false, file);
-                cur->child.push_back(t);
-                cur = t;
-            }
+            node = node->children[token];
         }
-        cur->isFile = true;
-        cur->content += content;
+        node->content += content;
     }
-    
+
     string readContentFromFile(string filePath) {
         istringstream in(filePath);
-        string file;
-        File* cur = root;
-        while (getline(in, file, '/')) {
-            bool f = false;
-            for(File* c : cur->child) {
-                if (c->name == file) { f = true; cur = c; break; }
-            }
-            if (!f) return "";
+        string token;
+        Node* node = root;
+        while (getline(in, token, '/')) {
+            if (token.empty()) continue;
+            node = node->children[token];
         }
-        return cur->content;
+        return node->content;
     }
 };
 
@@ -100,7 +89,7 @@ int main() {
     fs.addContentToFile("/a/b/e", "world");
     fs.addContentToFile("/a/b/f/g", "xx");
     fs.mkdir("/a/b/f/h");
-    for (auto& e : fs.ls("/a/b/f/h")) cout << e << " "; cout << endl; 
+    for (auto& e : fs.ls("/a/b/f/h")) cout << e << " "; cout << endl;
     cout << fs.readContentFromFile("/a/b/c/d");
     return 0;
 }

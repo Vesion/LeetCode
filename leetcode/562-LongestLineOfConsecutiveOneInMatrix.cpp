@@ -42,6 +42,7 @@ public:
     int longestLine(vector<vector<int>>& M) {
         if (M.empty()) return 0;
         int n = M.size(), m = M[0].size();
+        // vertical, diognal(right-to-left), anti-diognal(left-to-right)
         vector<int> v(m, 0), d(n+m-1, 0), ad(n+m-1, 0);
         int res = 0;
         for (int i = 0; i < n; ++i) {

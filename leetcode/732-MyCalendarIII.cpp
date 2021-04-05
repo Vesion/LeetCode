@@ -2,9 +2,10 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <map> 
+#include <map>
 using namespace std;
 
+// Similar to 253-MeetingRoomsII
 
 // Solution 1 : O(n)
 class MyCalendarThree {
@@ -13,7 +14,7 @@ private:
 
 public:
   MyCalendarThree() { }
-  
+
   int book(int start, int end) { // O(n)
     ++m[start];
     --m[end];

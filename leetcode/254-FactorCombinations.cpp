@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cmath> 
+#include <cmath>
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -8,14 +8,15 @@ using namespace std;
 // Solution 1 : trivial backtracking + prune
 class Solution {
 public:
+    vector<vector<int>> res;
+
     vector<vector<int>> getFactors(int n) {
-        vector<vector<int>> res;
         vector<int> path;
-        dfs(n, 2, path, res);
+        dfs(2, n, path);
         return res;
     }
-    
-    void dfs(int n, int start, vector<int>& path, vector<vector<int>>& res) {
+
+    void dfs(int start, int n, vector<int>& path) {
         if (n == 1) {
             if (path.size() > 1) res.push_back(path);
             return;
@@ -23,11 +24,10 @@ public:
         for (int i = start; i <= n; ++i) {
             // a very efficient prune, think about it
             // all factors must be in range [1, sqrt(n)], other than n itself
-            if (i > sqrt(n)) i = n; 
-
-            if (n % i == 0) {
+            if (i*i > n) i = n;
+            if (n%i == 0) {
                 path.push_back(i);
-                dfs(n/i, i, path, res);
+                dfs(i, n/i, path);
                 path.pop_back();
             }
         }
@@ -44,7 +44,7 @@ public:
         dfs(n, path, res);
         return res;
     }
-    
+
     void dfs(int n, vector<int>& path, vector<vector<int>>& res) {
         int i = path.empty() ? 2 : path.back();
         // prune, i <= n/i

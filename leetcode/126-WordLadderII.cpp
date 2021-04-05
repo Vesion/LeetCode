@@ -2,21 +2,17 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
-#include <unordered_map> 
+#include <unordered_set>
+#include <unordered_map>
 using namespace std;
-
-struct TreeNode {
-    int val;
-    TreeNode *left, *right;
-    TreeNode(int val) : val(val), left(NULL), right(NULL) {}
-};
 
 // First use two-ends BFS to construct the tree, then use DFS to construct the path.
 class Solution {
 public:
-    vector<vector<string>> findLadders(string beginWord, string endWord, unordered_set<string> &dict) {
-        vector<vector<string> > paths;
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& dict) {
+        unordered_set<string> m(dict.begin(), dict.end());
+        if (!m.count(endWord)) return {};
+        vector<vector<string>> paths;
         vector<string> path(1, beginWord);
         if (beginWord == endWord) {
             paths.push_back(path);
@@ -25,9 +21,9 @@ public:
         unordered_set<string> forward, backward;
         forward.insert(beginWord);
         backward.insert(endWord);
-        unordered_map<string, vector<string> > tree;
+        unordered_map<string, vector<string>> tree;
         bool reversed = false; //make sure the tree generating direction is consistent, since we have to start from the smaller set to accelerate;
-        if (buildTree(forward, backward, dict, tree, reversed))
+        if (buildTree(forward, backward, m, tree, reversed))
             getPath(beginWord, endWord, tree, path, paths);
         return paths;
     }
@@ -35,7 +31,7 @@ public:
 private:
     bool buildTree(unordered_set<string> &forward, unordered_set<string> &backward, unordered_set<string> &dict, unordered_map<string, vector<string> > &tree, bool reversed) {
         if (forward.empty()) return false;
-        if (forward.size() > backward.size()) 
+        if (forward.size() > backward.size())
             return buildTree(backward, forward, dict, tree, !reversed);
         for (auto &word: forward) dict.erase(word);
         for (auto &word: backward) dict.erase(word);

@@ -9,20 +9,19 @@ using namespace std;
 // 084-LargestRectangleInHistogram.cpp
 // 085-MaximalRectangle.cpp
 
-// Solution 1 : stack
+// Solution 1 : mono decreasing stack
 class Solution {
 public:
     int trap(vector<int>& height) {
-        if (height.empty()) return 0;
-        int res = 0;
         stack<int> st;
+        int res = 0;
         for (int i = 0; i < height.size(); ++i) {
             while (!st.empty() && height[i] > height[st.top()]) {
-                const int low = height[st.top()];
+                int low = height[st.top()];
                 st.pop();
-                if (st.empty()) continue;
-                const int high = min(height[i], height[st.top()]);
-                res += (high - low) * (i-st.top()-1);
+                if (st.empty()) break;
+                int high = min(height[i], height[st.top()]);
+                res += (high-low) * (i-st.top()-1);
             }
             st.push(i);
         }
@@ -32,21 +31,22 @@ public:
 
 // Solution 2 : two-pointers
 // Scan from two ends to middle, record leftMax and rightMax height
-class Solution_2 {
+class Solution2 {
 public:
     int trap(vector<int>& height) {
-        int left = 0, right = height.size()-1;
-        int leftMax = 0, rightMax = 0;
+        int n = height.size();
         int res = 0;
-        while (left <= right) {
-            if (height[left] < height[right]) {
-                if (height[left] >= leftMax) leftMax = height[left];
-                else res += leftMax - height[left];
-                ++left;
+        int lmax = 0, rmax = 0;
+        int l = 0, r = n-1;
+        while (l <= r) {
+            if (height[l] < height[r]) {
+                if (height[l] >= lmax) lmax = height[l];
+                else res += lmax - height[l];
+                ++l;
             } else {
-                if (height[right] >= rightMax) rightMax = height[right];
-                else res += rightMax - height[right];
-                --right;
+                if (height[r] >= rmax) rmax = height[r];
+                else res += rmax - height[r];
+                --r;
             }
         }
         return res;

@@ -7,32 +7,34 @@ using namespace std;
 // dp + backtracking, O(n^2), use dp array to judge palindrome in O(1)
 class Solution {
 public:
+    vector<vector<string>> res;
+    vector<vector<bool>> dp;
+    int n;
+
     vector<vector<string>> partition(string s) {
-        int n = s.size();
-        vector<vector<bool>> dp(n, vector<bool>(n, false));
+        n = s.size();
+        dp.resize(n, vector<bool>(n, 0));
         for (int i = 0; i < n; ++i) dp[i][i] = true;
         for (int len = 2; len <= n; ++len) {
             for (int i = 0; i+len-1 < n; ++i) {
                 int j = i+len-1;
-                dp[i][j] = (s[i] == s[j]) && (i+1 == j || dp[i+1][j-1]);
+                if (s[i] == s[j]) dp[i][j] = i+1>j-1 || dp[i+1][j-1];
             }
         }
-        
-        vector<vector<string>> res;
         vector<string> path;
-        dfs(s, 0, dp, path, res);
+        dfs(s, 0, path);
         return res;
     }
-    
-    void dfs(string& s, int start, vector<vector<bool>>& dp, vector<string>& path, vector<vector<string>>& res) {
-        if (start == (int)s.size()) {
-            res.push_back(path);
+
+    void dfs(const string& s, int start, vector<string>& path) {
+        if (start == n) {
+            if (!path.empty()) res.push_back(path);
             return;
         }
-        for (int i = start; i < (int)s.size(); ++i) {
+        for (int i = start; i < n; ++i) {
             if (dp[start][i]) {
                 path.push_back(s.substr(start, i-start+1));
-                dfs(s, i+1, dp, path, res);
+                dfs(s, i+1, path);
                 path.pop_back();
             }
         }

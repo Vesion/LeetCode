@@ -29,8 +29,7 @@ public:
         int res = 0;
         while (bit) {
             res |= bit;
-            if (res > x/res)
-                res ^= bit;
+            if (res > x/res) res ^= bit;
             bit >>= 1;
         }
         return res;

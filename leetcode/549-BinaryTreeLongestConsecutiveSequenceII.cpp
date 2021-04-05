@@ -12,22 +12,22 @@ struct TreeNode {
 
 class Solution {
 public:
+    int res = 0;
     int longestConsecutive(TreeNode* root) {
-        int res = 0;
-        postorder(root, res);
+        dfs(root);
         return res;
     }
-    
-    pair<int,int> postorder(TreeNode* root, int& res) {
+
+    pair<int,int> dfs(TreeNode* root) {
         if (!root) return {0,0};
-        auto left = postorder(root->left, res);
-        auto right = postorder(root->right, res);
-        if (root->left && root->val == root->left->val+1) left.first++; else left.first = 1;
-        if (root->left && root->val == root->left->val-1) left.second++; else left.second = 1;
-        if (root->right && root->val == root->right->val+1) right.first++; else right.first = 1;
-        if (root->right && root->val == root->right->val-1) right.second++; else right.second = 1;
-        res = max(res, max(left.first+right.second-1, left.second+right.first-1));
-        return {max(left.first, right.first), max(left.second, right.second)};
+        auto [linc, ldec] = dfs(root->left);
+        auto [rinc, rdec] = dfs(root->right);
+        if (root->left && root->val == root->left->val+1) ++linc; else linc = 1;
+        if (root->left && root->val == root->left->val-1) ++ldec; else ldec = 1;
+        if (root->right && root->val == root->right->val+1) ++rinc; else rinc = 1;
+        if (root->right && root->val == root->right->val-1) ++rdec; else rdec = 1;
+        res = max(res, max(linc+rdec-1, ldec+rinc-1));
+        return {max(linc, rinc), max(ldec, rdec)};
     }
 };
 

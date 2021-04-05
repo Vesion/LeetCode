@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <set> 
-#include <queue> 
+#include <set>
+#include <queue>
 using namespace std;
 
 // Version 1 :  Given two rectilinear rectangles, judge whether they have overlapped area.
@@ -18,6 +18,17 @@ bool overlapped(Rectangle& r1, Rectangle& r2) {
 }
 
 
+// Version 1.1: Compute the overlapped area
+int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+    int left = max(A, E);
+    int bottom = max(B, F);
+    int right = min(C, G);
+    int top = min(D, H);
+    int overlap = (left < right && bottom < top) ? (right-left) * (top-bottom) : 0;
+    return overlap;
+}
+
+
 // Version 2 : Detect if there any two rectangles overlapped in a 2D plane
 // https://leetcode.com/problems/perfect-rectangle/
 //
@@ -28,10 +39,10 @@ public:
         if (rectangles.empty()) return false;
 
         // {time, index}
-        // time is the x-coordinate of each vertical edge, 
+        // time is the x-coordinate of each vertical edge,
         // index is each edge's id, furthermore, it indicates it's a left edge or right edge, left for inserting, right for removing, and we use negative index for right edge
         priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> events;
-        
+
         for (int i = 0; i < (int)rectangles.size(); ++i) {
             auto& rect = rectangles[i];
             events.push({rect[0], i+1});

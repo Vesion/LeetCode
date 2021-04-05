@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <queue> 
+#include <queue>
 using namespace std;
 
 // Just straight-forward bfs, O(n^4)
@@ -16,8 +16,9 @@ public:
         vector<vector<int>> total(m, vector<int>(n, 0));
         int res;
         int go[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
-        int walk = 0; // flag, walk only onto the cells that were reachable from all previous buildings, so no need fresh 'visited' for each bfs turn
-
+        // we only need to go to cells that were reachable from all previous buildings,
+        // so no need fresh 'visited' for each bfs turn
+        int flag = 0;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (grid[i][j] == 1) {
@@ -31,16 +32,16 @@ public:
                             auto t = q.front(); q.pop();
                             for (int d = 0; d < 4; ++d) {
                                 int ni = t.first+go[d][0], nj = t.second+go[d][1];
-                                if (ni < 0 || ni >= m || nj < 0 || nj >= n || grid[ni][nj] != walk) continue;
+                                if (ni < 0 || ni >= m || nj < 0 || nj >= n || grid[ni][nj] != flag) continue;
+                                q.push({ni,nj});
                                 grid[ni][nj]--;
                                 total[ni][nj] += dist;
                                 res = min(res, total[ni][nj]);
-                                q.push({ni,nj});
                             }
                         }
                         dist++;
                     }
-                    walk--;
+                    flag--;
                 }
             }
         }

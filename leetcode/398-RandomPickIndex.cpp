@@ -13,13 +13,13 @@ public:
     Solution(vector<int> nums) {
         this->nums = nums;
     }
-    
+
     int pick(int target) {
-        int count = 1;
+        int count = 0;
         int res;
         for (int i = 0; i < (int)nums.size(); ++i) {
             if (nums[i] == target) {
-                if (rand()%count++ == 0) res = i;
+                if (rand() % ++count == 0) res = i;
             }
         }
         return res;
@@ -28,8 +28,8 @@ public:
 
 int main() {
     Solution s({1, 2, 3, 3, 3});
-    for (int i = 0; i < 8000; ++i) { 
+    for (int i = 0; i < 8000; ++i) {
         s.pick(3);
-    } 
+    }
     return 0;
 }

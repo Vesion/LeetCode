@@ -7,36 +7,38 @@
 using namespace std;
 
 // BFS
-class Solution0 {
+class Solution {
 public:
-  int openLock(vector<string>& deadends, string target) {
-    unordered_set<string> m(deadends.begin(), deadends.end());
-    if (m.count("0000")) return -1;
-    if (target == "0000") return 0;
-    queue<string> q;
-    q.push("0000");
-    int res = 0;
-    while (!q.empty()) {
-      int len = q.size();
-      ++res;
-      while (len--) {
-        string t = q.front(); q.pop();
-        for (int i = 0; i < 4; ++i) {
-          char x = t[i];
-          for (int d : {-1,1}) {
-            t[i] = (x-'0'+d+10)%10 + '0';
-            if (t == target) return res;
-            if (!m.count(t)) { q.push(t); m.insert(t); }
-          }
-          t[i] = x;
+    int openLock(vector<string>& deadends, string target) {
+        if (target == "0000") return 0;
+        unordered_set<string> dead(deadends.begin(), deadends.end());
+        if (dead.count("0000")) return -1;
+        queue<string> q;
+        q.push("0000"); dead.insert("0000");
+        int res = 0;
+        while (!q.empty()) {
+            int len = q.size();
+            while (len--) {
+                string s = q.front(); q.pop();
+                if (s == target) return res;
+                for (int i = 0; i < 4; ++i) {
+                    char c = s[i];
+                    for (int d : {1,-1}) {
+                        s[i] = (c-'0'+d+10)%10 + '0';
+                        if (!dead.count(s)) {
+                            q.push(s); dead.insert(s);
+                        }
+                    }
+                    s[i] = c;
+                }
+            }
+            ++res;
         }
-      }
+        return -1;
     }
-    return -1;
-  }
 };
 
-// Two-ends BFS, should have been faster than one-end, but unordered_set takes overhead
+// Two-ends BFS, should have been faster than one-end, but unordered_set has notable overhead
 class Solution {
 public:
     int openLock(vector<string>& deadends, string target) {
@@ -75,8 +77,4 @@ public:
 
 
 int main() {
-  Solution s;
-  vector<string> d = {"8887","8889","8878","8898","8788","8988","7888","9888"};
-  cout << s.openLock(d, "8888") << endl;
-  return 0;
 }

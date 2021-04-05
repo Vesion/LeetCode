@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <numeric> 
+#include <numeric>
 using namespace std;
 
 
@@ -15,14 +15,14 @@ public:
     vector<vector<string>> solveNQueens(int n) {
         vector<vector<string>> result;
         vector<string> board(n, string(n, '.'));
-        dfs(result, board, 0, n);   
+        dfs(result, board, 0, n);
         return result;
     }
 
 private:
     void dfs(vector<vector<string>> &result, vector<string> &board, int row, int n) {
         if (row == n) {
-            result.push_back(board); 
+            result.push_back(board);
             return;
         }
         for (int i = 0; i < n; ++i) {
@@ -52,40 +52,40 @@ private:
 };
 
 
-// Solution 2 : dfs + bitmask
-// The number of columns is n, the number of 45° diagonals is 2*n-1, the number of 135° diagonals is also 2*n-1. 
-// When reach [row, col], the 45° diagonal is row+col and the 135° diagonal is n-1+col-row. 
-class Solution_2 {
+// Solution 2 : mark col, left_diagonal, right_diagonal
+class Solution {
 public:
+    vector<vector<string>> res;
+    vector<bool> col, ld, rd;
+    vector<string> board;
+
     vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> res;
-        vector<string> board(n, string(n, '.'));
-        /*
-		flag[0] to flag[n - 1] to indicate if the column had a queen before.
-		flag[n] to flag[3 * n - 2] to indicate if the 45° diagonal had a queen before.
-		flag[3 * n - 1] to flag[5 * n - 3] to indicate if the 135° diagonal had a queen before.
-		*/
-        vector<bool> flag(n + (2*n-1) + (2*n-1), 1);
-        dfs(0, n, flag, board, res);
+        col.resize(n, false);
+        ld.resize(2*n-1, false);
+        rd.resize(2*n-1, false);
+        board.resize(n, string(n, '.'));
+        dfs(0, n);
         return res;
     }
 
-    void dfs(int row, int n, vector<bool>& flag, vector<string>& board, vector<vector<string>>& res) {
-        if (row == n) {
+    void dfs(int i, int n) {
+        if (i == n) {
             res.push_back(board);
             return;
         }
-        for (int col = 0; col < n; ++col) {
-            if (flag[col] && flag[n+row+col] && flag[4*n-2+col-row]) {
-                flag[col] = flag[n+row+col] = flag[4*n-2+col-row] = false;
-                board[row][col] = 'Q';
-                dfs(row+1, n, flag, board, res);
-                board[row][col] = '.';
-                flag[col] = flag[n+row+col] = flag[4*n-2+col-row] = true;
-            }
+        for (int j = 0; j < n; ++j) {
+            int l = i+n-1-j;
+            int r = i+j;
+            if (col[j] || ld[l] || rd[r]) continue;
+            col[j] = ld[l] = rd[r] = true;
+            board[i][j] = 'Q';
+            dfs(i+1, n);
+            board[i][j] = '.';
+            col[j] = ld[l] = rd[r] = false;
         }
     }
 };
+
 
 
 // Solutions below just return number of valid N-Queens, do not output whole solution
@@ -102,9 +102,9 @@ public:
         return res;
     }
     void dfs(int row, int ld, int rd, int board, int& res) {
-        if (row == board) { 
-            ++res; 
-            return; 
+        if (row == board) {
+            ++res;
+            return;
         }
         int valid = board & ~(row|ld|rd); // get all available postion
         while (valid) { // try each position
