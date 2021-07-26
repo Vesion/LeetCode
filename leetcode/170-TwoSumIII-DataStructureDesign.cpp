@@ -2,34 +2,28 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <unordered_set> 
+#include <unordered_set>
 using namespace std;
 
 class TwoSum {
-private:
-    unordered_multiset<int> s;
-
+    unordered_map<int,int> m;
 public:
+    void add(int number) {
+        m[number]++;
+    }
 
-    // O(1)
-	void add(int number) {
-        s.insert(number);
-	}
-
-    // O(n)
-	bool find(int value) {
-        for (int num : s) {
-            int c = num == (value-num) ? 1 : 0;
-            if ((int)s.count(value-num) > c) return true;
+    bool find(int value) {
+        for (auto it = m.begin(); it != m.end(); it++) {
+            long long i = it->first;
+            long long j = value - i;
+            if ((i == j && it->second > 1) || (i != j && m.find(j) != m.end())) {
+                return true;
+            }
         }
         return false;
-	}
+    }
 };
 
 int main() {
-    TwoSum t;
-    t.add(1);
-    t.add(2);
-    cout << t.find(3) << endl;
     return 0;
 }

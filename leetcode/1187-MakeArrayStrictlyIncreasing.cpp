@@ -8,26 +8,26 @@ using namespace std;
 // Top down dp
 class Solution {
 public:
-    vector<vector<int>> dp;
     int m, n;
-    static constexpr int kMax = 2e3+5;
+    const int kMax = 2e3+5;
+    vector<vector<int>> dp;
 
     int makeArrayIncreasing(vector<int>& arr1, vector<int>& arr2) {
         sort(arr2.begin(), arr2.end());
         m = arr1.size(), n = arr2.size();
         dp.resize(m+1, vector<int>(n+1, -1));
-        int res = dfs(arr1, arr2, 0, 0, INT_MIN);
-        return res >= kMax ? -1 : res;
+        int res = dfs(arr1, 0, arr2, 0, INT_MIN);
+        return res == kMax ? -1 : res;
     }
 
-    int dfs(const vector<int>& a1, const vector<int>& a2, int i1, int i2, int prev) {
-        if (i1 >= m)  return 0;
-        i2 = upper_bound(a2.begin() + i2, a2.end(), prev) - a2.begin();
-        if (dp[i1][i2] != -1) return dp[i1][i2];
+    int dfs(const vector<int>& a, int i, const vector<int>& b, int j, int pre) {
+        if (i >= m) return 0;
+        j = upper_bound(b.begin()+j, b.end(), pre) - b.begin();
+        if (dp[i][j] != -1) return dp[i][j];
         int res = kMax;
-        if (i2 < n) res = min(res, 1 + dfs(a1, a2, i1 + 1, i2, a2[i2]));
-        if (prev < a1[i1])  res = min(res, dfs(a1, a2, i1 + 1, i2, a1[i1]));
-        return dp[i1][i2] = res;
+        if (j < n) res = min(res, dfs(a, i+1, b, j, b[j])+1);
+        if (pre < a[i]) res = min(res, dfs(a, i+1, b, j, a[i]));
+        return dp[i][j] = res;
     }
 };
 

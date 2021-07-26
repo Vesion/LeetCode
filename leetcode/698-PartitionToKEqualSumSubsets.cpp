@@ -10,7 +10,7 @@ public:
     bool canPartitionKSubsets(vector<int>& nums, int k) {
         int sum = 0;
         for (int num : nums) sum += num;
-        if (sum % k) return false;
+        if (sum%k) return false;
         return dfs(nums, 0, 0, sum/k, k, 0);
     }
 
@@ -19,10 +19,8 @@ public:
         if (sum == target) return dfs(nums, 0, 0, target, k-1, vis);
         if (start == nums.size()) return false;
         for (int i = start; i < nums.size(); ++i) {
-            if ((vis>>i)&1) continue;
-            vis |= (1<<i);
-            if (dfs(nums, i+1, sum+nums[i], target, k, vis)) return true;
-            vis ^= (1<<i);
+            if (vis & (1<<i)) continue;
+            if (dfs(nums, i+1, sum+nums[i], target, k, vis|(1<<i))) return true;
         }
         return false;
     }

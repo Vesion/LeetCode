@@ -18,27 +18,27 @@ public:
 };
 
 // Solution 1 : trivial dfs, two passes
-class Solution_1 {
+class Solution {
 public:
-    int depthSumInverse(vector<NestedInteger>& nestedList) {
-        if (nestedList.empty()) return 0;
-        int maxDepth = getMaxDepth(nestedList);
-        return dfs(nestedList, maxDepth);
+    int depthSumInverse(vector<NestedInteger>& nl) {
+        if (nl.empty()) return 0;
+        int maxdepth = depth(nl);
+        return dfs(nl, maxdepth);
     }
 
-    int getMaxDepth(vector<NestedInteger> nestedList) {
-        int depth = 1;
-        for (NestedInteger& ni : nestedList) {
-            if (!ni.isInteger()) depth = max(depth, getMaxDepth(ni.getList())+1);
+    int depth(const vector<NestedInteger>& nl) {
+        int res = 1;
+        for (const auto& ni : nl) {
+            if (!ni.isInteger()) res = max(res, depth(ni.getList()) + 1);
         }
-        return depth;
+        return res;
     }
 
-    int dfs(const vector<NestedInteger>& nestedList, int depth) {
+    int dfs(const vector<NestedInteger>& nl, int depth) {
         int res = 0;
-        for (auto& e : nestedList) {
-            if (e.isInteger()) res += e.getInteger() * depth;
-            else res += dfs(e.getList(), depth-1);
+        for (const auto& ni : nl) {
+            if (ni.isInteger()) res += depth * ni.getInteger();
+            else res += dfs(ni.getList(), depth-1);
         }
         return res;
     }
@@ -46,7 +46,7 @@ public:
 
 
 // Solution 2 : bfs, accumulate level by level
-class Solution {
+class Solution1 {
 public:
     int depthSumInverse(vector<NestedInteger>& nestedList) {
         int pre = 0, res = 0;

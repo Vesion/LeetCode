@@ -11,21 +11,22 @@ using namespace std;
 class Solution {
 public:
     int findKthNumber(int n, int k) {
-        int num = 1;
+        int res = 1;
         --k;
+        using ll = long long;
         while (k > 0) {
             int count = 0;
-            for (long long first = num, last = num+1; first <= n; first *= 10, last *= 10)
-                count += min(n+1LL, last) - first;
+            for (ll first = res, last = res+1; first <= n; first *= 10, last *= 10)
+                count += min(ll(n+1), last) - first;
             if (count <= k) {
                 k -= count;
-                num++;
+                res += 1;
             } else {
-                k--;
-                num *= 10;
+                --k;
+                res *= 10;
             }
         }
-        return num;
+        return res;
     }
 };
 

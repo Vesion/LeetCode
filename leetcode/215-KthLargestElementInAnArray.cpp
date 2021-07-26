@@ -7,7 +7,7 @@ using namespace std;
 
 // The classic 'Kth Largest Number' problem
 
-// Solution 1 : quickSelect, O(n^2) best, O(n) worst
+// Solution 1 : quickSelect, O(n^2) worst, O(n) best
 //              if we preprocess nums with shuffling it, the O(n) is guaranteed
 class Solution {
 public:

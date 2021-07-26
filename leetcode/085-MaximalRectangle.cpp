@@ -4,10 +4,6 @@
 #include <string>
 using namespace std;
 
-// 042-TrappingRainWater.cpp
-// 084-LargestRectangleInHistogram.cpp
-// 085-MaximalRectangle.cpp
-
 // Solution 1 : extend the stack solution in 'Largest Rectangle in Histogram' to 2D
 // O(n^2) time
 class Solution {
@@ -15,29 +11,28 @@ public:
     int maximalRectangle(vector<vector<char>>& matrix) {
         if (matrix.empty()) return 0;
         int m = matrix.size(), n = matrix[0].size();
-        vector<int> h(n+1, 0);
+        vector<int> hs(n+1, 0);
         int res = 0;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (matrix[i][j] == '1') ++h[j];
-                else h[j] = 0;
+                if (matrix[i][j] == '1') ++hs[j];
+                else hs[j] = 0;
             }
-            res = max(res, histogram(h));
+            res = max(res, histogram(hs));
         }
         return res;
     }
 
+    // same to 084-LargestRectangleInHistogram.cpp
     int histogram(const vector<int>& hs) {
-        int res = 0;
         stack<int> st;
+        int res = 0;
         for (int i = 0; i < hs.size(); ++i) {
-            while (!st.empty()) {
-                int last_h = hs[st.top()];
-                if (hs[i] < last_h) {
-                    st.pop();
-                    int w = st.empty() ? i : i-st.top()-1;
-                    res = max(res, last_h*w);
-                } else break;
+            while (!st.empty() && hs[i] < hs[st.top()]) {
+                int h = hs[st.top()];
+                st.pop();
+                int w = st.empty() ? i : i-st.top()-1;
+                res = max(res, h*w);
             }
             st.push(i);
         }
